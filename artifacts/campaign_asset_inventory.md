@@ -101,6 +101,18 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent close button frame used by `AlbumCloseFrame`.
 - `album_paw_badge`: `/Users/zhaok/cat/assets/generated/ui/album_paw_badge.png`
   Role: paw badge retained for future album unlock and rarity states.
+- `reward_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/reward_overlay_design_reference.png`
+  Role: full-screen Image2 daily reward overlay design reference for the reward popup.
+- `reward_overlay_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/reward_overlay_asset_sheet_source.png`
+  Role: Image2 chroma-key source sheet used to derive reward runtime textures.
+- `reward_overlay_panel`: `/Users/zhaok/cat/assets/generated/ui/reward_overlay_panel.png`
+  Role: transparent cat-ear reward panel used by `RewardDesignPanel`.
+- `reward_chest`: `/Users/zhaok/cat/assets/generated/ui/reward_chest.png`
+  Role: transparent fish-token chest used by `RewardChestFrame`.
+- `reward_claim_button`: `/Users/zhaok/cat/assets/generated/ui/reward_claim_button.png`
+  Role: transparent claim button frame used by `RewardClaimFrame`.
+- `reward_fish_chip`: `/Users/zhaok/cat/assets/generated/ui/reward_fish_chip.png`
+  Role: transparent reward amount chip used by `RewardFishChipFrame`.
 - `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
   Role: full-screen Image2 victory result design used directly as the post-level result screen background.
 - `result_screen_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png`
@@ -140,4 +152,5 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Settings overlay screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`
 - Result screen screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`
 - Album overlay screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`
+- Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

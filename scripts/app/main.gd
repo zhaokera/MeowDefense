@@ -14,6 +14,10 @@ const SETTINGS_CLOSE_BUTTON := preload("res://assets/generated/ui/settings_close
 const ALBUM_OVERLAY_PANEL := preload("res://assets/generated/ui/album_overlay_panel.png")
 const ALBUM_CARD_FRAME := preload("res://assets/generated/ui/album_card_frame.png")
 const ALBUM_CLOSE_BUTTON := preload("res://assets/generated/ui/album_close_button.png")
+const REWARD_OVERLAY_PANEL := preload("res://assets/generated/ui/reward_overlay_panel.png")
+const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
+const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
+const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
 const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
@@ -47,6 +51,7 @@ var _current_level_path: String = "res://data/levels/level_001.json"
 var _music_enabled: bool = true
 var _effects_enabled: bool = true
 var _volume: float = 82.0
+var _daily_reward_claimed: bool = false
 
 
 func _ready() -> void:
@@ -311,13 +316,37 @@ func _show_reward_overlay(parent: Node) -> void:
 	_remove_named_child(parent, "RewardOverlay")
 	var overlay: Control = _overlay("RewardOverlay")
 	parent.add_child(overlay)
-	var panel: Panel = _panel("RewardPanel", Vector2(402, 170), Vector2(476, 332), Color(1.0, 0.94, 0.72, 0.98), Color(0.50, 0.28, 0.11), 20)
-	overlay.add_child(panel)
-	panel.add_child(_label("RewardTitle", "每日奖励", Vector2(36, 34), Vector2(404, 52), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	panel.add_child(_label("RewardCopy", "今日登录奖励已放入背包：\n小鱼干 +20\n明天继续守卫还有加成。", Vector2(56, 110), Vector2(364, 108), 25, Color(0.37, 0.18, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
-	var claim: Button = _button("ClaimRewardButton", "知道了", Vector2(142, 240), Vector2(192, 58), ORANGE, 25)
-	claim.pressed.connect(func() -> void: overlay.queue_free())
-	panel.add_child(claim)
+
+	var content: Control = Control.new()
+	content.name = "RewardContent"
+	content.size = VIEW_SIZE
+	overlay.add_child(content)
+
+	var panel: TextureRect = _ui_texture_rect("RewardDesignPanel", REWARD_OVERLAY_PANEL, Vector2(340, 68), Vector2(600, 458))
+	content.add_child(panel)
+	content.add_child(_label("RewardTitle", "每日奖励", Vector2(458, 156), Vector2(364, 54), 39, INK, HORIZONTAL_ALIGNMENT_CENTER))
+
+	var chest: TextureRect = _ui_texture_rect("RewardChestFrame", REWARD_CHEST, Vector2(472, 206), Vector2(336, 276))
+	content.add_child(chest)
+	var reward_chip: TextureRect = _ui_texture_rect("RewardFishChipFrame", REWARD_FISH_CHIP, Vector2(478, 426), Vector2(324, 84))
+	content.add_child(reward_chip)
+	var reward_text: String = "小鱼干 +20" if not _daily_reward_claimed else "今日已领取"
+	content.add_child(_label("RewardFishAmount", reward_text, Vector2(570, 442), Vector2(210, 48), 26, INK, HORIZONTAL_ALIGNMENT_CENTER))
+
+	var claim_frame: TextureRect = _ui_texture_rect("RewardClaimFrame", REWARD_CLAIM_BUTTON, Vector2(468, 560), Vector2(344, 78))
+	content.add_child(claim_frame)
+	var claim_text: String = "领取奖励" if not _daily_reward_claimed else "知道了"
+	var claim: Button = _transparent_text_button("ClaimRewardButton", claim_text, Rect2(claim_frame.position, claim_frame.size), 26)
+	_attach_button_feedback(claim, claim_frame)
+	claim.pressed.connect(func() -> void:
+		if not _daily_reward_claimed:
+			_daily_reward_claimed = true
+			_total_fish += 20
+			_pulse_control(chest)
+		overlay.queue_free()
+	)
+	content.add_child(claim)
+	_animate_overlay_entry(content)
 
 
 func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, title: String, stat_one: String, stat_two: String, copy: String, position: Vector2, size: Vector2) -> void:

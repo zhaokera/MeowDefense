@@ -121,4 +121,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_album_overlay_tests.gd` to require the Image2 album assets and reject the old code-drawn album nodes.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`.
 
+**Image2 Reward Overlay Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/reward_overlay_design_reference.png` as the full-page daily reward design reference.
+- Generated `/Users/zhaok/cat/assets/generated/ui/reward_overlay_asset_sheet_source.png` and cropped transparent reward panel, fish chest, claim button, and reward chip assets.
+- Replaced the old code-drawn `RewardPanel` with Image2 textures plus transparent hit areas and the shared pop-in/button feedback.
+- Changed the reward action from a close-only button into a real one-time claim that adds 20 fish to `_total_fish`.
+- Added `/Users/zhaok/cat/tests/run_reward_overlay_tests.gd` to require Image2 reward assets, reject `RewardPanel`, and verify the fish reward is granted.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`.
+
 final result: passed

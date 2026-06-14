@@ -217,6 +217,36 @@
       "prompt_summary": "Cropped Image2 paw badge retained for future album unlock and rarity states."
     },
     {
+      "id": "reward_overlay_design_reference",
+      "path": "res://assets/generated/ui/reward_overlay_design_reference.png",
+      "prompt_summary": "Image2 full-screen daily reward overlay design reference used to restore the reward popup."
+    },
+    {
+      "id": "reward_overlay_asset_sheet_source",
+      "path": "res://assets/generated/ui/reward_overlay_asset_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key reward asset sheet used to derive transparent panel, chest, claim button, and fish chip textures."
+    },
+    {
+      "id": "reward_overlay_panel",
+      "path": "res://assets/generated/ui/reward_overlay_panel.png",
+      "prompt_summary": "Cropped Image2 cat-ear reward panel with transparent background."
+    },
+    {
+      "id": "reward_chest",
+      "path": "res://assets/generated/ui/reward_chest.png",
+      "prompt_summary": "Cropped Image2 fish-token reward chest with transparent background."
+    },
+    {
+      "id": "reward_claim_button",
+      "path": "res://assets/generated/ui/reward_claim_button.png",
+      "prompt_summary": "Cropped Image2 green reward claim button frame with transparent background."
+    },
+    {
+      "id": "reward_fish_chip",
+      "path": "res://assets/generated/ui/reward_fish_chip.png",
+      "prompt_summary": "Cropped Image2 fish reward amount chip with transparent background."
+    },
+    {
       "id": "result_screen_design_reference",
       "path": "res://assets/generated/ui/result_screen_design_reference.png",
       "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."
