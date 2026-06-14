@@ -75,4 +75,10 @@ final result: passed
 - Added menu-test assertions that the main menu uses `Image2DesignBackground` and no longer creates the old `TitleBadge` or `HeroPanel` code panels.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/main_menu.png`.
 
+**Image2 Level Select Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/level_select_design_reference.png`.
+- Replaced the code-built level cards, title, mission panel, and bottom navigation with the Image2 level-select design plus transparent level, settings, and navigation hit areas.
+- Updated `run_menu_tests.gd` to require `LevelSelectDesignBackground` and reject the old code-drawn `LevelTitle`, `LevelMissionPanel`, `LevelCard1`, and `BottomNav` nodes.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/level_select.png`.
+
 final result: passed

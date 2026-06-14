@@ -72,7 +72,7 @@ func _run() -> void:
 		var level_button: Button = _assert_button(instance, "StartLevel1Button", "level select should start level one")
 		for level_index: int in range(1, 6):
 			_assert_button(instance, "StartLevel%dButton" % level_index, "level select should expose level %d" % level_index)
-		_assert_level_select_layout(instance)
+		_assert_level_select_uses_image2_design(instance)
 		if level_button != null:
 			level_button.emit_signal("pressed")
 			await process_frame
@@ -161,28 +161,14 @@ func _assert_texture_rect(root_node: Node, node_name: String, message: String) -
 	return null
 
 
-func _assert_level_select_layout(root_node: Node) -> void:
-	var mission: Control = _assert_control(root_node, "LevelMissionPanel", "level select should include the mission panel")
-	var first_card: Control = _assert_control(root_node, "LevelCard1", "level select should include the first level card")
-	var bottom_nav: Control = _assert_control(root_node, "BottomNav", "level select should include bottom navigation")
-
-	if mission != null and first_card != null:
-		var mission_rect: Rect2 = mission.get_global_rect()
-		var first_card_rect: Rect2 = first_card.get_global_rect()
-		_assert_true(mission_rect.position.y + mission_rect.size.y <= first_card_rect.position.y - 8.0, "level mission panel should not overlap the first row of level cards")
-
-	if bottom_nav != null:
-		var nav_rect: Rect2 = bottom_nav.get_global_rect()
-		for level_index: int in range(1, 6):
-			var card: Control = _assert_control(root_node, "LevelCard%d" % level_index, "level card %d should be a control" % level_index)
-			var thumb: Control = _assert_control(root_node, "Level%dThumb" % level_index, "level %d thumbnail should be a control" % level_index)
-			if card == null or thumb == null:
-				continue
-			_assert_true(card.clip_contents, "level card %d should clip its thumbnail art" % level_index)
-			var card_rect: Rect2 = card.get_global_rect()
-			var thumb_rect: Rect2 = thumb.get_global_rect()
-			_assert_true(_rect_contains(card_rect, thumb_rect), "level %d thumbnail should stay inside its card" % level_index)
-			_assert_true(card_rect.position.y + card_rect.size.y <= nav_rect.position.y - 16.0, "level card %d should leave room above bottom navigation" % level_index)
+func _assert_level_select_uses_image2_design(root_node: Node) -> void:
+	var design_background: TextureRect = _assert_texture_rect(root_node, "LevelSelectDesignBackground", "level select should use the Image2 design background")
+	if design_background != null and design_background.texture != null:
+		_assert_true(design_background.texture.resource_path == "res://assets/generated/ui/level_select_design_reference.png", "level select should render from the Image2 design asset")
+	_assert_missing(root_node, "LevelTitle", "level select should not rebuild the title plaque with code labels")
+	_assert_missing(root_node, "LevelMissionPanel", "level select should not rebuild the mission panel with code panels")
+	_assert_missing(root_node, "LevelCard1", "level select should not rebuild level cards with code panels")
+	_assert_missing(root_node, "BottomNav", "level select should not rebuild bottom navigation with code panels")
 
 
 func _rect_contains(outer: Rect2, inner: Rect2) -> bool:

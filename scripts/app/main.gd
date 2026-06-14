@@ -3,6 +3,7 @@ extends Control
 const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
 const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_meadow.png")
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
+const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -96,38 +97,44 @@ func _show_main_menu() -> void:
 
 func _show_level_select() -> void:
 	_clear_current()
-	var screen: Control = _menu_screen("LevelSelectScreen")
+	var screen: Control = _image_design_screen("LevelSelectScreen", LEVEL_SELECT_DESIGN, "LevelSelectDesignBackground")
 	_current = screen
 	add_child(screen)
 
-	_add_resource_strip(screen)
-	screen.add_child(_label("LevelTitle", "关卡地图", Vector2(78, 56), Vector2(420, 70), 50, INK, HORIZONTAL_ALIGNMENT_LEFT))
-	screen.add_child(_label("LevelSubtitle", "选择路线，布置猫猫防线。", Vector2(82, 116), Vector2(520, 36), 24, Color(0.35, 0.18, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
-
-	var back_button: Button = _button("BackToMainButton", "返回主页", Vector2(78, 622), Vector2(176, 58), BLUE, 23)
+	var back_button: Button = _hotspot_button("BackToMainButton", Vector2(330, 580), Vector2(118, 120), "返回主城")
 	back_button.pressed.connect(_show_main_menu)
 	screen.add_child(back_button)
 
-	var settings_button: Button = _button("LevelSettingsButton", "设置", Vector2(1058, 622), Vector2(126, 58), BLUE, 23)
+	var settings_button: Button = _hotspot_button("LevelSettingsButton", Vector2(1178, 10), Vector2(74, 72), "设置")
 	settings_button.pressed.connect(func() -> void: _show_settings_overlay(screen))
 	screen.add_child(settings_button)
 
-	var card_positions: Array[Vector2] = [
-		Vector2(78, 174),
-		Vector2(448, 174),
-		Vector2(818, 174),
-		Vector2(262, 366),
-		Vector2(632, 366)
+	var level_hotspots: Array[Dictionary] = [
+		{"button": "StartLevel1Button", "rect": Rect2(Vector2(178, 166), Vector2(210, 176)), "level": LEVELS[0]},
+		{"button": "StartLevel2Button", "rect": Rect2(Vector2(526, 166), Vector2(210, 176)), "level": LEVELS[1]},
+		{"button": "StartLevel3Button", "rect": Rect2(Vector2(858, 176), Vector2(212, 178)), "level": LEVELS[2]},
+		{"button": "StartLevel4Button", "rect": Rect2(Vector2(368, 368), Vector2(210, 180)), "level": LEVELS[3]},
+		{"button": "StartLevel5Button", "rect": Rect2(Vector2(714, 376), Vector2(222, 178)), "level": LEVELS[4]}
 	]
-	for index: int in range(LEVELS.size()):
-		var level_info: Dictionary = LEVELS[index]
-		screen.add_child(_level_card(level_info, card_positions[index]))
+	for hotspot: Dictionary in level_hotspots:
+		var rect: Rect2 = hotspot["rect"] as Rect2
+		var button: Button = _hotspot_button(str(hotspot["button"]), rect.position, rect.size, "出发")
+		var copied_info: Dictionary = (hotspot["level"] as Dictionary).duplicate(true)
+		button.pressed.connect(func() -> void: _start_level(copied_info))
+		screen.add_child(button)
 
-	var mission_panel: Panel = _panel("LevelMissionPanel", Vector2(770, 88), Vector2(392, 74), Color(0.35, 0.70, 0.86, 0.92), Color(0.13, 0.34, 0.45), 16)
-	screen.add_child(mission_panel)
-	mission_panel.add_child(_label("LevelMissionCopy", "目标：猫粮罐血量越高，星级越高\n提示：优先守住拐弯处的猫爪位", Vector2(20, 8), Vector2(352, 56), 19, Color.WHITE, HORIZONTAL_ALIGNMENT_LEFT))
-
-	_add_bottom_nav(screen, "关卡")
+	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(330, 580), Vector2(118, 120), "主城")
+	bottom_home.pressed.connect(_show_main_menu)
+	screen.add_child(bottom_home)
+	var bottom_levels: Button = _hotspot_button("BottomLevelsButton", Vector2(500, 576), Vector2(128, 126), "关卡")
+	bottom_levels.pressed.connect(_show_level_select)
+	screen.add_child(bottom_levels)
+	var bottom_album: Button = _hotspot_button("BottomAlbumButton", Vector2(680, 584), Vector2(118, 118), "图鉴")
+	bottom_album.pressed.connect(func() -> void: _show_album_overlay(screen))
+	screen.add_child(bottom_album)
+	var bottom_shop: Button = _hotspot_button("BottomShopButton", Vector2(840, 584), Vector2(122, 118), "商店")
+	bottom_shop.pressed.connect(func() -> void: _show_reward_overlay(screen))
+	screen.add_child(bottom_shop)
 
 
 func _start_level_one() -> void:
@@ -356,13 +363,13 @@ func _menu_screen(screen_name: String) -> Control:
 	return screen
 
 
-func _image_design_screen(screen_name: String, texture: Texture2D) -> Control:
+func _image_design_screen(screen_name: String, texture: Texture2D, background_name: String = "Image2DesignBackground") -> Control:
 	var screen: Control = Control.new()
 	screen.name = screen_name
 	screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var background: TextureRect = TextureRect.new()
-	background.name = "Image2DesignBackground"
+	background.name = background_name
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.texture = texture
 	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE

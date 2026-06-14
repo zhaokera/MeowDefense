@@ -77,6 +77,11 @@
       "prompt_summary": "Image2 full-screen main menu design reference used directly as the high-fidelity menu background."
     },
     {
+      "id": "level_select_design_reference",
+      "path": "res://assets/generated/ui/level_select_design_reference.png",
+      "prompt_summary": "Image2 full-screen level select design reference used directly as the high-fidelity level map background."
+    },
+    {
       "id": "level_001_thumb",
       "path": "res://assets/generated/ui/level_001_thumb.png",
       "prompt_summary": "Level 1 thumbnail copied from the Image2 meadow background."

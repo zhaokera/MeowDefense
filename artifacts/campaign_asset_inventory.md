@@ -45,6 +45,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 
 - `main_menu_design_reference`: `/Users/zhaok/cat/assets/generated/ui/main_menu_design_reference.png`
   Role: full-screen Image2 main menu design used as the rendered menu background for high-fidelity restoration.
+- `level_select_design_reference`: `/Users/zhaok/cat/assets/generated/ui/level_select_design_reference.png`
+  Role: full-screen Image2 level-select design used as the rendered level map background for high-fidelity restoration.
 - `level_001_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_001_thumb.png`
 - `level_002_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_002_thumb.png`
 - `level_003_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_003_thumb.png`
