@@ -112,6 +112,11 @@
       "prompt_summary": "Cropped Image2 cat-paw build slot marker with transparent background."
     },
     {
+      "id": "tower_action_panel",
+      "path": "res://assets/generated/ui/tower_action_panel.png",
+      "prompt_summary": "Image2 transparent tower management panel used for upgrade, sell, and close actions during battle."
+    },
+    {
       "id": "battle_pause_menu_design_reference",
       "path": "res://assets/generated/ui/battle_pause_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen pause menu design reference used to restore the battle pause overlay."

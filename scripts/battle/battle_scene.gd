@@ -18,6 +18,7 @@ const BattlePauseMenuGreenButtonTexture := preload("res://assets/generated/ui/ba
 const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/battle_pause_button_orange.png")
 const BattlePauseMenuBlueButtonTexture := preload("res://assets/generated/ui/battle_pause_button_blue.png")
 const BattlePauseMenuRedButtonTexture := preload("res://assets/generated/ui/battle_pause_button_red.png")
+const TowerActionPanelTexture := preload("res://assets/generated/ui/tower_action_panel.png")
 const SettingsOverlayPanelTexture := preload("res://assets/generated/ui/settings_overlay_panel.png")
 const SettingsToggleOnTexture := preload("res://assets/generated/ui/settings_toggle_on.png")
 const SettingsToggleOffTexture := preload("res://assets/generated/ui/settings_toggle_off.png")
@@ -54,6 +55,7 @@ var _base_sprite: Sprite2D
 var _base_hit_timer: float = 0.0
 var _base_visual_time: float = 0.0
 var _selected_tower_id: String = "orange_cat"
+var _tower_by_slot: Dictionary = {}
 var _pause_music_enabled: bool = true
 var _pause_effects_enabled: bool = true
 var _pause_volume: float = 82.0
@@ -75,6 +77,7 @@ func start_level(path: String) -> void:
 	finished = false
 	enemies.clear()
 	towers.clear()
+	_tower_by_slot.clear()
 	_wave_states.clear()
 	_selected_tower_id = level.allowed_towers[0] if not level.allowed_towers.is_empty() else "orange_cat"
 
@@ -359,7 +362,10 @@ func _tick_towers(delta: float) -> void:
 
 
 func _on_slot_clicked(slot: Node2D) -> void:
-	if finished or slot.occupied:
+	if finished:
+		return
+	if slot.occupied:
+		_show_tower_action_overlay(slot)
 		return
 	var tower_id: String = _selected_tower_id
 	if not level.allowed_towers.has(tower_id):
@@ -376,6 +382,7 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	tower.configure(tower_id, stats)
 	tower.position = slot.position
 	towers.append(tower)
+	_tower_by_slot[slot] = tower
 	_tower_layer.add_child(tower)
 	_tip_label.text = "%s 上岗！继续点击空猫爪位补防。" % str(stats.get("name", "猫塔"))
 	_update_hud()
@@ -416,12 +423,142 @@ func _mark_slot_button_occupied(slot: Node2D) -> void:
 			continue
 		var center: Vector2 = button.position + button.size * 0.5
 		if center.distance_to(slot.position) <= 1.0:
-			button.disabled = true
+			button.disabled = false
+			button.tooltip_text = "管理猫塔"
 			var visual: TextureRect = _slot_buttons.get_node_or_null(NodePath(button.name.replace("Button", "Visual"))) as TextureRect
 			if visual != null:
 				visual.modulate = Color(0.55, 0.47, 0.36, 0.55)
 				visual.scale = Vector2(0.82, 0.82)
 			return
+
+
+func _mark_slot_button_empty(slot: Node2D) -> void:
+	if _slot_buttons == null:
+		return
+	for child: Node in _slot_buttons.get_children():
+		var button: Button = child as Button
+		if button == null:
+			continue
+		var center: Vector2 = button.position + button.size * 0.5
+		if center.distance_to(slot.position) <= 1.0:
+			button.disabled = false
+			button.tooltip_text = "建造猫塔"
+			var visual: TextureRect = _slot_buttons.get_node_or_null(NodePath(button.name.replace("Button", "Visual"))) as TextureRect
+			if visual != null:
+				visual.modulate = Color.WHITE
+				visual.scale = Vector2.ONE
+			return
+
+
+func _show_tower_action_overlay(slot: Node2D) -> void:
+	if _hud == null:
+		return
+	var tower: Node2D = _tower_by_slot.get(slot, null) as Node2D
+	if tower == null or not is_instance_valid(tower):
+		return
+	var existing: Node = _hud.get_node_or_null("TowerActionOverlay")
+	if existing != null:
+		existing.queue_free()
+
+	var overlay: Control = Control.new()
+	overlay.name = "TowerActionOverlay"
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	_hud.add_child(overlay)
+
+	var panel: TextureRect = _hud_texture_rect("TowerActionDesignPanel", TowerActionPanelTexture, Vector2(290, 168), Vector2(700, 360))
+	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_child(panel)
+
+	var tower_name: String = str(tower.get("display_name"))
+	var upgrade_cost: int = int(tower.get("upgrade_cost"))
+	var sell_refund: int = _tower_sell_refund(tower)
+	overlay.add_child(_pause_label("管理 %s" % tower_name, Vector2(398, 226), Vector2(484, 42), 27, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER))
+	var stats_label: Label = _pause_label(_tower_action_stats_text(tower), Vector2(382, 330), Vector2(516, 36), 21, Color(0.38, 0.18, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	overlay.add_child(stats_label)
+	overlay.add_child(_pause_label("升级消耗 %d" % upgrade_cost, Vector2(384, 456), Vector2(236, 58), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER))
+	var sell_label: Label = _pause_label("出售返还 %d" % sell_refund, Vector2(660, 456), Vector2(236, 58), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER)
+	overlay.add_child(sell_label)
+
+	var upgrade_button: Button = _pause_transparent_text_button("UpgradeTowerButton", "", Rect2(Vector2(384, 442), Vector2(244, 82)), 24)
+	_attach_press_feedback(upgrade_button, panel)
+	upgrade_button.pressed.connect(func() -> void:
+		var previous_level: int = int(tower.get("level"))
+		_upgrade_tower_from_overlay(tower, panel)
+		if tower != null and is_instance_valid(tower) and int(tower.get("level")) != previous_level:
+			stats_label.text = _tower_action_stats_text(tower)
+			sell_label.text = "出售返还 %d" % _tower_sell_refund(tower)
+	)
+	overlay.add_child(upgrade_button)
+
+	var sell_button: Button = _pause_transparent_text_button("SellTowerButton", "", Rect2(Vector2(652, 442), Vector2(244, 82)), 24)
+	_attach_press_feedback(sell_button, panel)
+	sell_button.pressed.connect(func() -> void:
+		_sell_tower_from_overlay(tower, slot, overlay)
+	)
+	overlay.add_child(sell_button)
+
+	var close_button: Button = _pause_transparent_text_button("CloseTowerActionButton", "", Rect2(Vector2(842, 206), Vector2(106, 92)), 22)
+	_attach_press_feedback(close_button, panel)
+	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	overlay.add_child(close_button)
+	_pop_in_control(panel)
+
+
+func _upgrade_tower_from_overlay(tower: Node2D, feedback_target: Control) -> void:
+	if tower == null or not is_instance_valid(tower):
+		return
+	var upgrade_cost: int = int(tower.get("upgrade_cost"))
+	if coins < upgrade_cost:
+		_tip_label.text = "小鱼干不够，先守住下一波。"
+		_animate_control_scale(feedback_target, 0.98, 0.06)
+		return
+	coins -= upgrade_cost
+	tower.call("upgrade")
+	_tip_label.text = "%s 升到 %d 级！" % [str(tower.get("display_name")), int(tower.get("level"))]
+	_animate_control_scale(feedback_target, 1.05, 0.08)
+	_update_hud()
+
+
+func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control) -> void:
+	if tower == null or not is_instance_valid(tower):
+		return
+	var refund: int = _tower_sell_refund(tower)
+	coins += refund
+	towers.erase(tower)
+	_tower_by_slot.erase(slot)
+	slot.set_occupied(false)
+	_mark_slot_button_empty(slot)
+	tower.queue_free()
+	if overlay != null and is_instance_valid(overlay):
+		overlay.queue_free()
+	_tip_label.text = "已收回猫塔，返还小鱼干 %d。" % refund
+	_update_hud()
+
+
+func _tower_sell_refund(tower: Node2D) -> int:
+	if tower == null:
+		return 0
+	var base_refund: int = int(round(float(tower.get("cost")) * 0.5))
+	var upgrade_refund: int = int(round(float(max(0, int(tower.get("level")) - 1) * int(tower.get("upgrade_cost"))) * 0.35))
+	return max(1, base_refund + upgrade_refund)
+
+
+func _tower_action_stats_text(tower: Node2D) -> String:
+	return "等级 %d    伤害 %.1f    范围 %d" % [int(tower.get("level")), float(tower.get("damage")), int(float(tower.get("attack_range")))]
+
+
+func _pop_in_control(target: Control) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	target.pivot_offset = target.size * 0.5
+	target.scale = Vector2(0.92, 0.92)
+	target.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(target, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(target, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func _try_build_at_screen_position(screen_position: Vector2) -> bool:

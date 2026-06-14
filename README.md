@@ -13,6 +13,7 @@
 - 普通鼠、快跑仓鼠、罐头胖鼠、冲刺仓鼠四种敌人
 - 敌人、塔、基地都有运行时动画反馈
 - 明确的地图 `+` 建造按钮，支持真实玩家点击建塔
+- 已建猫塔可点击打开 Image2 管理面板，支持升级和出售返还鱼干
 
 ## 运行
 
@@ -45,6 +46,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_reward_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_build_input_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_tower_action_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_pause_menu_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_result_screen_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_scene_smoke.gd
@@ -68,6 +70,8 @@ Godot --path /path/to/MeowDefense
 ![Level select](artifacts/level_select.png)
 
 ![Battle](artifacts/battle_level_001.png)
+
+![Tower action](artifacts/tower_action_overlay.png)
 
 ![Pause settings](artifacts/pause_settings.png)
 

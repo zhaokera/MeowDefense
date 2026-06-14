@@ -59,6 +59,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent pause button art used by `BattlePauseFrame`.
 - `battle_build_slot_marker`: `/Users/zhaok/cat/assets/generated/ui/battle_build_slot_marker.png`
   Role: transparent cat-paw build marker used by `BuildSlotNVisual` nodes.
+- `tower_action_panel`: `/Users/zhaok/cat/assets/generated/ui/tower_action_panel.png`
+  Role: transparent Image2 tower management panel used by `TowerActionDesignPanel` for upgrade, sell, and close actions.
 - `battle_pause_menu_design_reference`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_design_reference.png`
   Role: full-screen Image2 pause menu design reference for the battle pause overlay.
 - `battle_pause_menu_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_asset_sheet_source.png`
@@ -154,6 +156,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Main menu screenshot: `/Users/zhaok/cat/artifacts/main_menu.png`
 - Level select screenshot: `/Users/zhaok/cat/artifacts/level_select.png`
 - Battle screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`
+- Tower action screenshot: `/Users/zhaok/cat/artifacts/tower_action_overlay.png`
 - Pause menu screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`
 - Settings overlay screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`
 - Battle pause settings screenshot: `/Users/zhaok/cat/artifacts/pause_settings.png`

@@ -89,6 +89,13 @@ final result: passed
 - Updated `run_build_input_tests.gd` to require the battle HUD Image2 nodes and reject the old code-drawn top/build panels.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`.
 
+**Image2 Tower Action Panel**
+- Generated `/Users/zhaok/cat/assets/generated/ui/tower_action_panel.png` as a transparent Image2 battle management panel with upgrade, sell, and close action areas.
+- Occupied build-slot buttons now stay clickable and open `TowerActionOverlay` instead of becoming dead controls.
+- Added upgrade behavior that spends fish and refreshes tower level/range/damage labels, plus sell behavior that refunds fish and frees the build slot.
+- Added pop-in/button feedback for the management panel and `/Users/zhaok/cat/tests/run_tower_action_tests.gd` to verify Image2 panel use, upgrade, sell, refund, and slot reuse.
+- Added `/Users/zhaok/cat/tests/capture_tower_action.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_action_overlay.png`.
+
 **Image2 Pause Menu Restoration**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_design_reference.png` as the full-page pause overlay design reference.
 - Generated `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_asset_sheet_source.png` and cropped transparent runtime assets for the pause panel plus continue, restart, settings, and quit button frames.
