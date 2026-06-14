@@ -113,6 +113,12 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent claim button frame used by `RewardClaimFrame`.
 - `reward_fish_chip`: `/Users/zhaok/cat/assets/generated/ui/reward_fish_chip.png`
   Role: transparent reward amount chip used by `RewardFishChipFrame`.
+- `backpack_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`
+  Role: full-screen Image2 backpack overlay design used directly by `BackpackDesignBackground`.
+- `achievements_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`
+  Role: full-screen Image2 achievements overlay design used directly by `AchievementsDesignBackground`.
+- `shop_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`
+  Role: full-screen Image2 shop overlay design used directly by `ShopDesignBackground`.
 - `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
   Role: full-screen Image2 victory result design used directly as the post-level result screen background.
 - `result_screen_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png`
@@ -154,4 +160,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Result screen screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`
 - Album overlay screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
+- Backpack overlay screenshot: `/Users/zhaok/cat/artifacts/backpack_overlay.png`
+- Achievements overlay screenshot: `/Users/zhaok/cat/artifacts/achievements_overlay.png`
+- Shop overlay screenshot: `/Users/zhaok/cat/artifacts/shop_overlay.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

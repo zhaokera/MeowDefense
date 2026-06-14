@@ -137,4 +137,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_reward_overlay_tests.gd` to require Image2 reward assets, reject `RewardPanel`, and verify the fish reward is granted.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`.
 
+**Image2 Town Feature Overlay Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`.
+- Replaced the main-menu bottom `背包`, `成就`, and `商店` proxy behavior with distinct Image2 full-screen overlays plus transparent close/action hit areas.
+- Added overlay pop-in and press feedback, and made the shop starter pack grant a one-time `+15` fish reward instead of being a static placeholder.
+- Added `/Users/zhaok/cat/tests/run_town_feature_overlay_tests.gd` to require the three Image2 design backgrounds, prevent reward/album proxy reuse, and verify the shop grant state.
+- Added `/Users/zhaok/cat/tests/capture_town_feature_overlays.gd` to regenerate backpack, achievements, and shop screenshots.
+- Latest screenshots: `/Users/zhaok/cat/artifacts/backpack_overlay.png`, `/Users/zhaok/cat/artifacts/achievements_overlay.png`, `/Users/zhaok/cat/artifacts/shop_overlay.png`.
+
 final result: passed

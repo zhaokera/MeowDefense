@@ -247,6 +247,21 @@
       "prompt_summary": "Cropped Image2 fish reward amount chip with transparent background."
     },
     {
+      "id": "backpack_overlay_design_reference",
+      "path": "res://assets/generated/ui/backpack_overlay_design_reference.png",
+      "prompt_summary": "Image2 full-screen backpack overlay design used directly as the inventory popup background."
+    },
+    {
+      "id": "achievements_overlay_design_reference",
+      "path": "res://assets/generated/ui/achievements_overlay_design_reference.png",
+      "prompt_summary": "Image2 full-screen achievements overlay design used directly as the trophy/progress popup background."
+    },
+    {
+      "id": "shop_overlay_design_reference",
+      "path": "res://assets/generated/ui/shop_overlay_design_reference.png",
+      "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."
+    },
+    {
       "id": "result_screen_design_reference",
       "path": "res://assets/generated/ui/result_screen_design_reference.png",
       "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."

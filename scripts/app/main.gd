@@ -18,6 +18,9 @@ const REWARD_OVERLAY_PANEL := preload("res://assets/generated/ui/reward_overlay_
 const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
 const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
 const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
+const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
+const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
+const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_design_reference.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
 const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
@@ -52,6 +55,7 @@ var _music_enabled: bool = true
 var _effects_enabled: bool = true
 var _volume: float = 82.0
 var _daily_reward_claimed: bool = false
+var _shop_starter_claimed: bool = false
 
 
 func _ready() -> void:
@@ -100,13 +104,13 @@ func _show_main_menu() -> void:
 	bottom_home.pressed.connect(_show_main_menu)
 	screen.add_child(bottom_home)
 	var bottom_bag: Button = _hotspot_button("BottomBagButton", Vector2(508, 620), Vector2(140, 94), "背包")
-	bottom_bag.pressed.connect(func() -> void: _show_reward_overlay(screen))
+	bottom_bag.pressed.connect(func() -> void: _show_backpack_overlay(screen))
 	screen.add_child(bottom_bag)
-	var bottom_album: Button = _hotspot_button("BottomAlbumButton", Vector2(683, 620), Vector2(150, 94), "成就")
-	bottom_album.pressed.connect(func() -> void: _show_album_overlay(screen))
-	screen.add_child(bottom_album)
+	var bottom_achievements: Button = _hotspot_button("BottomAchievementsButton", Vector2(683, 620), Vector2(150, 94), "成就")
+	bottom_achievements.pressed.connect(func() -> void: _show_achievements_overlay(screen))
+	screen.add_child(bottom_achievements)
 	var bottom_shop: Button = _hotspot_button("BottomShopButton", Vector2(870, 620), Vector2(150, 94), "商店")
-	bottom_shop.pressed.connect(func() -> void: _show_reward_overlay(screen))
+	bottom_shop.pressed.connect(func() -> void: _show_shop_overlay(screen))
 	screen.add_child(bottom_shop)
 	var settings_gear: Button = _hotspot_button("SettingsGearButton", Vector2(1205, 12), Vector2(66, 66), "设置")
 	settings_gear.pressed.connect(func() -> void: _show_settings_overlay(screen))
@@ -151,7 +155,7 @@ func _show_level_select() -> void:
 	bottom_album.pressed.connect(func() -> void: _show_album_overlay(screen))
 	screen.add_child(bottom_album)
 	var bottom_shop: Button = _hotspot_button("BottomShopButton", Vector2(840, 584), Vector2(122, 118), "商店")
-	bottom_shop.pressed.connect(func() -> void: _show_reward_overlay(screen))
+	bottom_shop.pressed.connect(func() -> void: _show_shop_overlay(screen))
 	screen.add_child(bottom_shop)
 
 
@@ -349,6 +353,78 @@ func _show_reward_overlay(parent: Node) -> void:
 	_animate_overlay_entry(content)
 
 
+func _show_backpack_overlay(parent: Node) -> void:
+	var content: Control = _image_overlay(parent, "BackpackOverlay", "BackpackDesignBackground", BACKPACK_OVERLAY_DESIGN)
+	content.add_child(_label("BackpackTitle", "背包", Vector2(462, 148), Vector2(356, 58), 39, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	content.add_child(_label("BackpackFishCounter", "%d" % _total_fish, Vector2(496, 31), Vector2(104, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	content.add_child(_label("BackpackStarsCounter", "%d" % _best_stars, Vector2(735, 31), Vector2(104, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	content.add_child(_label("BackpackEnergyCounter", "15/15", Vector2(910, 31), Vector2(92, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+
+	_backpack_item(content, "BackpackFishItem", "小鱼干", "当前持有 %d" % _total_fish, Vector2(306, 424), Vector2(214, 156))
+	_backpack_item(content, "BackpackPawTokenItem", "猫爪徽章", "完成成就获得", Vector2(532, 424), Vector2(214, 156))
+	_backpack_item(content, "BackpackYarnTrapItem", "毛线陷阱", "商店补给待开放", Vector2(762, 424), Vector2(214, 156))
+
+	var organize: Button = _transparent_text_button("OrganizeBackpackButton", "整理背包", Rect2(Vector2(466, 574), Vector2(348, 76)), 27)
+	organize.pressed.connect(func() -> void: _pulse_control(content))
+	content.add_child(organize)
+	var close_button: Button = _hotspot_button("CloseBackpackButton", Vector2(948, 130), Vector2(122, 114), "关闭")
+	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	content.add_child(close_button)
+	_animate_overlay_entry(content)
+
+
+func _show_achievements_overlay(parent: Node) -> void:
+	var content: Control = _image_overlay(parent, "AchievementsOverlay", "AchievementsDesignBackground", ACHIEVEMENTS_OVERLAY_DESIGN)
+	content.add_child(_label("AchievementsTitle", "成就", Vector2(438, 132), Vector2(404, 62), 39, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var completed_levels: int = _completed_level_count()
+	_achievement_row(content, "AchievementFirstClear", "首次守卫", "通关任意关卡", "%d/1" % min(completed_levels, 1), Vector2(410, 250))
+	_achievement_row(content, "AchievementStars", "星级收藏", "累计获得 15 颗星", "%d/15" % _best_stars, Vector2(410, 367))
+	_achievement_row(content, "AchievementCampaign", "连续推进", "完成 5 个关卡", "%d/5" % completed_levels, Vector2(410, 484))
+	var action: Button = _transparent_text_button("AchievementsActionButton", "继续挑战", Rect2(Vector2(468, 575), Vector2(344, 78)), 27)
+	action.pressed.connect(_show_level_select)
+	content.add_child(action)
+	var close_button: Button = _hotspot_button("CloseAchievementsButton", Vector2(970, 122), Vector2(118, 112), "关闭")
+	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	content.add_child(close_button)
+	_animate_overlay_entry(content)
+
+
+func _show_shop_overlay(parent: Node) -> void:
+	var content: Control = _image_overlay(parent, "ShopOverlay", "ShopDesignBackground", SHOP_OVERLAY_DESIGN)
+	content.add_child(_label("ShopTitle", "猫猫商店", Vector2(460, 128), Vector2(360, 62), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var fish_counter: Label = _label("ShopFishCounter", "%d" % _total_fish, Vector2(584, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	content.add_child(fish_counter)
+	content.add_child(_label("ShopStarsCounter", "%d" % _best_stars, Vector2(804, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	content.add_child(_label("ShopEnergyCounter", "15/15", Vector2(966, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+
+	content.add_child(_label("ShopFishPackTitle", "小鱼干补给", Vector2(270, 294), Vector2(214, 36), 21, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var claim_status: Label = _label("ShopClaimStatus", "已领取" if _shop_starter_claimed else "免费领取", Vector2(324, 482), Vector2(136, 36), 20, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	content.add_child(claim_status)
+	var claim_text: String = "已领取" if _shop_starter_claimed else "领取 +15"
+	var claim_button: Button = _transparent_text_button("ClaimShopFishPackButton", claim_text, Rect2(Vector2(278, 548), Vector2(202, 62)), 22)
+	claim_button.disabled = _shop_starter_claimed
+	claim_button.pressed.connect(func() -> void:
+		if _shop_starter_claimed:
+			return
+		_shop_starter_claimed = true
+		_total_fish += 15
+		fish_counter.text = "%d" % _total_fish
+		claim_status.text = "已领取"
+		claim_button.text = "已领取"
+		claim_button.disabled = true
+		_pulse_control(content)
+	)
+	content.add_child(claim_button)
+
+	_shop_locked_product(content, "ShopPawBundle", "猫爪徽章包", "完成更多关卡后开放", Vector2(507, 294), Vector2(214, 316))
+	_shop_locked_product(content, "ShopYarnTrapKit", "毛线陷阱包", "后续版本补给", Vector2(744, 294), Vector2(214, 316))
+
+	var close_button: Button = _hotspot_button("CloseShopButton", Vector2(960, 112), Vector2(128, 116), "关闭")
+	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	content.add_child(close_button)
+	_animate_overlay_entry(content)
+
+
 func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, title: String, stat_one: String, stat_two: String, copy: String, position: Vector2, size: Vector2) -> void:
 	var portrait: Control = Control.new()
 	portrait.name = "%sPortrait" % entry_name
@@ -372,6 +448,59 @@ func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, 
 	_attach_button_feedback(inspect, frame)
 	inspect.pressed.connect(func() -> void: _pulse_control(frame))
 	parent.add_child(inspect)
+
+
+func _image_overlay(parent: Node, overlay_name: String, background_name: String, texture: Texture2D) -> Control:
+	for existing_name: String in ["BackpackOverlay", "AchievementsOverlay", "ShopOverlay", "RewardOverlay", "AlbumOverlay", "SettingsOverlay"]:
+		_remove_named_child(parent, existing_name)
+	var overlay: Control = Control.new()
+	overlay.name = overlay_name
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	parent.add_child(overlay)
+
+	var content: Control = Control.new()
+	content.name = "%sContent" % overlay_name
+	content.size = VIEW_SIZE
+	overlay.add_child(content)
+
+	var design: TextureRect = _ui_texture_rect(background_name, texture, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	content.add_child(design)
+	return content
+
+
+func _backpack_item(parent: Control, node_prefix: String, title: String, detail: String, position: Vector2, size: Vector2) -> void:
+	parent.add_child(_label("%sTitle" % node_prefix, title, position, Vector2(size.x, 34), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	parent.add_child(_label("%sDetail" % node_prefix, detail, position + Vector2(62, 70), Vector2(size.x - 76, 34), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
+	var button: Button = _hotspot_button("%sButton" % node_prefix, position - Vector2(4, 128), Vector2(size.x + 8, 286), title)
+	button.pressed.connect(func() -> void: _pulse_control(parent))
+	parent.add_child(button)
+
+
+func _achievement_row(parent: Control, row_name: String, title: String, detail: String, progress: String, position: Vector2) -> void:
+	parent.add_child(_label("%sTitle" % row_name, title, position, Vector2(260, 34), 22, INK, HORIZONTAL_ALIGNMENT_LEFT))
+	parent.add_child(_label("%sDetail" % row_name, detail, position + Vector2(0, 34), Vector2(300, 30), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
+	parent.add_child(_label("%sProgress" % row_name, progress, position + Vector2(404, 20), Vector2(142, 36), 22, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var row_button: Button = _hotspot_button("%sButton" % row_name, position - Vector2(118, 18), Vector2(700, 94), title)
+	row_button.pressed.connect(func() -> void: _pulse_control(parent))
+	parent.add_child(row_button)
+
+
+func _shop_locked_product(parent: Control, node_prefix: String, title: String, detail: String, position: Vector2, size: Vector2) -> void:
+	parent.add_child(_label("%sTitle" % node_prefix, title, position, Vector2(size.x, 36), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	parent.add_child(_label("%sDetail" % node_prefix, detail, position + Vector2(58, 188), Vector2(size.x - 70, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
+	var button: Button = _transparent_text_button("%sButton" % node_prefix, "未开放", Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
+	button.disabled = true
+	parent.add_child(button)
+
+
+func _completed_level_count() -> int:
+	var count: int = 0
+	for level_id: int in _best_stars_by_level.keys():
+		if _level_stars(level_id) > 0:
+			count += 1
+	return count
 
 
 func _level_card(level_info: Dictionary, position: Vector2) -> Panel:
