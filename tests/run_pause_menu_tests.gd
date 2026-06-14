@@ -1,0 +1,129 @@
+extends SceneTree
+
+const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
+
+var _failures: Array[String] = []
+
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var battle: Node2D = BattleSceneScript.new()
+	root.add_child(battle)
+	battle.start_level("res://data/levels/level_001.json")
+	await process_frame
+	await physics_frame
+
+	var pause_button: Button = _assert_button(battle, "PauseButton", "battle HUD should expose pause")
+	if pause_button != null:
+		pause_button.emit_signal("pressed")
+		await process_frame
+
+	_assert_exists(battle, "PauseMenuOverlay", "pause should open an overlay")
+	_assert_texture_node(
+		battle,
+		"PauseMenuDesignPanel",
+		"res://assets/generated/ui/battle_pause_menu_panel.png",
+		"pause menu should use an Image2 panel asset"
+	)
+	_assert_texture_node(
+		battle,
+		"PauseResumeFrame",
+		"res://assets/generated/ui/battle_pause_button_green.png",
+		"resume should use an Image2 button asset"
+	)
+	_assert_texture_node(
+		battle,
+		"PauseRestartFrame",
+		"res://assets/generated/ui/battle_pause_button_orange.png",
+		"restart should use an Image2 button asset"
+	)
+	_assert_texture_node(
+		battle,
+		"PauseSettingsFrame",
+		"res://assets/generated/ui/battle_pause_button_blue.png",
+		"settings should use an Image2 button asset"
+	)
+	_assert_texture_node(
+		battle,
+		"PauseQuitFrame",
+		"res://assets/generated/ui/battle_pause_button_red.png",
+		"quit should use an Image2 button asset"
+	)
+	_assert_missing(battle, "PausePanel", "pause menu should not render the old code-drawn panel")
+
+	var resume_button: Button = _assert_button(battle, "ResumeButton", "pause menu should resume")
+	_assert_button(battle, "RestartBattleButton", "pause menu should restart")
+	_assert_button(battle, "PauseSettingsButton", "pause menu should expose settings")
+	_assert_button(battle, "QuitToLevelsButton", "pause menu should return to level select")
+	if resume_button != null:
+		resume_button.emit_signal("pressed")
+		await process_frame
+		_assert_missing(battle, "PauseMenuOverlay", "resume should close pause menu")
+
+	battle.queue_free()
+	_finish()
+
+
+func _assert_texture_node(root_node: Node, node_name: String, expected_path: String, message: String) -> TextureRect:
+	var node: Node = _assert_exists(root_node, node_name, message)
+	if node == null:
+		return null
+	if not node is TextureRect:
+		_failures.append("%s should be a TextureRect" % node_name)
+		return null
+	var texture_rect: TextureRect = node as TextureRect
+	_assert_true(texture_rect.texture != null, "%s should have a texture" % node_name)
+	if texture_rect.texture != null:
+		_assert_true(texture_rect.texture.resource_path == expected_path, "%s should use %s" % [node_name, expected_path])
+	return texture_rect
+
+
+func _assert_button(root_node: Node, node_name: String, message: String) -> Button:
+	var node: Node = _assert_exists(root_node, node_name, message)
+	if node == null:
+		return null
+	if node is Button:
+		return node as Button
+	_failures.append("%s should be a Button" % node_name)
+	return null
+
+
+func _assert_exists(root_node: Node, node_name: String, message: String) -> Node:
+	var node: Node = _find_by_name(root_node, node_name)
+	if node == null:
+		_failures.append(message)
+	return node
+
+
+func _assert_missing(root_node: Node, node_name: String, message: String) -> void:
+	if _find_by_name(root_node, node_name) != null:
+		_failures.append(message)
+
+
+func _assert_true(condition: bool, message: String) -> void:
+	if not condition:
+		_failures.append(message)
+
+
+func _find_by_name(node: Node, node_name: String) -> Node:
+	if node.name == node_name:
+		return node
+	for child: Node in node.get_children():
+		var found: Node = _find_by_name(child, node_name)
+		if found != null:
+			return found
+	return null
+
+
+func _finish() -> void:
+	if _failures.is_empty():
+		print("PAUSE MENU TESTS PASS")
+		quit(0)
+	else:
+		for failure: String in _failures:
+			push_error(failure)
+		print("PAUSE MENU TESTS FAIL: %d" % _failures.size())
+		quit(1)

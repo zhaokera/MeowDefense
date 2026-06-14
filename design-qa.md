@@ -89,4 +89,12 @@ final result: passed
 - Updated `run_build_input_tests.gd` to require the battle HUD Image2 nodes and reject the old code-drawn top/build panels.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`.
 
+**Image2 Pause Menu Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_design_reference.png` as the full-page pause overlay design reference.
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_asset_sheet_source.png` and cropped transparent runtime assets for the pause panel plus continue, restart, settings, and quit button frames.
+- Replaced the old code-drawn `PausePanel` and pause menu button styles with `TextureRect` Image2 assets plus transparent hit areas.
+- Added press feedback to all pause menu actions while keeping resume, restart, settings, and quit behavior intact.
+- Added `/Users/zhaok/cat/tests/run_pause_menu_tests.gd` to require the Image2 pause assets and reject the old `PausePanel`.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`.
+
 final result: passed

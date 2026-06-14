@@ -59,6 +59,20 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent pause button art used by `BattlePauseFrame`.
 - `battle_build_slot_marker`: `/Users/zhaok/cat/assets/generated/ui/battle_build_slot_marker.png`
   Role: transparent cat-paw build marker used by `BuildSlotNVisual` nodes.
+- `battle_pause_menu_design_reference`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_design_reference.png`
+  Role: full-screen Image2 pause menu design reference for the battle pause overlay.
+- `battle_pause_menu_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_asset_sheet_source.png`
+  Role: Image2 chroma-key source sheet used to derive the battle pause menu runtime textures.
+- `battle_pause_menu_panel`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_panel.png`
+  Role: transparent cat-ear pause menu panel used by `PauseMenuDesignPanel`.
+- `battle_pause_button_green`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_button_green.png`
+  Role: transparent continue button frame used by `PauseResumeFrame`.
+- `battle_pause_button_orange`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_button_orange.png`
+  Role: transparent restart button frame used by `PauseRestartFrame`.
+- `battle_pause_button_blue`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_button_blue.png`
+  Role: transparent settings button frame used by `PauseSettingsFrame`.
+- `battle_pause_button_red`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_button_red.png`
+  Role: transparent quit button frame used by `PauseQuitFrame`.
 - `level_001_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_001_thumb.png`
 - `level_002_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_002_thumb.png`
 - `level_003_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_003_thumb.png`
@@ -76,4 +90,5 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Main menu screenshot: `/Users/zhaok/cat/artifacts/main_menu.png`
 - Level select screenshot: `/Users/zhaok/cat/artifacts/level_select.png`
 - Battle screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`
+- Pause menu screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

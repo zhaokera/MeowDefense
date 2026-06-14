@@ -13,6 +13,11 @@ const BattleHudTopBarTexture := preload("res://assets/generated/ui/battle_hud_to
 const BattleHudBottomDockTexture := preload("res://assets/generated/ui/battle_hud_bottom_dock.png")
 const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_pause_button.png")
 const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
+const BattlePauseMenuPanelTexture := preload("res://assets/generated/ui/battle_pause_menu_panel.png")
+const BattlePauseMenuGreenButtonTexture := preload("res://assets/generated/ui/battle_pause_button_green.png")
+const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/battle_pause_button_orange.png")
+const BattlePauseMenuBlueButtonTexture := preload("res://assets/generated/ui/battle_pause_button_blue.png")
+const BattlePauseMenuRedButtonTexture := preload("res://assets/generated/ui/battle_pause_button_red.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -528,36 +533,28 @@ func _show_pause_menu() -> void:
 	dim.color = Color(0.12, 0.07, 0.04, 0.50)
 	_pause_overlay.add_child(dim)
 
-	var panel: Panel = Panel.new()
-	panel.name = "PausePanel"
-	panel.position = Vector2(406, 104)
-	panel.size = Vector2(468, 500)
-	panel.add_theme_stylebox_override("panel", _panel_style(Color(1.0, 0.94, 0.72, 0.98), Color(0.50, 0.28, 0.11), 22, 3))
+	var panel: TextureRect = _hud_texture_rect("PauseMenuDesignPanel", BattlePauseMenuPanelTexture, Vector2(346, 42), Vector2(588, 640))
 	_pause_overlay.add_child(panel)
 
-	var title: Label = _pause_label("暂停中", Vector2(34, 30), Vector2(400, 56), 42, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER)
+	var title: Label = _pause_label("暂停中", Vector2(426, 142), Vector2(428, 58), 42, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER)
 	title.name = "PauseTitle"
-	panel.add_child(title)
+	_pause_overlay.add_child(title)
 
-	var status: Label = _pause_label("猫粮罐 %d/%d    小鱼干 %d" % [base_hp, int(level.base_hp), coins], Vector2(44, 96), Vector2(380, 38), 22, Color(0.40, 0.20, 0.09), HORIZONTAL_ALIGNMENT_CENTER)
+	var status: Label = _pause_label("猫粮罐 %d/%d    小鱼干 %d" % [base_hp, int(level.base_hp), coins], Vector2(428, 260), Vector2(424, 38), 22, Color(0.40, 0.20, 0.09), HORIZONTAL_ALIGNMENT_CENTER)
 	status.name = "PauseStatus"
-	panel.add_child(status)
+	_pause_overlay.add_child(status)
 
-	var resume: Button = _pause_button("ResumeButton", "继续守卫", Vector2(108, 158), Color(0.46, 0.76, 0.34))
+	var resume: Button = _pause_menu_button("ResumeButton", "PauseResumeFrame", BattlePauseMenuGreenButtonTexture, "继续守卫", Vector2(438, 322), Vector2(404, 78))
 	resume.pressed.connect(_resume_from_pause)
-	panel.add_child(resume)
 
-	var restart: Button = _pause_button("RestartBattleButton", "重新开始", Vector2(108, 234), Color(0.98, 0.48, 0.20))
+	var restart: Button = _pause_menu_button("RestartBattleButton", "PauseRestartFrame", BattlePauseMenuOrangeButtonTexture, "重新开始", Vector2(438, 406), Vector2(404, 78))
 	restart.pressed.connect(_restart_from_pause)
-	panel.add_child(restart)
 
-	var settings: Button = _pause_button("PauseSettingsButton", "音量设置", Vector2(108, 310), Color(0.34, 0.67, 0.86))
+	var settings: Button = _pause_menu_button("PauseSettingsButton", "PauseSettingsFrame", BattlePauseMenuBlueButtonTexture, "音量设置", Vector2(438, 490), Vector2(404, 78))
 	settings.pressed.connect(_show_pause_settings)
-	panel.add_child(settings)
 
-	var quit: Button = _pause_button("QuitToLevelsButton", "退出关卡", Vector2(108, 386), Color(0.94, 0.30, 0.22))
+	var quit: Button = _pause_menu_button("QuitToLevelsButton", "PauseQuitFrame", BattlePauseMenuRedButtonTexture, "退出关卡", Vector2(438, 574), Vector2(404, 78))
 	quit.pressed.connect(_quit_to_levels_from_pause)
-	panel.add_child(quit)
 
 
 func _resume_from_pause() -> void:
@@ -576,6 +573,27 @@ func _restart_from_pause() -> void:
 func _quit_to_levels_from_pause() -> void:
 	get_tree().paused = false
 	exit_to_levels_requested.emit()
+
+
+func _pause_menu_button(button_name: String, frame_name: String, texture: Texture2D, text: String, position: Vector2, size: Vector2) -> Button:
+	var frame: TextureRect = _hud_texture_rect(frame_name, texture, position, size)
+	frame.process_mode = Node.PROCESS_MODE_ALWAYS
+	_pause_overlay.add_child(frame)
+
+	var button: Button = Button.new()
+	button.name = button_name
+	button.text = text
+	button.position = position
+	button.size = size
+	button.process_mode = Node.PROCESS_MODE_ALWAYS
+	button.add_theme_font_size_override("font_size", 25)
+	button.add_theme_color_override("font_color", Color(0.27, 0.13, 0.07))
+	button.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	button.add_theme_constant_override("outline_size", 3)
+	_make_button_transparent(button)
+	_attach_press_feedback(button, frame)
+	_pause_overlay.add_child(button)
+	return button
 
 
 func _show_pause_settings() -> void:

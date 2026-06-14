@@ -112,6 +112,41 @@
       "prompt_summary": "Cropped Image2 cat-paw build slot marker with transparent background."
     },
     {
+      "id": "battle_pause_menu_design_reference",
+      "path": "res://assets/generated/ui/battle_pause_menu_design_reference.png",
+      "prompt_summary": "Image2 full-screen pause menu design reference used to restore the battle pause overlay."
+    },
+    {
+      "id": "battle_pause_menu_asset_sheet_source",
+      "path": "res://assets/generated/ui/battle_pause_menu_asset_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key pause menu asset sheet used to derive transparent panel and button textures."
+    },
+    {
+      "id": "battle_pause_menu_panel",
+      "path": "res://assets/generated/ui/battle_pause_menu_panel.png",
+      "prompt_summary": "Cropped Image2 cat-ear pause menu panel with transparent background."
+    },
+    {
+      "id": "battle_pause_button_green",
+      "path": "res://assets/generated/ui/battle_pause_button_green.png",
+      "prompt_summary": "Cropped Image2 green continue button frame with transparent background."
+    },
+    {
+      "id": "battle_pause_button_orange",
+      "path": "res://assets/generated/ui/battle_pause_button_orange.png",
+      "prompt_summary": "Cropped Image2 orange restart button frame with transparent background."
+    },
+    {
+      "id": "battle_pause_button_blue",
+      "path": "res://assets/generated/ui/battle_pause_button_blue.png",
+      "prompt_summary": "Cropped Image2 blue settings button frame with transparent background."
+    },
+    {
+      "id": "battle_pause_button_red",
+      "path": "res://assets/generated/ui/battle_pause_button_red.png",
+      "prompt_summary": "Cropped Image2 red quit button frame with transparent background."
+    },
+    {
       "id": "level_001_thumb",
       "path": "res://assets/generated/ui/level_001_thumb.png",
       "prompt_summary": "Level 1 thumbnail copied from the Image2 meadow background."
