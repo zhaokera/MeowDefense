@@ -89,6 +89,18 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent fish-shaped volume knob used by `SettingsVolumeKnobFrame`.
 - `settings_close_button`: `/Users/zhaok/cat/assets/generated/ui/settings_close_button.png`
   Role: transparent green confirm button frame used by `SettingsCloseFrame`.
+- `album_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/album_overlay_design_reference.png`
+  Role: full-screen Image2 album overlay design reference for the guide/encyclopedia dialog.
+- `album_overlay_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/album_overlay_asset_sheet_source.png`
+  Role: Image2 chroma-key source sheet used to derive album runtime textures.
+- `album_overlay_panel`: `/Users/zhaok/cat/assets/generated/ui/album_overlay_panel.png`
+  Role: transparent cat-ear album panel used by `AlbumDesignPanel`.
+- `album_card_frame`: `/Users/zhaok/cat/assets/generated/ui/album_card_frame.png`
+  Role: transparent collectible card frame used by album entry cards.
+- `album_close_button`: `/Users/zhaok/cat/assets/generated/ui/album_close_button.png`
+  Role: transparent close button frame used by `AlbumCloseFrame`.
+- `album_paw_badge`: `/Users/zhaok/cat/assets/generated/ui/album_paw_badge.png`
+  Role: paw badge retained for future album unlock and rarity states.
 - `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
   Role: full-screen Image2 victory result design used directly as the post-level result screen background.
 - `result_screen_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png`
@@ -127,4 +139,5 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Pause menu screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`
 - Settings overlay screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`
 - Result screen screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`
+- Album overlay screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

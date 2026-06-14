@@ -11,6 +11,9 @@ const SETTINGS_TOGGLE_OFF := preload("res://assets/generated/ui/settings_toggle_
 const SETTINGS_SLIDER_TRACK := preload("res://assets/generated/ui/settings_slider_track.png")
 const SETTINGS_SLIDER_KNOB := preload("res://assets/generated/ui/settings_slider_knob.png")
 const SETTINGS_CLOSE_BUTTON := preload("res://assets/generated/ui/settings_close_button.png")
+const ALBUM_OVERLAY_PANEL := preload("res://assets/generated/ui/album_overlay_panel.png")
+const ALBUM_CARD_FRAME := preload("res://assets/generated/ui/album_card_frame.png")
+const ALBUM_CLOSE_BUTTON := preload("res://assets/generated/ui/album_close_button.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
 const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
@@ -281,17 +284,27 @@ func _show_album_overlay(parent: Node) -> void:
 	var overlay: Control = _overlay("AlbumOverlay")
 	parent.add_child(overlay)
 
-	var panel: Panel = _panel("AlbumPanel", Vector2(176, 82), Vector2(928, 552), Color(1.0, 0.95, 0.76, 0.98), Color(0.50, 0.28, 0.11), 22)
-	overlay.add_child(panel)
-	panel.add_child(_label("AlbumTitle", "守卫图鉴", Vector2(42, 28), Vector2(842, 54), 42, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var content: Control = Control.new()
+	content.name = "AlbumContent"
+	content.size = VIEW_SIZE
+	overlay.add_child(content)
 
-	_add_album_card(panel, "AlbumTowerCard", CAT_TOWER_TEXTURE, "橘猫鱼骨炮", "花费 60 小鱼干\n擅长守住弯道")
-	_add_album_card(panel, "AlbumMouseCard", MOUSE_TEXTURE, "偷鱼干小鼠", "速度普通\n击败奖励小鱼干")
-	_add_album_card(panel, "AlbumBaseCard", FISH_BASE_TEXTURE, "猫粮罐", "守护目标\n剩余血量决定星级")
+	var panel: TextureRect = _ui_texture_rect("AlbumDesignPanel", ALBUM_OVERLAY_PANEL, Vector2(142, -4), Vector2(996, 720))
+	content.add_child(panel)
+	content.add_child(_label("AlbumTitle", "守卫图鉴", Vector2(418, 92), Vector2(444, 56), 40, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
-	var close_button: Button = _button("CloseAlbumButton", "收起图鉴", Vector2(360, 454), Vector2(208, 60), BLUE, 25)
+	var card_size := Vector2(248, 368)
+	_album_entry_card(content, "AlbumTower", CAT_TOWER_TEXTURE, "橘猫鱼骨炮", "费用 60", "单体输出", "鱼骨炮锁定最近目标，适合守住弯道。", Vector2(250, 204), card_size)
+	_album_entry_card(content, "AlbumMouse", MOUSE_TEXTURE, "偷鱼干小鼠", "速度 普通", "奖励 +5", "常见入侵者，会沿着小路偷走鱼干。", Vector2(516, 204), card_size)
+	_album_entry_card(content, "AlbumBase", FISH_BASE_TEXTURE, "猫粮罐", "生命 10", "守护目标", "剩余生命决定结算星级，别让它被搬空。", Vector2(782, 204), card_size)
+
+	var close_frame: TextureRect = _ui_texture_rect("AlbumCloseFrame", ALBUM_CLOSE_BUTTON, Vector2(456, 604), Vector2(368, 88))
+	content.add_child(close_frame)
+	var close_button: Button = _transparent_text_button("CloseAlbumButton", "收起图鉴", Rect2(close_frame.position, close_frame.size), 27)
+	_attach_button_feedback(close_button, close_frame)
 	close_button.pressed.connect(func() -> void: overlay.queue_free())
-	panel.add_child(close_button)
+	content.add_child(close_button)
+	_animate_overlay_entry(content)
 
 
 func _show_reward_overlay(parent: Node) -> void:
@@ -307,16 +320,29 @@ func _show_reward_overlay(parent: Node) -> void:
 	panel.add_child(claim)
 
 
-func _add_album_card(parent: Control, card_name: String, texture: Texture2D, title: String, copy: String) -> void:
-	var index: int = parent.get_child_count()
-	var card_x: float = 54.0 + float(index - 1) * 286.0
-	var card: Panel = _panel(card_name, Vector2(card_x, 116), Vector2(248, 286), Color(1.0, 0.83, 0.45, 0.88), Color(0.52, 0.29, 0.12), 18)
-	parent.add_child(card)
-	card.add_child(_sprite("%sImage" % card_name, texture, Vector2(124, 84), Vector2(144, 144)))
-	card.add_child(_label("%sTitle" % card_name, title, Vector2(18, 162), Vector2(212, 40), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	var body: Label = _label("%sCopy" % card_name, copy, Vector2(26, 210), Vector2(196, 54), 18, Color(0.37, 0.18, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, title: String, stat_one: String, stat_two: String, copy: String, position: Vector2, size: Vector2) -> void:
+	var portrait: Control = Control.new()
+	portrait.name = "%sPortrait" % entry_name
+	portrait.position = position + Vector2(22, 18)
+	portrait.size = Vector2(size.x - 44, 146)
+	portrait.clip_contents = true
+	parent.add_child(portrait)
+	portrait.add_child(_sprite("%sSprite" % entry_name, texture, portrait.size * 0.5, Vector2(160, 136)))
+
+	var frame: TextureRect = _ui_texture_rect("%sCardFrame" % entry_name, ALBUM_CARD_FRAME, position, size)
+	parent.add_child(frame)
+
+	parent.add_child(_label("%sTitle" % entry_name, title, position + Vector2(40, 172), Vector2(size.x - 80, 34), 19, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	parent.add_child(_label("%sStatOne" % entry_name, stat_one, position + Vector2(72, 222), Vector2(size.x - 98, 30), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
+	parent.add_child(_label("%sStatTwo" % entry_name, stat_two, position + Vector2(72, 263), Vector2(size.x - 98, 30), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
+	var body: Label = _label("%sCopy" % entry_name, copy, position + Vector2(30, 302), Vector2(size.x - 60, 50), 14, Color(0.38, 0.18, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	card.add_child(body)
+	parent.add_child(body)
+
+	var inspect: Button = _hotspot_button("%sInspectButton" % entry_name, position, size, title)
+	_attach_button_feedback(inspect, frame)
+	inspect.pressed.connect(func() -> void: _pulse_control(frame))
+	parent.add_child(inspect)
 
 
 func _level_card(level_info: Dictionary, position: Vector2) -> Panel:
@@ -490,6 +516,16 @@ func _pulse_control(target: Control) -> void:
 	_scale_control(target, 1.06, 0.06)
 	var tween: Tween = create_tween()
 	tween.tween_property(target, "scale", Vector2.ONE, 0.10).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _animate_overlay_entry(target: Control) -> void:
+	target.pivot_offset = VIEW_SIZE * 0.5
+	target.scale = Vector2(0.94, 0.94)
+	target.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(target, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(target, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func _scale_control(target: Control, scale_value: float, duration: float) -> void:

@@ -113,4 +113,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_screen_tests.gd` to require the Image2 result design/buttons and reject the old result panel/resource strip.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`.
 
+**Image2 Album Overlay Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/album_overlay_design_reference.png` as the full-page guide/encyclopedia design reference.
+- Generated `/Users/zhaok/cat/assets/generated/ui/album_overlay_asset_sheet_source.png` and cropped transparent album panel, card frame, close button, and paw badge assets.
+- Replaced the old code-drawn `AlbumPanel` and `AlbumTowerCard`/`AlbumMouseCard`/`AlbumBaseCard` panels with Image2 textures plus existing character sprites, dynamic labels, and transparent card/close hit areas.
+- Added card press feedback and an overlay pop-in animation so the guide no longer feels like a static code panel.
+- Added `/Users/zhaok/cat/tests/run_album_overlay_tests.gd` to require the Image2 album assets and reject the old code-drawn album nodes.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`.
+
 final result: passed

@@ -187,6 +187,36 @@
       "prompt_summary": "Cropped Image2 green settings confirm button with transparent background."
     },
     {
+      "id": "album_overlay_design_reference",
+      "path": "res://assets/generated/ui/album_overlay_design_reference.png",
+      "prompt_summary": "Image2 full-screen album overlay design reference used to restore the guide/encyclopedia dialog."
+    },
+    {
+      "id": "album_overlay_asset_sheet_source",
+      "path": "res://assets/generated/ui/album_overlay_asset_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key album asset sheet used to derive transparent panel, card, close button, and badge textures."
+    },
+    {
+      "id": "album_overlay_panel",
+      "path": "res://assets/generated/ui/album_overlay_panel.png",
+      "prompt_summary": "Cropped Image2 cat-ear album panel with transparent background."
+    },
+    {
+      "id": "album_card_frame",
+      "path": "res://assets/generated/ui/album_card_frame.png",
+      "prompt_summary": "Cropped Image2 collectible card frame used by album entries."
+    },
+    {
+      "id": "album_close_button",
+      "path": "res://assets/generated/ui/album_close_button.png",
+      "prompt_summary": "Cropped Image2 green close button frame used by the album overlay."
+    },
+    {
+      "id": "album_paw_badge",
+      "path": "res://assets/generated/ui/album_paw_badge.png",
+      "prompt_summary": "Cropped Image2 paw badge retained for future album unlock and rarity states."
+    },
+    {
       "id": "result_screen_design_reference",
       "path": "res://assets/generated/ui/result_screen_design_reference.png",
       "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."
