@@ -47,6 +47,18 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: full-screen Image2 main menu design used as the rendered menu background for high-fidelity restoration.
 - `level_select_design_reference`: `/Users/zhaok/cat/assets/generated/ui/level_select_design_reference.png`
   Role: full-screen Image2 level-select design used as the rendered level map background for high-fidelity restoration.
+- `battle_hud_design_reference`: `/Users/zhaok/cat/assets/generated/ui/battle_hud_design_reference.png`
+  Role: full-screen Image2 battle HUD design reference for the playable battle interface.
+- `battle_hud_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/battle_hud_asset_sheet_source.png`
+  Role: Image2 chroma-key source sheet used to derive the battle HUD runtime textures.
+- `battle_hud_top_bar`: `/Users/zhaok/cat/assets/generated/ui/battle_hud_top_bar.png`
+  Role: transparent top resource bar used by `BattleHudTopFrame`.
+- `battle_hud_bottom_dock`: `/Users/zhaok/cat/assets/generated/ui/battle_hud_bottom_dock.png`
+  Role: transparent bottom build/tower dock used by `BattleHudBottomFrame`.
+- `battle_pause_button`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_button.png`
+  Role: transparent pause button art used by `BattlePauseFrame`.
+- `battle_build_slot_marker`: `/Users/zhaok/cat/assets/generated/ui/battle_build_slot_marker.png`
+  Role: transparent cat-paw build marker used by `BuildSlotNVisual` nodes.
 - `level_001_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_001_thumb.png`
 - `level_002_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_002_thumb.png`
 - `level_003_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_003_thumb.png`
@@ -63,4 +75,5 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 
 - Main menu screenshot: `/Users/zhaok/cat/artifacts/main_menu.png`
 - Level select screenshot: `/Users/zhaok/cat/artifacts/level_select.png`
+- Battle screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

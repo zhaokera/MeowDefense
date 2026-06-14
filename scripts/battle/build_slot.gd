@@ -24,7 +24,6 @@ func _ready() -> void:
 
 func set_occupied(value: bool) -> void:
 	occupied = value
-	queue_redraw()
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -39,11 +38,4 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 
 
 func _draw() -> void:
-	var fill: Color = Color(1.0, 0.93, 0.66, 0.78) if not occupied else Color(0.45, 0.35, 0.24, 0.35)
-	var stroke: Color = Color(0.55, 0.31, 0.12, 0.8)
-	draw_circle(Vector2.ZERO, slot_radius, fill)
-	draw_arc(Vector2.ZERO, slot_radius, 0.0, TAU, 48, stroke, 3.0)
-	if not occupied:
-		draw_line(Vector2(-12, 0), Vector2(12, 0), stroke, 3.0)
-		draw_line(Vector2(0, -12), Vector2(0, 12), stroke, 3.0)
-		draw_circle(Vector2.ZERO, 10.0, Color(1.0, 0.76, 0.25, 0.72))
+	pass

@@ -82,6 +82,36 @@
       "prompt_summary": "Image2 full-screen level select design reference used directly as the high-fidelity level map background."
     },
     {
+      "id": "battle_hud_design_reference",
+      "path": "res://assets/generated/ui/battle_hud_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle HUD design reference used to guide the playable battle interface restoration."
+    },
+    {
+      "id": "battle_hud_asset_sheet_source",
+      "path": "res://assets/generated/ui/battle_hud_asset_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key UI asset sheet used to derive the battle HUD frame, dock, pause button, and build marker textures."
+    },
+    {
+      "id": "battle_hud_top_bar",
+      "path": "res://assets/generated/ui/battle_hud_top_bar.png",
+      "prompt_summary": "Cropped Image2 top battle HUD resource bar with transparent background."
+    },
+    {
+      "id": "battle_hud_bottom_dock",
+      "path": "res://assets/generated/ui/battle_hud_bottom_dock.png",
+      "prompt_summary": "Cropped Image2 bottom battle build dock with transparent background."
+    },
+    {
+      "id": "battle_pause_button",
+      "path": "res://assets/generated/ui/battle_pause_button.png",
+      "prompt_summary": "Cropped Image2 round pause button with transparent background."
+    },
+    {
+      "id": "battle_build_slot_marker",
+      "path": "res://assets/generated/ui/battle_build_slot_marker.png",
+      "prompt_summary": "Cropped Image2 cat-paw build slot marker with transparent background."
+    },
+    {
       "id": "level_001_thumb",
       "path": "res://assets/generated/ui/level_001_thumb.png",
       "prompt_summary": "Level 1 thumbnail copied from the Image2 meadow background."

@@ -9,6 +9,10 @@ const TowerStatsScript := preload("res://scripts/core/tower_stats.gd")
 const EnemyScript := preload("res://scripts/battle/enemy.gd")
 const TowerScript := preload("res://scripts/battle/tower.gd")
 const BuildSlotScript := preload("res://scripts/battle/build_slot.gd")
+const BattleHudTopBarTexture := preload("res://assets/generated/ui/battle_hud_top_bar.png")
+const BattleHudBottomDockTexture := preload("res://assets/generated/ui/battle_hud_bottom_dock.png")
+const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_pause_button.png")
+const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -180,74 +184,112 @@ func _build_hud() -> void:
 	_slot_buttons.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hud.add_child(_slot_buttons)
 
-	var top_bar: PanelContainer = PanelContainer.new()
-	top_bar.name = "BattleTopBar"
-	top_bar.position = Vector2(18, 16)
-	top_bar.size = Vector2(800, 64)
-	top_bar.add_theme_stylebox_override("panel", _panel_style(Color(1.0, 0.94, 0.70, 0.94), Color(0.50, 0.28, 0.10), 18, 3))
-	_hud.add_child(top_bar)
-
-	var row: HBoxContainer = HBoxContainer.new()
-	row.add_theme_constant_override("separation", 18)
-	top_bar.add_child(row)
+	var top_frame: TextureRect = _hud_texture_rect("BattleHudTopFrame", BattleHudTopBarTexture, Vector2(12, 8), Vector2(920, 112))
+	_hud.add_child(top_frame)
 
 	_coins_label = _hud_label("小鱼干 0")
 	_coins_label.name = "CoinsLabel"
+	_coins_label.position = Vector2(150, 45)
+	_coins_label.size = Vector2(180, 34)
+	_hud.add_child(_coins_label)
+
 	_base_label = _hud_label("猫粮罐 0")
 	_base_label.name = "BaseLabel"
+	_base_label.position = Vector2(456, 45)
+	_base_label.size = Vector2(206, 34)
+	_hud.add_child(_base_label)
+
 	_wave_label = _hud_label("波次 0/0")
 	_wave_label.name = "WaveLabel"
-	row.add_child(_coins_label)
-	row.add_child(_base_label)
-	row.add_child(_wave_label)
+	_wave_label.position = Vector2(760, 45)
+	_wave_label.size = Vector2(150, 34)
+	_hud.add_child(_wave_label)
 
-	var build_panel: PanelContainer = PanelContainer.new()
-	build_panel.name = "BuildPanel"
-	build_panel.position = Vector2(18, 612)
-	build_panel.size = Vector2(540, 84)
-	build_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.27, 0.18, 0.12, 0.88), Color(1.0, 0.78, 0.33), 18, 3))
-	_hud.add_child(build_panel)
+	var bottom_frame: TextureRect = _hud_texture_rect("BattleHudBottomFrame", BattleHudBottomDockTexture, Vector2(14, 528), Vector2(920, 210))
+	_hud.add_child(bottom_frame)
 
 	_tip_label = Label.new()
 	_tip_label.name = "BuildTipLabel"
 	_tip_label.text = "点击地图上的 + 猫爪建造：橘猫鱼骨炮 60"
-	_tip_label.add_theme_font_size_override("font_size", 23)
-	_tip_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78))
+	_tip_label.position = Vector2(58, 610)
+	_tip_label.size = Vector2(456, 58)
+	_tip_label.add_theme_font_size_override("font_size", 22)
+	_tip_label.add_theme_color_override("font_color", Color(0.30, 0.15, 0.07))
+	_tip_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.86))
+	_tip_label.add_theme_constant_override("outline_size", 3)
 	_tip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	build_panel.add_child(_tip_label)
+	_hud.add_child(_tip_label)
 
 	var tower_selector: HBoxContainer = HBoxContainer.new()
 	tower_selector.name = "TowerSelector"
-	tower_selector.position = Vector2(578, 618)
-	tower_selector.size = Vector2(430, 72)
-	tower_selector.add_theme_constant_override("separation", 12)
+	tower_selector.position = Vector2(552, 572)
+	tower_selector.size = Vector2(352, 128)
+	tower_selector.add_theme_constant_override("separation", 18)
 	_hud.add_child(tower_selector)
 	for tower_id: String in level.allowed_towers:
 		tower_selector.add_child(_tower_select_button(tower_id))
 
+	var pause_frame: TextureRect = _hud_texture_rect("BattlePauseFrame", BattlePauseButtonTexture, Vector2(1150, 14), Vector2(104, 104))
+	_hud.add_child(pause_frame)
+
 	var pause_button: Button = Button.new()
 	pause_button.name = "PauseButton"
-	pause_button.text = "暂停"
-	pause_button.position = Vector2(1132, 18)
-	pause_button.size = Vector2(120, 58)
+	pause_button.text = ""
+	pause_button.position = pause_frame.position
+	pause_button.size = pause_frame.size
 	pause_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	pause_button.pressed.connect(_on_pause_pressed)
-	pause_button.add_theme_stylebox_override("normal", _panel_style(Color(0.34, 0.67, 0.86, 0.96), Color(0.12, 0.34, 0.45), 18, 3))
-	pause_button.add_theme_stylebox_override("hover", _panel_style(Color(0.44, 0.75, 0.92, 0.98), Color(0.12, 0.34, 0.45), 18, 3))
-	pause_button.add_theme_stylebox_override("pressed", _panel_style(Color(0.24, 0.55, 0.74, 0.98), Color(0.10, 0.26, 0.36), 18, 3))
-	pause_button.add_theme_font_size_override("font_size", 24)
+	_make_button_transparent(pause_button)
+	_attach_press_feedback(pause_button, pause_frame)
 	_hud.add_child(pause_button)
 	_build_slot_buttons()
+
+
+func _hud_texture_rect(node_name: String, texture: Texture2D, position: Vector2, size: Vector2) -> TextureRect:
+	var rect: TextureRect = TextureRect.new()
+	rect.name = node_name
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_SCALE
+	rect.texture = texture
+	rect.position = position
+	rect.custom_minimum_size = size
+	rect.size = size
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return rect
 
 
 func _hud_label(text: String) -> Label:
 	var label: Label = Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 25)
+	label.add_theme_font_size_override("font_size", 22)
 	label.add_theme_color_override("font_color", Color(0.28, 0.14, 0.08))
-	label.custom_minimum_size = Vector2(230, 44)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.91, 0.62, 0.84))
+	label.add_theme_constant_override("outline_size", 3)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	return label
+
+
+func _make_button_transparent(button: Button) -> void:
+	button.focus_mode = Control.FOCUS_NONE
+	for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
+		button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+
+
+func _attach_press_feedback(button: Button, target: Control) -> void:
+	target.pivot_offset = target.size * 0.5
+	button.mouse_entered.connect(func() -> void: _animate_control_scale(target, 1.05, 0.08))
+	button.mouse_exited.connect(func() -> void: _animate_control_scale(target, 1.0, 0.10))
+	button.button_down.connect(func() -> void: _animate_control_scale(target, 0.94, 0.05))
+	button.button_up.connect(func() -> void: _animate_control_scale(target, 1.0, 0.08))
+
+
+func _animate_control_scale(target: Control, scale_value: float, duration: float) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	target.pivot_offset = target.size * 0.5
+	var tween: Tween = create_tween()
+	tween.tween_property(target, "scale", Vector2(scale_value, scale_value), duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _panel_style(fill: Color, border: Color, radius: int = 8, border_width: int = 2) -> StyleBoxFlat:
@@ -335,18 +377,17 @@ func _build_slot_buttons() -> void:
 		var slot: Node2D = child as Node2D
 		if slot == null:
 			continue
+		var visual: TextureRect = _hud_texture_rect("BuildSlot%dVisual" % index, BattleBuildSlotMarkerTexture, slot.position - Vector2(42, 42), Vector2(84, 84))
+		_slot_buttons.add_child(visual)
+
 		var button: Button = Button.new()
 		button.name = "BuildSlot%dButton" % index
-		button.text = "+"
-		button.position = slot.position - Vector2(32, 32)
-		button.size = Vector2(64, 64)
+		button.text = ""
+		button.position = visual.position
+		button.size = visual.size
 		button.tooltip_text = "建造猫塔"
-		button.add_theme_font_size_override("font_size", 30)
-		button.add_theme_color_override("font_color", Color(0.27, 0.13, 0.07))
-		button.add_theme_stylebox_override("normal", _panel_style(Color(1.0, 0.88, 0.42, 0.78), Color(0.55, 0.31, 0.12), 32, 3))
-		button.add_theme_stylebox_override("hover", _panel_style(Color(1.0, 0.94, 0.60, 0.92), Color(0.55, 0.31, 0.12), 32, 3))
-		button.add_theme_stylebox_override("pressed", _panel_style(Color(0.95, 0.68, 0.24, 0.96), Color(0.43, 0.22, 0.08), 32, 3))
-		button.add_theme_stylebox_override("disabled", _panel_style(Color(0.52, 0.42, 0.32, 0.45), Color(0.34, 0.24, 0.18), 32, 3))
+		_make_button_transparent(button)
+		_attach_press_feedback(button, visual)
 		button.pressed.connect(func() -> void: _on_slot_clicked(slot))
 		_slot_buttons.add_child(button)
 		index += 1
@@ -362,7 +403,10 @@ func _mark_slot_button_occupied(slot: Node2D) -> void:
 		var center: Vector2 = button.position + button.size * 0.5
 		if center.distance_to(slot.position) <= 1.0:
 			button.disabled = true
-			button.text = "✓"
+			var visual: TextureRect = _slot_buttons.get_node_or_null(NodePath(button.name.replace("Button", "Visual"))) as TextureRect
+			if visual != null:
+				visual.modulate = Color(0.55, 0.47, 0.36, 0.55)
+				visual.scale = Vector2(0.82, 0.82)
 			return
 
 
@@ -390,14 +434,14 @@ func _tower_select_button(tower_id: String) -> Button:
 	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
 	var button: Button = Button.new()
 	button.name = _tower_button_name(tower_id)
-	button.text = "%s  %d" % [str(stats.get("name", tower_id)), int(stats.get("cost", 0))]
-	button.custom_minimum_size = Vector2(190, 58)
-	button.add_theme_font_size_override("font_size", 19)
-	button.add_theme_color_override("font_color", Color(0.27, 0.13, 0.07))
-	var fill: Color = Color(1.0, 0.76, 0.25) if tower_id == _selected_tower_id else Color(0.34, 0.67, 0.86)
-	button.add_theme_stylebox_override("normal", _panel_style(fill, fill.darkened(0.45), 16, 3))
-	button.add_theme_stylebox_override("hover", _panel_style(fill.lightened(0.08), fill.darkened(0.45), 16, 3))
-	button.add_theme_stylebox_override("pressed", _panel_style(fill.darkened(0.10), fill.darkened(0.55), 16, 3))
+	button.text = "%s\n%d" % [str(stats.get("name", tower_id)), int(stats.get("cost", 0))]
+	button.custom_minimum_size = Vector2(156, 122)
+	button.add_theme_font_size_override("font_size", 18)
+	button.add_theme_color_override("font_color", Color(0.28, 0.13, 0.06))
+	button.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.86))
+	button.add_theme_constant_override("outline_size", 3)
+	_make_button_transparent(button)
+	_attach_press_feedback(button, button)
 	button.pressed.connect(func() -> void: _select_tower(tower_id))
 	return button
 

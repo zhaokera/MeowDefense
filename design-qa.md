@@ -81,4 +81,12 @@ final result: passed
 - Updated `run_menu_tests.gd` to require `LevelSelectDesignBackground` and reject the old code-drawn `LevelTitle`, `LevelMissionPanel`, `LevelCard1`, and `BottomNav` nodes.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/level_select.png`.
 
+**Image2 Battle HUD Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/battle_hud_design_reference.png` as the full-page battle HUD design reference.
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_hud_asset_sheet_source.png` and cropped transparent runtime assets for the top resource bar, bottom build dock, pause button, and cat-paw build marker.
+- Replaced the old code-drawn `BattleTopBar`, `BuildPanel`, pause button styling, and build-slot circle drawings with `TextureRect` Image2 assets plus transparent interaction layers.
+- Added button press feedback on build markers, tower selector hotspots, and the pause control.
+- Updated `run_build_input_tests.gd` to require the battle HUD Image2 nodes and reject the old code-drawn top/build panels.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`.
+
 final result: passed

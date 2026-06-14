@@ -16,6 +16,8 @@ func _run() -> void:
 	await process_frame
 	await physics_frame
 
+	_assert_battle_hud_uses_image2_assets(battle)
+
 	var slot_layer: Node = battle.get_node_or_null("World/BuildSlots")
 	_assert_true(slot_layer != null, "battle should expose build slots")
 	if slot_layer == null:
@@ -63,6 +65,47 @@ func _find_by_name(node: Node, node_name: String) -> Node:
 		if found != null:
 			return found
 	return null
+
+
+func _assert_battle_hud_uses_image2_assets(battle: Node) -> void:
+	_assert_texture_node(
+		battle,
+		"BattleHudTopFrame",
+		"res://assets/generated/ui/battle_hud_top_bar.png",
+		"battle should use an Image2 top HUD frame"
+	)
+	_assert_texture_node(
+		battle,
+		"BattleHudBottomFrame",
+		"res://assets/generated/ui/battle_hud_bottom_dock.png",
+		"battle should use an Image2 bottom build dock"
+	)
+	_assert_texture_node(
+		battle,
+		"BattlePauseFrame",
+		"res://assets/generated/ui/battle_pause_button.png",
+		"battle should use an Image2 pause button frame"
+	)
+	_assert_texture_node(
+		battle,
+		"BuildSlot1Visual",
+		"res://assets/generated/ui/battle_build_slot_marker.png",
+		"build slot visuals should use Image2 markers"
+	)
+	_assert_true(_find_by_name(battle, "BattleTopBar") == null, "battle should not render the old code-drawn top panel")
+	_assert_true(_find_by_name(battle, "BuildPanel") == null, "battle should not render the old code-drawn build panel")
+
+
+func _assert_texture_node(battle: Node, node_name: String, expected_path: String, message: String) -> void:
+	var node: Node = _find_by_name(battle, node_name)
+	_assert_true(node is TextureRect, message)
+	if not node is TextureRect:
+		return
+	var texture_rect: TextureRect = node as TextureRect
+	_assert_true(texture_rect.texture != null, "%s should have a texture" % node_name)
+	if texture_rect.texture == null:
+		return
+	_assert_true(texture_rect.texture.resource_path == expected_path, "%s should use %s" % [node_name, expected_path])
 
 
 func _finish() -> void:
