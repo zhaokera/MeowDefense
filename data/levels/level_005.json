@@ -1,0 +1,40 @@
+{
+  "id": 5,
+  "name": "终点守卫战",
+  "description": "鼠群全员出动，守住最后的猫粮罐。",
+  "background": "res://assets/generated/backgrounds/level_005_final_pantry.png",
+  "base_texture": "res://assets/generated/bases/fish_base.png",
+  "base_hp": 12,
+  "start_coins": 320,
+  "reward_fish": 80,
+  "allowed_towers": ["orange_cat", "tabby_slow_cat"],
+  "path_points": [
+    [20, 356],
+    [168, 356],
+    [260, 180],
+    [444, 180],
+    [580, 514],
+    [738, 514],
+    [850, 270],
+    [1010, 270],
+    [1120, 456],
+    [1230, 456]
+  ],
+  "build_slots": [
+    [166, 238],
+    [326, 322],
+    [474, 86],
+    [584, 356],
+    [730, 620],
+    [862, 400],
+    [1018, 160],
+    [1112, 560]
+  ],
+  "waves": [
+    {"time": 0.5, "enemy": "mouse_basic", "count": 12, "interval": 0.58},
+    {"time": 8.0, "enemy": "mouse_fast", "count": 10, "interval": 0.54},
+    {"time": 16.0, "enemy": "rat_tank", "count": 5, "interval": 1.10},
+    {"time": 24.0, "enemy": "hamster_runner", "count": 10, "interval": 0.44},
+    {"time": 31.0, "enemy": "rat_tank", "count": 6, "interval": 0.95}
+  ]
+}

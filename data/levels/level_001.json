@@ -1,0 +1,32 @@
+{
+  "id": 1,
+  "name": "鱼干小路",
+  "description": "保护猫粮罐，挡住偷鱼干的小老鼠。",
+  "background": "res://assets/generated/backgrounds/level_001_meadow.png",
+  "base_texture": "res://assets/generated/bases/fish_base.png",
+  "base_hp": 12,
+  "start_coins": 165,
+  "reward_fish": 35,
+  "allowed_towers": ["orange_cat"],
+  "path_points": [
+    [24, 360],
+    [226, 360],
+    [376, 236],
+    [592, 236],
+    [744, 424],
+    [1036, 424],
+    [1220, 312]
+  ],
+  "build_slots": [
+    [212, 248],
+    [396, 360],
+    [616, 344],
+    [824, 300],
+    [994, 516]
+  ],
+  "waves": [
+    {"time": 0.5, "enemy": "mouse_basic", "count": 6, "interval": 0.95},
+    {"time": 8.5, "enemy": "mouse_fast", "count": 5, "interval": 0.82},
+    {"time": 16.0, "enemy": "mouse_basic", "count": 9, "interval": 0.66}
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": 3,
+  "name": "月光粮仓",
+  "description": "夜色里冲刺仓鼠偷袭粮仓，减速塔开始变重要。",
+  "background": "res://assets/generated/backgrounds/level_003_moon_granary.png",
+  "base_texture": "res://assets/generated/bases/fish_base.png",
+  "base_hp": 11,
+  "start_coins": 230,
+  "reward_fish": 55,
+  "allowed_towers": ["orange_cat", "tabby_slow_cat"],
+  "path_points": [
+    [28, 300],
+    [220, 300],
+    [320, 500],
+    [546, 500],
+    [690, 250],
+    [900, 250],
+    [1040, 448],
+    [1230, 448]
+  ],
+  "build_slots": [
+    [210, 420],
+    [366, 220],
+    [524, 382],
+    [708, 376],
+    [890, 140],
+    [1036, 560]
+  ],
+  "waves": [
+    {"time": 0.5, "enemy": "mouse_fast", "count": 9, "interval": 0.68},
+    {"time": 9.0, "enemy": "hamster_runner", "count": 7, "interval": 0.58},
+    {"time": 17.5, "enemy": "mouse_basic", "count": 10, "interval": 0.58},
+    {"time": 25.5, "enemy": "rat_tank", "count": 3, "interval": 1.30}
+  ]
+}

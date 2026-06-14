@@ -1,0 +1,37 @@
+{
+  "id": 4,
+  "name": "溪边栈桥",
+  "description": "桥边路线更长，胖鼠会吸收大量火力。",
+  "background": "res://assets/generated/backgrounds/level_004_creek_bridge.png",
+  "base_texture": "res://assets/generated/bases/fish_base.png",
+  "base_hp": 11,
+  "start_coins": 270,
+  "reward_fish": 65,
+  "allowed_towers": ["orange_cat", "tabby_slow_cat"],
+  "path_points": [
+    [22, 520],
+    [190, 520],
+    [310, 330],
+    [500, 330],
+    [622, 154],
+    [780, 154],
+    [916, 374],
+    [1092, 374],
+    [1230, 238]
+  ],
+  "build_slots": [
+    [180, 390],
+    [348, 486],
+    [506, 210],
+    [684, 290],
+    [858, 238],
+    [1036, 500],
+    [1120, 292]
+  ],
+  "waves": [
+    {"time": 0.5, "enemy": "mouse_basic", "count": 10, "interval": 0.64},
+    {"time": 8.0, "enemy": "rat_tank", "count": 4, "interval": 1.25},
+    {"time": 18.0, "enemy": "hamster_runner", "count": 8, "interval": 0.50},
+    {"time": 26.0, "enemy": "rat_tank", "count": 5, "interval": 1.10}
+  ]
+}

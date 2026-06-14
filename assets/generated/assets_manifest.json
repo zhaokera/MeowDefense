@@ -1,0 +1,105 @@
+{
+  "generated_with": "Image2 via Codex built-in image generation",
+  "style": "bright cute hand-painted mobile cat tower defense, rounded readable shapes, warm playful colors",
+  "source_directory": "/Users/zhaok/.codex/generated_images/019ec20a-5a2a-7b71-9540-c2f350624b39",
+  "backgrounds": [
+    {
+      "id": "level_001_meadow",
+      "path": "res://assets/generated/backgrounds/level_001_meadow.png",
+      "prompt_summary": "Cute hand-painted meadow tower-defense map with winding path, paw-print details, fish-shaped stones, and visible build clearings."
+    },
+    {
+      "id": "level_002_cheese_forest",
+      "path": "res://assets/generated/backgrounds/level_002_cheese_forest.png",
+      "prompt_summary": "Sunny cheese-themed forest clearing with winding path, cheese rocks, mushrooms, fences, flowers, and paw build clearings."
+    },
+    {
+      "id": "level_003_moon_granary",
+      "path": "res://assets/generated/backgrounds/level_003_moon_granary.png",
+      "prompt_summary": "Moonlit grain storage yard with lanterns, hay bales, sacks, moonflowers, and readable tower-defense route."
+    },
+    {
+      "id": "level_004_creek_bridge",
+      "path": "res://assets/generated/backgrounds/level_004_creek_bridge.png",
+      "prompt_summary": "Creekside battlefield with blue stream, wooden bridges, stones, reeds, flowers, path, and bridge chokepoints."
+    },
+    {
+      "id": "level_005_final_pantry",
+      "path": "res://assets/generated/backgrounds/level_005_final_pantry.png",
+      "prompt_summary": "Final pantry garden fortress with fish tins, cat food cans, storage props, winding path, and strong final-stage readability."
+    }
+  ],
+  "towers": [
+    {
+      "id": "orange_cat",
+      "path": "res://assets/generated/towers/orange_cat_tower.png",
+      "prompt_summary": "Orange tabby cat in a wooden basket turret holding a fishbone cannon."
+    },
+    {
+      "id": "tabby_slow_cat",
+      "path": "res://assets/generated/towers/tabby_slow_cat_sheet.png",
+      "prompt_summary": "Beige tabby cat yarn tower sprite sheet with idle, aim, firing recoil, and upgrade poses."
+    }
+  ],
+  "enemies": [
+    {
+      "id": "mouse_basic",
+      "path": "res://assets/generated/enemies/mouse_basic.png",
+      "prompt_summary": "Cute grey-brown mouse carrying a stolen dried fish."
+    },
+    {
+      "id": "mouse_fast",
+      "path": "res://assets/generated/enemies/mouse_fast.png",
+      "prompt_summary": "Fast small mouse/hamster-style enemy with stolen fish snack."
+    },
+    {
+      "id": "rat_tank",
+      "path": "res://assets/generated/enemies/rat_tank_sheet.png",
+      "prompt_summary": "Chunky tank rat sprite sheet with walking, hit, march, and defeated poses."
+    },
+    {
+      "id": "hamster_runner",
+      "path": "res://assets/generated/enemies/hamster_runner_sheet.png",
+      "prompt_summary": "Tiny fast hamster runner sprite sheet with sprint, turn, hit, and tumble poses."
+    }
+  ],
+  "bases": [
+    {
+      "id": "fish_base",
+      "path": "res://assets/generated/bases/fish_base.png",
+      "prompt_summary": "Cat food jar filled with fish snacks and kibble, used as the protected base."
+    }
+  ],
+  "ui": [
+    {
+      "id": "main_menu_design_reference",
+      "path": "res://assets/generated/ui/main_menu_design_reference.png",
+      "prompt_summary": "Image2 full-screen main menu design reference used directly as the high-fidelity menu background."
+    },
+    {
+      "id": "level_001_thumb",
+      "path": "res://assets/generated/ui/level_001_thumb.png",
+      "prompt_summary": "Level 1 thumbnail copied from the Image2 meadow background."
+    },
+    {
+      "id": "level_002_thumb",
+      "path": "res://assets/generated/ui/level_002_thumb.png",
+      "prompt_summary": "Level 2 thumbnail copied from the Image2 cheese forest background."
+    },
+    {
+      "id": "level_003_thumb",
+      "path": "res://assets/generated/ui/level_003_thumb.png",
+      "prompt_summary": "Level 3 thumbnail copied from the Image2 moon granary background."
+    },
+    {
+      "id": "level_004_thumb",
+      "path": "res://assets/generated/ui/level_004_thumb.png",
+      "prompt_summary": "Level 4 thumbnail copied from the Image2 creek bridge background."
+    },
+    {
+      "id": "level_005_thumb",
+      "path": "res://assets/generated/ui/level_005_thumb.png",
+      "prompt_summary": "Level 5 thumbnail copied from the Image2 final pantry background."
+    }
+  ]
+}
