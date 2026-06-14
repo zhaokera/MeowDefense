@@ -56,8 +56,51 @@ func _run() -> void:
 
 	var resume_button: Button = _assert_button(battle, "ResumeButton", "pause menu should resume")
 	_assert_button(battle, "RestartBattleButton", "pause menu should restart")
-	_assert_button(battle, "PauseSettingsButton", "pause menu should expose settings")
+	var settings_button: Button = _assert_button(battle, "PauseSettingsButton", "pause menu should expose settings")
 	_assert_button(battle, "QuitToLevelsButton", "pause menu should return to level select")
+	if settings_button != null:
+		settings_button.emit_signal("pressed")
+		await process_frame
+		_assert_true(not settings_button.visible, "pause menu controls should hide while pause settings is open")
+		_assert_exists(battle, "PauseSettingsOverlay", "pause settings should open inside the pause overlay")
+		_assert_node_is_not_panel(battle, "PauseSettingsOverlay", "pause settings overlay should not be a code-drawn Panel")
+		_assert_texture_node(
+			battle,
+			"PauseSettingsDesignPanel",
+			"res://assets/generated/ui/settings_overlay_panel.png",
+			"pause settings should use an Image2 settings panel"
+		)
+		_assert_texture_node(
+			battle,
+			"PauseSettingsMusicToggleFrame",
+			"res://assets/generated/ui/settings_toggle_on.png",
+			"pause settings music toggle should use an Image2 toggle"
+		)
+		_assert_texture_node(
+			battle,
+			"PauseSettingsEffectsToggleFrame",
+			"res://assets/generated/ui/settings_toggle_on.png",
+			"pause settings effects toggle should use an Image2 toggle"
+		)
+		_assert_texture_node(
+			battle,
+			"PauseSettingsVolumeSliderFrame",
+			"res://assets/generated/ui/settings_slider_track.png",
+			"pause settings volume slider should use an Image2 track"
+		)
+		_assert_texture_node(
+			battle,
+			"PauseSettingsCloseFrame",
+			"res://assets/generated/ui/settings_close_button.png",
+			"pause settings close should use an Image2 button"
+		)
+		var close_settings: Button = _assert_button(battle, "ClosePauseSettingsButton", "pause settings should be closable")
+		if close_settings != null:
+			close_settings.emit_signal("pressed")
+			await process_frame
+			_assert_missing(battle, "PauseSettingsOverlay", "pause settings should close without closing pause menu")
+			_assert_exists(battle, "PauseMenuOverlay", "pause menu should remain open after closing pause settings")
+			_assert_true(settings_button.visible, "pause menu controls should return after closing pause settings")
 	if resume_button != null:
 		resume_button.emit_signal("pressed")
 		await process_frame
@@ -100,6 +143,12 @@ func _assert_exists(root_node: Node, node_name: String, message: String) -> Node
 
 func _assert_missing(root_node: Node, node_name: String, message: String) -> void:
 	if _find_by_name(root_node, node_name) != null:
+		_failures.append(message)
+
+
+func _assert_node_is_not_panel(root_node: Node, node_name: String, message: String) -> void:
+	var node: Node = _find_by_name(root_node, node_name)
+	if node != null and node is Panel:
 		_failures.append(message)
 
 

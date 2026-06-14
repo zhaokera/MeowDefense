@@ -68,6 +68,8 @@ Godot --path /path/to/MeowDefense
 
 ![Battle](artifacts/battle_level_001.png)
 
+![Pause settings](artifacts/pause_settings.png)
+
 ![Result screen](artifacts/result_screen.png)
 
 ![Album overlay](artifacts/album_overlay.png)

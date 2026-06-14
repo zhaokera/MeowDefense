@@ -18,6 +18,12 @@ const BattlePauseMenuGreenButtonTexture := preload("res://assets/generated/ui/ba
 const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/battle_pause_button_orange.png")
 const BattlePauseMenuBlueButtonTexture := preload("res://assets/generated/ui/battle_pause_button_blue.png")
 const BattlePauseMenuRedButtonTexture := preload("res://assets/generated/ui/battle_pause_button_red.png")
+const SettingsOverlayPanelTexture := preload("res://assets/generated/ui/settings_overlay_panel.png")
+const SettingsToggleOnTexture := preload("res://assets/generated/ui/settings_toggle_on.png")
+const SettingsToggleOffTexture := preload("res://assets/generated/ui/settings_toggle_off.png")
+const SettingsSliderTrackTexture := preload("res://assets/generated/ui/settings_slider_track.png")
+const SettingsSliderKnobTexture := preload("res://assets/generated/ui/settings_slider_knob.png")
+const SettingsCloseButtonTexture := preload("res://assets/generated/ui/settings_close_button.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -48,6 +54,9 @@ var _base_sprite: Sprite2D
 var _base_hit_timer: float = 0.0
 var _base_visual_time: float = 0.0
 var _selected_tower_id: String = "orange_cat"
+var _pause_music_enabled: bool = true
+var _pause_effects_enabled: bool = true
+var _pause_volume: float = 82.0
 
 
 func _ready() -> void:
@@ -602,45 +611,88 @@ func _show_pause_settings() -> void:
 	var existing: Node = _pause_overlay.find_child("PauseSettingsOverlay", true, false)
 	if existing != null:
 		existing.queue_free()
+	_set_pause_menu_content_visible(false)
 
-	var panel: Panel = Panel.new()
-	panel.name = "PauseSettingsOverlay"
-	panel.position = Vector2(360, 160)
-	panel.size = Vector2(560, 360)
-	panel.add_theme_stylebox_override("panel", _panel_style(Color(1.0, 0.95, 0.76, 0.99), Color(0.50, 0.28, 0.11), 22, 3))
-	_pause_overlay.add_child(panel)
-	panel.add_child(_pause_label("音量设置", Vector2(42, 26), Vector2(476, 50), 36, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER))
-	panel.add_child(_pause_label("背景音乐", Vector2(90, 108), Vector2(150, 38), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_LEFT))
-	panel.add_child(_pause_label("按钮音效", Vector2(90, 168), Vector2(150, 38), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_LEFT))
-	panel.add_child(_pause_label("总音量", Vector2(90, 228), Vector2(150, 38), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_LEFT))
+	var overlay: Control = Control.new()
+	overlay.name = "PauseSettingsOverlay"
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.z_index = 40
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_pause_overlay.add_child(overlay)
 
-	var music: CheckButton = CheckButton.new()
-	music.name = "PauseMusicToggle"
-	music.position = Vector2(372, 104)
-	music.size = Vector2(104, 42)
-	music.button_pressed = true
-	panel.add_child(music)
+	var panel: TextureRect = _hud_texture_rect("PauseSettingsDesignPanel", SettingsOverlayPanelTexture, Vector2(390, 76), Vector2(500, 570))
+	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_child(panel)
+	overlay.add_child(_pause_label("音量设置", Vector2(456, 154), Vector2(368, 48), 35, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER))
+	overlay.add_child(_pause_label("背景音乐", Vector2(486, 266), Vector2(132, 38), 23, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_LEFT))
+	overlay.add_child(_pause_label("按钮音效", Vector2(486, 344), Vector2(132, 38), 23, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_LEFT))
+	overlay.add_child(_pause_label("总音量", Vector2(486, 398), Vector2(112, 32), 20, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_LEFT))
 
-	var effects: CheckButton = CheckButton.new()
-	effects.name = "PauseEffectsToggle"
-	effects.position = Vector2(372, 164)
-	effects.size = Vector2(104, 42)
-	effects.button_pressed = true
-	panel.add_child(effects)
+	var music_frame: TextureRect = _hud_texture_rect("PauseSettingsMusicToggleFrame", SettingsToggleOnTexture if _pause_music_enabled else SettingsToggleOffTexture, Vector2(622, 256), Vector2(180, 62))
+	music_frame.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_child(music_frame)
+	var music: CheckButton = _pause_invisible_toggle("PauseMusicToggle", Rect2(music_frame.position, music_frame.size), _pause_music_enabled)
+	music.toggled.connect(func(enabled: bool) -> void:
+		_pause_music_enabled = enabled
+		music_frame.texture = SettingsToggleOnTexture if enabled else SettingsToggleOffTexture
+		_animate_control_scale(music_frame, 1.06, 0.06)
+	)
+	overlay.add_child(music)
 
+	var effects_frame: TextureRect = _hud_texture_rect("PauseSettingsEffectsToggleFrame", SettingsToggleOnTexture if _pause_effects_enabled else SettingsToggleOffTexture, Vector2(622, 334), Vector2(180, 62))
+	effects_frame.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_child(effects_frame)
+	var effects: CheckButton = _pause_invisible_toggle("PauseEffectsToggle", Rect2(effects_frame.position, effects_frame.size), _pause_effects_enabled)
+	effects.toggled.connect(func(enabled: bool) -> void:
+		_pause_effects_enabled = enabled
+		effects_frame.texture = SettingsToggleOnTexture if enabled else SettingsToggleOffTexture
+		_animate_control_scale(effects_frame, 1.06, 0.06)
+	)
+	overlay.add_child(effects)
+
+	var slider_frame: TextureRect = _hud_texture_rect("PauseSettingsVolumeSliderFrame", SettingsSliderTrackTexture, Vector2(514, 430), Vector2(256, 54))
+	slider_frame.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_child(slider_frame)
+	var slider_knob: TextureRect = _hud_texture_rect("PauseSettingsVolumeKnobFrame", SettingsSliderKnobTexture, Vector2.ZERO, Vector2(58, 44))
+	slider_knob.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_child(slider_knob)
 	var slider: HSlider = HSlider.new()
 	slider.name = "PauseVolumeSlider"
-	slider.position = Vector2(244, 230)
-	slider.size = Vector2(234, 36)
+	slider.process_mode = Node.PROCESS_MODE_ALWAYS
+	slider.position = Vector2(532, 426)
+	slider.size = Vector2(220, 62)
 	slider.min_value = 0
 	slider.max_value = 100
-	slider.value = 82
-	panel.add_child(slider)
+	slider.value = _pause_volume
+	slider.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_position_pause_settings_knob(slider_knob, slider)
+	slider.value_changed.connect(func(value: float) -> void:
+		_pause_volume = value
+		_position_pause_settings_knob(slider_knob, slider)
+	)
+	overlay.add_child(slider)
 
-	var close: Button = _pause_button("ClosePauseSettingsButton", "完成", Vector2(184, 288), Color(0.46, 0.76, 0.34))
-	close.size = Vector2(192, 52)
-	close.pressed.connect(func() -> void: panel.queue_free())
-	panel.add_child(close)
+	var close_frame: TextureRect = _hud_texture_rect("PauseSettingsCloseFrame", SettingsCloseButtonTexture, Vector2(482, 498), Vector2(316, 80))
+	close_frame.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_child(close_frame)
+	var close: Button = _pause_transparent_text_button("ClosePauseSettingsButton", "完成", Rect2(close_frame.position, close_frame.size), 25)
+	_attach_press_feedback(close, close_frame)
+	close.pressed.connect(func() -> void:
+		_set_pause_menu_content_visible(true)
+		overlay.queue_free()
+	)
+	overlay.add_child(close)
+
+
+func _set_pause_menu_content_visible(visible: bool) -> void:
+	if _pause_overlay == null or not is_instance_valid(_pause_overlay):
+		return
+	for child: Node in _pause_overlay.get_children():
+		if child.name == "PauseDim" or child.name == "PauseSettingsOverlay":
+			continue
+		if child is CanvasItem:
+			(child as CanvasItem).visible = visible
 
 
 func _pause_button(button_name: String, text: String, position: Vector2, color: Color) -> Button:
@@ -656,6 +708,44 @@ func _pause_button(button_name: String, text: String, position: Vector2, color: 
 	button.add_theme_stylebox_override("hover", _panel_style(color.lightened(0.08), color.darkened(0.45), 18, 4))
 	button.add_theme_stylebox_override("pressed", _panel_style(color.darkened(0.10), color.darkened(0.55), 18, 4))
 	return button
+
+
+func _pause_transparent_text_button(button_name: String, text: String, rect: Rect2, font_size: int) -> Button:
+	var button: Button = Button.new()
+	button.name = button_name
+	button.text = text
+	button.position = rect.position
+	button.size = rect.size
+	button.process_mode = Node.PROCESS_MODE_ALWAYS
+	button.clip_text = true
+	button.add_theme_font_size_override("font_size", font_size)
+	button.add_theme_color_override("font_color", Color(0.27, 0.13, 0.07))
+	button.add_theme_color_override("font_hover_color", Color(0.27, 0.13, 0.07))
+	button.add_theme_color_override("font_pressed_color", Color(0.18, 0.08, 0.04))
+	button.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	button.add_theme_constant_override("outline_size", 3)
+	_make_button_transparent(button)
+	return button
+
+
+func _pause_invisible_toggle(toggle_name: String, rect: Rect2, enabled: bool) -> CheckButton:
+	var toggle: CheckButton = CheckButton.new()
+	toggle.name = toggle_name
+	toggle.text = ""
+	toggle.process_mode = Node.PROCESS_MODE_ALWAYS
+	toggle.button_pressed = enabled
+	toggle.position = rect.position
+	toggle.size = rect.size
+	toggle.focus_mode = Control.FOCUS_NONE
+	toggle.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	return toggle
+
+
+func _position_pause_settings_knob(knob: TextureRect, slider: HSlider) -> void:
+	var ratio: float = float(slider.value - slider.min_value) / max(1.0, float(slider.max_value - slider.min_value))
+	var x: float = slider.position.x + ratio * slider.size.x - knob.size.x * 0.5
+	var y: float = slider.position.y + (slider.size.y - knob.size.y) * 0.5
+	knob.position = Vector2(x, y)
 
 
 func _pause_label(label_text: String, position: Vector2, size: Vector2, font_size: int, color: Color, alignment: HorizontalAlignment) -> Label:

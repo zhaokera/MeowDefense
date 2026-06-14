@@ -150,6 +150,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Battle screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`
 - Pause menu screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`
 - Settings overlay screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`
+- Battle pause settings screenshot: `/Users/zhaok/cat/artifacts/pause_settings.png`
 - Result screen screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`
 - Album overlay screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`

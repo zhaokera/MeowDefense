@@ -105,6 +105,14 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/run_menu_tests.gd` to require the settings Image2 assets and reject the old `SettingsPanel`.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`.
 
+**Image2 Battle Pause Settings Restoration**
+- Replaced the code-drawn battle pause settings `Panel` with the shared Image2 settings panel, toggles, slider track, fish knob, and confirm button assets.
+- Added transparent toggles, slider, and close hit areas on top of the Image2 visuals while preserving pause state and returning to the main pause menu after closing.
+- Hidden pause-menu controls while the secondary settings dialog is open so translucent Image2 button art does not reveal stale underlying menu labels.
+- Updated `/Users/zhaok/cat/tests/run_pause_menu_tests.gd` to require the Image2 settings assets, reject the old code panel, and verify menu controls hide and restore.
+- Added `/Users/zhaok/cat/tests/capture_pause_settings.gd` to regenerate the battle pause settings screenshot.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/pause_settings.png`.
+
 **Image2 Result Screen Restoration**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png` as the full-page victory result design reference.
 - Generated `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png` and cropped transparent result button, panel, resource, star, and fish reward assets.
