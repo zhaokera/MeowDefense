@@ -8,7 +8,7 @@
 
 - 5 个可通关关卡，配置位于 `data/levels/`
 - Image2 生成并分类整理的背景、塔、敌人、基地和 UI 素材
-- Image2 高保真主菜单设计稿作为实际主菜单背景，交互使用透明热区覆盖
+- Image2 高保真主菜单、关卡、战斗 HUD、暂停、设置和结果页设计稿/素材作为实际 UI 视觉来源，交互使用透明热区覆盖
 - 橘猫鱼骨炮和狸花毛线塔两种塔
 - 普通鼠、快跑仓鼠、罐头胖鼠、冲刺仓鼠四种敌人
 - 敌人、塔、基地都有运行时动画反馈
@@ -43,6 +43,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_menu_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_build_input_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_pause_menu_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_result_screen_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_scene_smoke.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_unit_tests.gd
 ```
@@ -55,7 +56,7 @@ Godot --path /path/to/MeowDefense
 - `towers/`: 猫塔素材
 - `enemies/`: 敌人素材
 - `bases/`: 猫粮罐基地
-- `ui/`: 主菜单设计稿和关卡缩略图
+- `ui/`: 主菜单、关卡、战斗 HUD、暂停、设置、结果页设计稿和关卡缩略图
 
 完整清单见 `assets/generated/assets_manifest.json` 和 `artifacts/campaign_asset_inventory.md`。
 
@@ -64,3 +65,5 @@ Godot --path /path/to/MeowDefense
 ![Level select](artifacts/level_select.png)
 
 ![Battle](artifacts/battle_level_001.png)
+
+![Result screen](artifacts/result_screen.png)

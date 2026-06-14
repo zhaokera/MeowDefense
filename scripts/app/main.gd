@@ -4,12 +4,16 @@ const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
 const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_meadow.png")
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
+const RESULT_SCREEN_DESIGN := preload("res://assets/generated/ui/result_screen_design_reference.png")
 const SETTINGS_OVERLAY_PANEL := preload("res://assets/generated/ui/settings_overlay_panel.png")
 const SETTINGS_TOGGLE_ON := preload("res://assets/generated/ui/settings_toggle_on.png")
 const SETTINGS_TOGGLE_OFF := preload("res://assets/generated/ui/settings_toggle_off.png")
 const SETTINGS_SLIDER_TRACK := preload("res://assets/generated/ui/settings_slider_track.png")
 const SETTINGS_SLIDER_KNOB := preload("res://assets/generated/ui/settings_slider_knob.png")
 const SETTINGS_CLOSE_BUTTON := preload("res://assets/generated/ui/settings_close_button.png")
+const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
+const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
+const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -168,38 +172,30 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	_total_fish += fish_reward
 	_clear_current()
 
-	var screen: Control = _menu_screen("ResultScreen")
+	var screen: Control = _image_design_screen("ResultScreen", RESULT_SCREEN_DESIGN, "ResultDesignBackground")
 	_current = screen
 	add_child(screen)
-	_add_resource_strip(screen)
-
-	var panel: Panel = _panel("ResultPanel", Vector2(312, 86), Vector2(656, 502), Color(1.0, 0.94, 0.72, 0.97), Color(0.52, 0.29, 0.12), 24)
-	screen.add_child(panel)
+	_add_result_resource_strip(screen)
 
 	var title_text: String = "守住啦！" if won else "猫粮罐被偷空了"
-	panel.add_child(_label("ResultTitle", title_text, Vector2(44, 34), Vector2(568, 76), 54, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	panel.add_child(_sprite("ResultCatTower", CAT_TOWER_TEXTURE, Vector2(163, 223), Vector2(210, 210)))
+	screen.add_child(_label("ResultTitle", title_text, Vector2(486, 152), Vector2(316, 58), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	screen.add_child(_label("ResultFishReward", "+%d" % fish_reward, Vector2(496, 452), Vector2(108, 48), 28, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	screen.add_child(_label("ResultBestRecord", _star_text(_best_stars), Vector2(736, 452), Vector2(128, 48), 26, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
-	var summary_text: String = "星级：%s\n获得小鱼干：%d\n最高记录：%s" % [_star_text(stars), fish_reward, _star_text(_best_stars)]
-	var summary: Label = _label("ResultSummary", summary_text, Vector2(304, 142), Vector2(282, 138), 29, Color(0.38, 0.18, 0.08), HORIZONTAL_ALIGNMENT_LEFT)
-	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	panel.add_child(summary)
-
-	var retry_button: Button = _button("RetryButton", "再来一次", Vector2(78, 378), Vector2(210, 64), ORANGE, 27)
+	var retry_button: Button = _result_action_button(screen, "RetryButton", "ResultRetryFrame", RESULT_BUTTON_ORANGE, "再来一次", Vector2(272, 562), Vector2(242, 92), 25)
 	retry_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(_current_level_id)))
-	panel.add_child(retry_button)
 
-	var levels_button: Button = _button("ResultLevelsButton", "关卡地图", Vector2(326, 378), Vector2(210, 64), BLUE, 27)
+	var levels_button: Button = _result_action_button(screen, "ResultLevelsButton", "ResultLevelsFrame", RESULT_BUTTON_BLUE, "关卡地图", Vector2(512, 560), Vector2(258, 96), 25)
 	levels_button.pressed.connect(_show_level_select)
-	panel.add_child(levels_button)
 
-	var next_button: Button = _button("NextLevelButton", "下一关", Vector2(450, 298), Vector2(140, 52), HONEY, 21)
+	var next_button: Button = _result_action_button(screen, "NextLevelButton", "ResultNextFrame", RESULT_BUTTON_GREEN, "下一关", Vector2(774, 560), Vector2(258, 98), 25)
 	if _current_level_id >= LEVELS.size():
 		next_button.disabled = true
-		next_button.text = "已通关"
+		var next_label: Label = screen.find_child("NextLevelButtonLabel", true, false) as Label
+		if next_label != null:
+			next_label.text = "已通关"
 	else:
 		next_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(_current_level_id + 1)))
-	panel.add_child(next_button)
 
 
 func _show_settings_overlay(parent: Node) -> void:
@@ -259,6 +255,25 @@ func _show_settings_overlay(parent: Node) -> void:
 	_attach_button_feedback(close_button, close_frame)
 	close_button.pressed.connect(func() -> void: overlay.queue_free())
 	overlay.add_child(close_button)
+
+
+func _add_result_resource_strip(parent: Control) -> void:
+	parent.add_child(_label("FishCounter", "%d" % _total_fish, Vector2(850, 38), Vector2(92, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	parent.add_child(_label("BestStarsCounter", "%d" % _best_stars, Vector2(1036, 38), Vector2(70, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	parent.add_child(_label("ProgressCounter", "%d" % _current_level_id, Vector2(1202, 38), Vector2(54, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+
+
+func _result_action_button(parent: Control, button_name: String, frame_name: String, texture: Texture2D, text: String, position: Vector2, size: Vector2, font_size: int) -> Button:
+	var frame: TextureRect = _ui_texture_rect(frame_name, texture, position, size)
+	parent.add_child(frame)
+	var label: Label = _label("%sLabel" % button_name, text, position + Vector2(size.x * 0.34, 0.0), Vector2(size.x * 0.60, size.y), font_size, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	label.add_theme_constant_override("outline_size", 3)
+	parent.add_child(label)
+	var button: Button = _hotspot_button(button_name, position, size, text)
+	_attach_button_feedback(button, frame)
+	parent.add_child(button)
+	return button
 
 
 func _show_album_overlay(parent: Node) -> void:

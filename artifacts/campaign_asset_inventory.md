@@ -89,6 +89,24 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent fish-shaped volume knob used by `SettingsVolumeKnobFrame`.
 - `settings_close_button`: `/Users/zhaok/cat/assets/generated/ui/settings_close_button.png`
   Role: transparent green confirm button frame used by `SettingsCloseFrame`.
+- `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
+  Role: full-screen Image2 victory result design used directly as the post-level result screen background.
+- `result_screen_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png`
+  Role: Image2 chroma-key source sheet used to derive result screen runtime textures.
+- `result_panel_victory`: `/Users/zhaok/cat/assets/generated/ui/result_panel_victory.png`
+  Role: transparent victory panel retained for future result-state variants.
+- `result_resource_strip`: `/Users/zhaok/cat/assets/generated/ui/result_resource_strip.png`
+  Role: transparent resource strip retained for future dynamic result-screen variants.
+- `result_button_orange`: `/Users/zhaok/cat/assets/generated/ui/result_button_orange.png`
+  Role: transparent retry button frame used by `ResultRetryFrame`.
+- `result_button_blue`: `/Users/zhaok/cat/assets/generated/ui/result_button_blue.png`
+  Role: transparent level-map button frame used by `ResultLevelsFrame`.
+- `result_button_green`: `/Users/zhaok/cat/assets/generated/ui/result_button_green.png`
+  Role: transparent next-level button frame used by `ResultNextFrame`.
+- `result_star_badge`: `/Users/zhaok/cat/assets/generated/ui/result_star_badge.png`
+  Role: star badge retained for future animated reward fly-in effects.
+- `result_fish_chip`: `/Users/zhaok/cat/assets/generated/ui/result_fish_chip.png`
+  Role: fish reward chip retained for future animated reward count-up effects.
 - `level_001_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_001_thumb.png`
 - `level_002_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_002_thumb.png`
 - `level_003_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_003_thumb.png`
@@ -108,4 +126,5 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Battle screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`
 - Pause menu screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`
 - Settings overlay screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`
+- Result screen screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

@@ -105,4 +105,12 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/run_menu_tests.gd` to require the settings Image2 assets and reject the old `SettingsPanel`.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`.
 
+**Image2 Result Screen Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png` as the full-page victory result design reference.
+- Generated `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png` and cropped transparent result button, panel, resource, star, and fish reward assets.
+- Replaced the old code-drawn `ResultPanel`, `ResourceStrip`, and right-side result button layout with the full-screen Image2 result design plus bottom Image2 action frames and transparent hit areas.
+- Kept retry, level-map, next-level, fish reward, best stars, and progress behavior intact while adding button press feedback through the shared Image2 feedback helper.
+- Added `/Users/zhaok/cat/tests/run_result_screen_tests.gd` to require the Image2 result design/buttons and reject the old result panel/resource strip.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`.
+
 final result: passed

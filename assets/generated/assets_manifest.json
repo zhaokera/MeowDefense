@@ -187,6 +187,51 @@
       "prompt_summary": "Cropped Image2 green settings confirm button with transparent background."
     },
     {
+      "id": "result_screen_design_reference",
+      "path": "res://assets/generated/ui/result_screen_design_reference.png",
+      "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."
+    },
+    {
+      "id": "result_screen_asset_sheet_source",
+      "path": "res://assets/generated/ui/result_screen_asset_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key result screen asset sheet used to derive button, strip, star, and reward textures."
+    },
+    {
+      "id": "result_panel_victory",
+      "path": "res://assets/generated/ui/result_panel_victory.png",
+      "prompt_summary": "Cropped Image2 victory result panel retained as a runtime-ready panel asset for future state variants."
+    },
+    {
+      "id": "result_resource_strip",
+      "path": "res://assets/generated/ui/result_resource_strip.png",
+      "prompt_summary": "Cropped Image2 top resource strip retained for dynamic result-screen variants."
+    },
+    {
+      "id": "result_button_orange",
+      "path": "res://assets/generated/ui/result_button_orange.png",
+      "prompt_summary": "Cropped Image2 orange retry button frame used by the result screen."
+    },
+    {
+      "id": "result_button_blue",
+      "path": "res://assets/generated/ui/result_button_blue.png",
+      "prompt_summary": "Cropped Image2 blue level-map button frame used by the result screen."
+    },
+    {
+      "id": "result_button_green",
+      "path": "res://assets/generated/ui/result_button_green.png",
+      "prompt_summary": "Cropped Image2 green next-level button frame used by the result screen."
+    },
+    {
+      "id": "result_star_badge",
+      "path": "res://assets/generated/ui/result_star_badge.png",
+      "prompt_summary": "Cropped Image2 star badge retained for future animated reward fly-in effects."
+    },
+    {
+      "id": "result_fish_chip",
+      "path": "res://assets/generated/ui/result_fish_chip.png",
+      "prompt_summary": "Cropped Image2 fish reward chip retained for future animated reward count-up effects."
+    },
+    {
       "id": "level_001_thumb",
       "path": "res://assets/generated/ui/level_001_thumb.png",
       "prompt_summary": "Level 1 thumbnail copied from the Image2 meadow background."

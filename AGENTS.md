@@ -20,6 +20,8 @@ For every player-facing screen or major visual feature:
 
 Use full-screen Image2 designs plus transparent hit areas for mostly static menu screens. Use separate Image2 UI pieces for dynamic screens where state must change, such as battle HUD, rewards, health, coins, stars, and unlock status.
 
+When a full-screen Image2 design already contains a static visual element, do not visibly stack the same cropped asset over it. Use dynamic labels, state-specific images, or transparent hit areas only where the runtime value or interaction needs to change.
+
 ## No Hard-Coded Visual UI
 
 - Do not hand-code visible premium UI panels, title plaques, ornate buttons, wooden boards, badges, icons, or reward cards when Image2 can provide the visual.
@@ -74,6 +76,8 @@ Before calling work complete:
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_playthrough_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_menu_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_build_input_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_pause_menu_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_result_screen_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_scene_smoke.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_unit_tests.gd
 ```
