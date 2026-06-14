@@ -73,6 +73,22 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent settings button frame used by `PauseSettingsFrame`.
 - `battle_pause_button_red`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_button_red.png`
   Role: transparent quit button frame used by `PauseQuitFrame`.
+- `settings_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/settings_overlay_design_reference.png`
+  Role: full-screen Image2 settings overlay design reference for the shared settings dialog.
+- `settings_overlay_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/settings_overlay_asset_sheet_source.png`
+  Role: Image2 chroma-key source sheet used to derive settings runtime textures.
+- `settings_overlay_panel`: `/Users/zhaok/cat/assets/generated/ui/settings_overlay_panel.png`
+  Role: transparent cat-ear settings panel used by `SettingsDesignPanel`.
+- `settings_toggle_on`: `/Users/zhaok/cat/assets/generated/ui/settings_toggle_on.png`
+  Role: transparent on-toggle frame used by music and effects controls.
+- `settings_toggle_off`: `/Users/zhaok/cat/assets/generated/ui/settings_toggle_off.png`
+  Role: transparent off-toggle frame used when a setting is disabled.
+- `settings_slider_track`: `/Users/zhaok/cat/assets/generated/ui/settings_slider_track.png`
+  Role: transparent wooden volume slider track used by `SettingsVolumeSliderFrame`.
+- `settings_slider_knob`: `/Users/zhaok/cat/assets/generated/ui/settings_slider_knob.png`
+  Role: transparent fish-shaped volume knob used by `SettingsVolumeKnobFrame`.
+- `settings_close_button`: `/Users/zhaok/cat/assets/generated/ui/settings_close_button.png`
+  Role: transparent green confirm button frame used by `SettingsCloseFrame`.
 - `level_001_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_001_thumb.png`
 - `level_002_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_002_thumb.png`
 - `level_003_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_003_thumb.png`
@@ -91,4 +107,5 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Level select screenshot: `/Users/zhaok/cat/artifacts/level_select.png`
 - Battle screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`
 - Pause menu screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`
+- Settings overlay screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

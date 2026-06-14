@@ -40,6 +40,7 @@ func _run() -> void:
 		_assert_exists(instance, "MusicToggle", "settings should include a music toggle")
 		_assert_exists(instance, "EffectsToggle", "settings should include an effects toggle")
 		_assert_exists(instance, "VolumeSlider", "settings should include a volume slider")
+		_assert_settings_uses_image2_assets(instance)
 		var close_settings: Button = _assert_button(instance, "CloseSettingsButton", "settings should be closable")
 		if close_settings != null:
 			close_settings.emit_signal("pressed")
@@ -169,6 +170,25 @@ func _assert_level_select_uses_image2_design(root_node: Node) -> void:
 	_assert_missing(root_node, "LevelMissionPanel", "level select should not rebuild the mission panel with code panels")
 	_assert_missing(root_node, "LevelCard1", "level select should not rebuild level cards with code panels")
 	_assert_missing(root_node, "BottomNav", "level select should not rebuild bottom navigation with code panels")
+
+
+func _assert_settings_uses_image2_assets(root_node: Node) -> void:
+	var panel: TextureRect = _assert_texture_rect(root_node, "SettingsDesignPanel", "settings should use the Image2 panel asset")
+	if panel != null and panel.texture != null:
+		_assert_true(panel.texture.resource_path == "res://assets/generated/ui/settings_overlay_panel.png", "settings panel should render from the Image2 asset")
+	var music_toggle: TextureRect = _assert_texture_rect(root_node, "SettingsMusicToggleFrame", "settings music toggle should use an Image2 toggle asset")
+	if music_toggle != null and music_toggle.texture != null:
+		_assert_true(music_toggle.texture.resource_path == "res://assets/generated/ui/settings_toggle_on.png", "settings music toggle should render from the Image2 on-toggle asset")
+	var effects_toggle: TextureRect = _assert_texture_rect(root_node, "SettingsEffectsToggleFrame", "settings effects toggle should use an Image2 toggle asset")
+	if effects_toggle != null and effects_toggle.texture != null:
+		_assert_true(effects_toggle.texture.resource_path == "res://assets/generated/ui/settings_toggle_on.png", "settings effects toggle should render from the Image2 on-toggle asset")
+	var slider: TextureRect = _assert_texture_rect(root_node, "SettingsVolumeSliderFrame", "settings volume slider should use an Image2 slider asset")
+	if slider != null and slider.texture != null:
+		_assert_true(slider.texture.resource_path == "res://assets/generated/ui/settings_slider_track.png", "settings slider should render from the Image2 slider asset")
+	var close: TextureRect = _assert_texture_rect(root_node, "SettingsCloseFrame", "settings close button should use an Image2 button asset")
+	if close != null and close.texture != null:
+		_assert_true(close.texture.resource_path == "res://assets/generated/ui/settings_close_button.png", "settings close button should render from the Image2 button asset")
+	_assert_missing(root_node, "SettingsPanel", "settings should not render the old code-drawn panel")
 
 
 func _rect_contains(outer: Rect2, inner: Rect2) -> bool:

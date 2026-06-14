@@ -4,6 +4,12 @@ const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
 const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_meadow.png")
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
+const SETTINGS_OVERLAY_PANEL := preload("res://assets/generated/ui/settings_overlay_panel.png")
+const SETTINGS_TOGGLE_ON := preload("res://assets/generated/ui/settings_toggle_on.png")
+const SETTINGS_TOGGLE_OFF := preload("res://assets/generated/ui/settings_toggle_off.png")
+const SETTINGS_SLIDER_TRACK := preload("res://assets/generated/ui/settings_slider_track.png")
+const SETTINGS_SLIDER_KNOB := preload("res://assets/generated/ui/settings_slider_knob.png")
+const SETTINGS_CLOSE_BUTTON := preload("res://assets/generated/ui/settings_close_button.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -201,32 +207,58 @@ func _show_settings_overlay(parent: Node) -> void:
 	var overlay: Control = _overlay("SettingsOverlay")
 	parent.add_child(overlay)
 
-	var panel: Panel = _panel("SettingsPanel", Vector2(348, 108), Vector2(584, 492), Color(1.0, 0.94, 0.72, 0.98), Color(0.50, 0.28, 0.11), 22)
+	var panel: TextureRect = _ui_texture_rect("SettingsDesignPanel", SETTINGS_OVERLAY_PANEL, Vector2(340, 34), Vector2(600, 660))
 	overlay.add_child(panel)
-	panel.add_child(_label("SettingsTitle", "设置", Vector2(42, 30), Vector2(500, 60), 44, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	overlay.add_child(_label("SettingsTitle", "设置", Vector2(426, 126), Vector2(428, 58), 44, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	overlay.add_child(_label("MusicLabel", "背景音乐", Vector2(532, 260), Vector2(142, 46), 25, INK, HORIZONTAL_ALIGNMENT_LEFT))
+	overlay.add_child(_label("EffectsLabel", "按钮音效", Vector2(532, 356), Vector2(142, 46), 25, INK, HORIZONTAL_ALIGNMENT_LEFT))
+	overlay.add_child(_label("VolumeLabel", "总音量", Vector2(532, 406), Vector2(118, 34), 22, INK, HORIZONTAL_ALIGNMENT_LEFT))
 
-	var music_toggle: CheckButton = _toggle("MusicToggle", "背景音乐", Vector2(82, 124), _music_enabled)
-	music_toggle.toggled.connect(func(enabled: bool) -> void: _music_enabled = enabled)
-	panel.add_child(music_toggle)
+	var music_frame: TextureRect = _ui_texture_rect("SettingsMusicToggleFrame", SETTINGS_TOGGLE_ON if _music_enabled else SETTINGS_TOGGLE_OFF, Vector2(680, 248), Vector2(216, 74))
+	overlay.add_child(music_frame)
+	var music_toggle: CheckButton = _invisible_toggle("MusicToggle", Rect2(music_frame.position, music_frame.size), _music_enabled)
+	music_toggle.toggled.connect(func(enabled: bool) -> void:
+		_music_enabled = enabled
+		music_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
+		_pulse_control(music_frame)
+	)
+	overlay.add_child(music_toggle)
 
-	var effects_toggle: CheckButton = _toggle("EffectsToggle", "按钮音效", Vector2(82, 190), _effects_enabled)
-	effects_toggle.toggled.connect(func(enabled: bool) -> void: _effects_enabled = enabled)
-	panel.add_child(effects_toggle)
+	var effects_frame: TextureRect = _ui_texture_rect("SettingsEffectsToggleFrame", SETTINGS_TOGGLE_ON if _effects_enabled else SETTINGS_TOGGLE_OFF, Vector2(680, 344), Vector2(216, 74))
+	overlay.add_child(effects_frame)
+	var effects_toggle: CheckButton = _invisible_toggle("EffectsToggle", Rect2(effects_frame.position, effects_frame.size), _effects_enabled)
+	effects_toggle.toggled.connect(func(enabled: bool) -> void:
+		_effects_enabled = enabled
+		effects_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
+		_pulse_control(effects_frame)
+	)
+	overlay.add_child(effects_toggle)
 
-	panel.add_child(_label("VolumeLabel", "总音量", Vector2(88, 270), Vector2(132, 36), 24, INK, HORIZONTAL_ALIGNMENT_LEFT))
+	var slider_frame: TextureRect = _ui_texture_rect("SettingsVolumeSliderFrame", SETTINGS_SLIDER_TRACK, Vector2(558, 448), Vector2(310, 64))
+	overlay.add_child(slider_frame)
+	var slider_knob: TextureRect = _ui_texture_rect("SettingsVolumeKnobFrame", SETTINGS_SLIDER_KNOB, Vector2.ZERO, Vector2(70, 54))
+	overlay.add_child(slider_knob)
 	var slider: HSlider = HSlider.new()
 	slider.name = "VolumeSlider"
-	slider.position = Vector2(218, 270)
-	slider.size = Vector2(278, 36)
+	slider.position = Vector2(580, 446)
+	slider.size = Vector2(268, 68)
 	slider.min_value = 0.0
 	slider.max_value = 100.0
 	slider.value = _volume
-	slider.value_changed.connect(func(value: float) -> void: _volume = value)
-	panel.add_child(slider)
+	slider.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_position_settings_slider_knob(slider_knob, slider)
+	slider.value_changed.connect(func(value: float) -> void:
+		_volume = value
+		_position_settings_slider_knob(slider_knob, slider)
+	)
+	overlay.add_child(slider)
 
-	var close_button: Button = _button("CloseSettingsButton", "完成", Vector2(188, 382), Vector2(208, 64), GREEN, 27)
+	var close_frame: TextureRect = _ui_texture_rect("SettingsCloseFrame", SETTINGS_CLOSE_BUTTON, Vector2(474, 570), Vector2(332, 92))
+	overlay.add_child(close_frame)
+	var close_button: Button = _transparent_text_button("CloseSettingsButton", "完成", Rect2(close_frame.position, close_frame.size), 28)
+	_attach_button_feedback(close_button, close_frame)
 	close_button.pressed.connect(func() -> void: overlay.queue_free())
-	panel.add_child(close_button)
+	overlay.add_child(close_button)
 
 
 func _show_album_overlay(parent: Node) -> void:
@@ -378,6 +410,19 @@ func _image_design_screen(screen_name: String, texture: Texture2D, background_na
 	return screen
 
 
+func _ui_texture_rect(node_name: String, texture: Texture2D, position: Vector2, size: Vector2) -> TextureRect:
+	var rect: TextureRect = TextureRect.new()
+	rect.name = node_name
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_SCALE
+	rect.texture = texture
+	rect.position = position
+	rect.custom_minimum_size = size
+	rect.size = size
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return rect
+
+
 func _hotspot_button(button_name: String, position: Vector2, size: Vector2, tooltip: String) -> Button:
 	var button: Button = Button.new()
 	button.name = button_name
@@ -391,6 +436,60 @@ func _hotspot_button(button_name: String, position: Vector2, size: Vector2, tool
 	button.add_theme_stylebox_override("pressed", _transparent_style())
 	button.add_theme_stylebox_override("disabled", _transparent_style())
 	return button
+
+
+func _invisible_toggle(toggle_name: String, rect: Rect2, enabled: bool) -> CheckButton:
+	var toggle: CheckButton = CheckButton.new()
+	toggle.name = toggle_name
+	toggle.text = ""
+	toggle.button_pressed = enabled
+	toggle.position = rect.position
+	toggle.size = rect.size
+	toggle.focus_mode = Control.FOCUS_NONE
+	toggle.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	return toggle
+
+
+func _transparent_text_button(button_name: String, text: String, rect: Rect2, font_size: int) -> Button:
+	var button: Button = _hotspot_button(button_name, rect.position, rect.size, text)
+	button.text = text
+	button.clip_text = true
+	button.add_theme_font_size_override("font_size", font_size)
+	button.add_theme_color_override("font_color", INK)
+	button.add_theme_color_override("font_hover_color", INK)
+	button.add_theme_color_override("font_pressed_color", Color(0.18, 0.08, 0.04))
+	button.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	button.add_theme_constant_override("outline_size", 3)
+	return button
+
+
+func _attach_button_feedback(button: Button, target: Control) -> void:
+	target.pivot_offset = target.size * 0.5
+	button.mouse_entered.connect(func() -> void: _scale_control(target, 1.04, 0.08))
+	button.mouse_exited.connect(func() -> void: _scale_control(target, 1.0, 0.10))
+	button.button_down.connect(func() -> void: _scale_control(target, 0.95, 0.05))
+	button.button_up.connect(func() -> void: _scale_control(target, 1.0, 0.08))
+
+
+func _pulse_control(target: Control) -> void:
+	_scale_control(target, 1.06, 0.06)
+	var tween: Tween = create_tween()
+	tween.tween_property(target, "scale", Vector2.ONE, 0.10).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _scale_control(target: Control, scale_value: float, duration: float) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	target.pivot_offset = target.size * 0.5
+	var tween: Tween = create_tween()
+	tween.tween_property(target, "scale", Vector2(scale_value, scale_value), duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _position_settings_slider_knob(knob: TextureRect, slider: HSlider) -> void:
+	var ratio: float = float(slider.value - slider.min_value) / max(1.0, float(slider.max_value - slider.min_value))
+	var x: float = slider.position.x + ratio * slider.size.x - knob.size.x * 0.5
+	var y: float = slider.position.y + (slider.size.y - knob.size.y) * 0.5
+	knob.position = Vector2(x, y)
 
 
 func _overlay(overlay_name: String) -> Control:

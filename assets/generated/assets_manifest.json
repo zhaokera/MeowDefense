@@ -147,6 +147,46 @@
       "prompt_summary": "Cropped Image2 red quit button frame with transparent background."
     },
     {
+      "id": "settings_overlay_design_reference",
+      "path": "res://assets/generated/ui/settings_overlay_design_reference.png",
+      "prompt_summary": "Image2 full-screen settings overlay design reference used to restore the shared settings dialog."
+    },
+    {
+      "id": "settings_overlay_asset_sheet_source",
+      "path": "res://assets/generated/ui/settings_overlay_asset_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key settings asset sheet used to derive transparent panel, toggles, slider, knob, and confirm button textures."
+    },
+    {
+      "id": "settings_overlay_panel",
+      "path": "res://assets/generated/ui/settings_overlay_panel.png",
+      "prompt_summary": "Cropped Image2 cat-ear settings panel with transparent background."
+    },
+    {
+      "id": "settings_toggle_on",
+      "path": "res://assets/generated/ui/settings_toggle_on.png",
+      "prompt_summary": "Cropped Image2 green on-toggle frame with transparent background."
+    },
+    {
+      "id": "settings_toggle_off",
+      "path": "res://assets/generated/ui/settings_toggle_off.png",
+      "prompt_summary": "Cropped Image2 cream off-toggle frame with transparent background."
+    },
+    {
+      "id": "settings_slider_track",
+      "path": "res://assets/generated/ui/settings_slider_track.png",
+      "prompt_summary": "Cropped Image2 wooden volume slider track with transparent background."
+    },
+    {
+      "id": "settings_slider_knob",
+      "path": "res://assets/generated/ui/settings_slider_knob.png",
+      "prompt_summary": "Cropped Image2 fish-shaped volume slider knob with transparent background."
+    },
+    {
+      "id": "settings_close_button",
+      "path": "res://assets/generated/ui/settings_close_button.png",
+      "prompt_summary": "Cropped Image2 green settings confirm button with transparent background."
+    },
+    {
       "id": "level_001_thumb",
       "path": "res://assets/generated/ui/level_001_thumb.png",
       "prompt_summary": "Level 1 thumbnail copied from the Image2 meadow background."

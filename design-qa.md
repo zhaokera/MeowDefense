@@ -97,4 +97,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_pause_menu_tests.gd` to require the Image2 pause assets and reject the old `PausePanel`.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`.
 
+**Image2 Settings Overlay Restoration**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/settings_overlay_design_reference.png` as the full-page settings dialog design reference.
+- Generated `/Users/zhaok/cat/assets/generated/ui/settings_overlay_asset_sheet_source.png` and cropped transparent runtime assets for the settings panel, on/off toggles, volume slider track, fish knob, and confirm button.
+- Replaced the old code-drawn `SettingsPanel` with `SettingsDesignPanel` and hid the default CheckButton/HSlider visuals behind Image2 frames.
+- Kept music, effects, volume, and close interactions intact with transparent input layers and Image2 click feedback.
+- Updated `/Users/zhaok/cat/tests/run_menu_tests.gd` to require the settings Image2 assets and reject the old `SettingsPanel`.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`.
+
 final result: passed
