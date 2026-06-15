@@ -16,6 +16,7 @@ const SETTINGS_CLOSE_BUTTON := preload("res://assets/generated/ui/settings_close
 const ALBUM_OVERLAY_PANEL := preload("res://assets/generated/ui/album_overlay_panel.png")
 const ALBUM_CARD_FRAME := preload("res://assets/generated/ui/album_card_frame.png")
 const ALBUM_CLOSE_BUTTON := preload("res://assets/generated/ui/album_close_button.png")
+const ALBUM_ENTRY_DETAIL_DESIGN := preload("res://assets/generated/ui/album_entry_detail_design_reference.png")
 const REWARD_OVERLAY_PANEL := preload("res://assets/generated/ui/reward_overlay_panel.png")
 const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
 const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
@@ -667,8 +668,47 @@ func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, 
 
 	var inspect: Button = _hotspot_button("%sInspectButton" % entry_name, position, size, title)
 	_attach_button_feedback(inspect, frame)
-	inspect.pressed.connect(func() -> void: _pulse_control(frame))
+	inspect.pressed.connect(func() -> void:
+		_show_album_entry_detail(parent, texture, title, stat_one, stat_two, copy)
+	)
 	parent.add_child(inspect)
+
+
+func _show_album_entry_detail(parent: Control, texture: Texture2D, title: String, stat_one: String, stat_two: String, copy_text: String) -> void:
+	_remove_named_child(parent, "AlbumEntryDetailOverlay")
+	var detail: Control = Control.new()
+	detail.name = "AlbumEntryDetailOverlay"
+	detail.size = VIEW_SIZE
+	detail.z_index = 10
+	parent.add_child(detail)
+
+	var design: TextureRect = _ui_texture_rect("AlbumEntryDetailDesignBackground", ALBUM_ENTRY_DETAIL_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	detail.add_child(design)
+	detail.add_child(_label("AlbumEntryDetailTitle", title, Vector2(398, 126), Vector2(486, 62), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
+
+	var portrait: Control = Control.new()
+	portrait.name = "AlbumEntryDetailPortrait"
+	portrait.position = Vector2(314, 258)
+	portrait.size = Vector2(226, 226)
+	portrait.clip_contents = true
+	detail.add_child(portrait)
+	portrait.add_child(_sprite("AlbumEntryDetailPortraitSprite", texture, portrait.size * 0.5, Vector2(214, 206)))
+
+	detail.add_child(_label("AlbumEntryDetailStatOne", stat_one, Vector2(596, 268), Vector2(352, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	detail.add_child(_label("AlbumEntryDetailRole", stat_two, Vector2(596, 350), Vector2(352, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var copy: Label = _label("AlbumEntryDetailCopy", copy_text, Vector2(586, 446), Vector2(386, 88), 21, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail.add_child(copy)
+
+	var action: Button = _transparent_text_button("AlbumEntryDetailActionButton", "去关卡", Rect2(Vector2(464, 590), Vector2(352, 78)), 27)
+	action.pressed.connect(_show_level_select)
+	detail.add_child(action)
+	var close_button: Button = _hotspot_button("CloseAlbumEntryDetailButton", Vector2(952, 132), Vector2(88, 88), "关闭")
+	close_button.pressed.connect(func() -> void: detail.queue_free())
+	detail.add_child(close_button)
+	_animate_overlay_entry(detail)
+	_pulse_control(portrait)
 
 
 func _image_overlay(parent: Node, overlay_name: String, background_name: String, texture: Texture2D) -> Control:

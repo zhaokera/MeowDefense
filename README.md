@@ -11,6 +11,7 @@
 - Image2 高保真主菜单、关卡、战斗 HUD、暂停、设置、胜利/失败结果页、图鉴、奖励、背包、成就和商店设计稿/素材作为实际 UI 视觉来源，交互使用透明热区覆盖
 - 橘猫鱼骨炮和狸花毛线塔两种塔
 - 普通鼠、快跑仓鼠、罐头胖鼠、冲刺仓鼠四种敌人
+- 图鉴卡片可点击打开 Image2 详情页，并可从详情页前往关卡
 - 敌人、塔、基地都有运行时动画反馈
 - 明确的地图 `+` 建造按钮，支持真实玩家点击建塔
 - 已建猫塔可点击打开 Image2 管理面板，支持升级和出售返还鱼干
@@ -53,6 +54,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_playthrough_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_menu_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_album_overlay_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_album_entry_detail_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_reward_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_task_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
@@ -104,6 +106,8 @@ Godot --path /path/to/MeowDefense
 ![Defeat result screen](artifacts/result_defeat_screen.png)
 
 ![Album overlay](artifacts/album_overlay.png)
+
+![Album entry detail](artifacts/album_entry_detail.png)
 
 ![Reward overlay](artifacts/reward_overlay.png)
 

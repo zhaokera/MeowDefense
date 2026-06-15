@@ -217,6 +217,11 @@
       "prompt_summary": "Image2 chroma-key album asset sheet used to derive transparent panel, card, close button, and badge textures."
     },
     {
+      "id": "album_entry_detail_design_reference",
+      "path": "res://assets/generated/ui/album_entry_detail_design_reference.png",
+      "prompt_summary": "Image2 full-screen encyclopedia entry detail design with blank dynamic portrait, stat, copy, close, and action areas."
+    },
+    {
       "id": "album_overlay_panel",
       "path": "res://assets/generated/ui/album_overlay_panel.png",
       "prompt_summary": "Cropped Image2 cat-ear album panel with transparent background."

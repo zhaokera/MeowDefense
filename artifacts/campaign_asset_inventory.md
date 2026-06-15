@@ -101,6 +101,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: full-screen Image2 album overlay design reference for the guide/encyclopedia dialog.
 - `album_overlay_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/album_overlay_asset_sheet_source.png`
   Role: Image2 chroma-key source sheet used to derive album runtime textures.
+- `album_entry_detail_design_reference`: `/Users/zhaok/cat/assets/generated/ui/album_entry_detail_design_reference.png`
+  Role: full-screen Image2 encyclopedia entry detail overlay used by `AlbumEntryDetailDesignBackground`.
 - `album_overlay_panel`: `/Users/zhaok/cat/assets/generated/ui/album_overlay_panel.png`
   Role: transparent cat-ear album panel used by `AlbumDesignPanel`.
 - `album_card_frame`: `/Users/zhaok/cat/assets/generated/ui/album_card_frame.png`
@@ -182,6 +184,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Result screen screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`
 - Defeat result screen screenshot: `/Users/zhaok/cat/artifacts/result_defeat_screen.png`
 - Album overlay screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`
+- Album entry detail screenshot: `/Users/zhaok/cat/artifacts/album_entry_detail.png`
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
 - Daily task overlay screenshot: `/Users/zhaok/cat/artifacts/daily_task_overlay.png`
 - Backpack overlay screenshot: `/Users/zhaok/cat/artifacts/backpack_overlay.png`

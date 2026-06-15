@@ -146,6 +146,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_album_overlay_tests.gd` to require the Image2 album assets and reject the old code-drawn album nodes.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`.
 
+**Album Entry Detail Overlay**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/album_entry_detail_design_reference.png` as the full-screen Image2 encyclopedia detail design.
+- Album cards now open `AlbumEntryDetailOverlay` instead of only pulsing; the detail layer shows selected entry art, stats, description, close control, and a `去关卡` action.
+- The detail action routes to the level select screen, turning the guide into a playable navigation path.
+- Added `/Users/zhaok/cat/tests/run_album_entry_detail_tests.gd` to verify Image2 detail rendering, selected tower data, and action routing.
+- Added `/Users/zhaok/cat/tests/capture_album_entry_detail.gd` to regenerate `/Users/zhaok/cat/artifacts/album_entry_detail.png`.
+
 **Image2 Reward Overlay Restoration**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/reward_overlay_design_reference.png` as the full-page daily reward design reference.
 - Generated `/Users/zhaok/cat/assets/generated/ui/reward_overlay_asset_sheet_source.png` and cropped transparent reward panel, fish chest, claim button, and reward chip assets.
