@@ -16,6 +16,7 @@
 - 已建猫塔可点击打开 Image2 管理面板，支持升级和出售返还鱼干
 - 战斗 HUD 支持下一波敌人预告和 1x/2x 加速切换
 - 胜利结果页带有 Image2 星星和鱼干奖励脉冲动效，失败页不会播放胜利奖励反馈
+- 首页今日任务现在是独立 Image2 弹窗，可按通关、星级和毛线陷阱进度领取小鱼干奖励
 - 成就页可按进度领取小鱼干和猫爪徽章，背包会显示徽章数量
 - 商店可购买毛线陷阱包，背包会显示持有数量
 - 战斗中可使用背包里的毛线陷阱减速小鼠，并带有 Image2 毛线缠绕特效
@@ -52,6 +53,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_menu_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_album_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_reward_overlay_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_task_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_achievement_claim_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_shop_yarn_trap_tests.gd
@@ -76,7 +78,7 @@ Godot --path /path/to/MeowDefense
 - `towers/`: 猫塔素材
 - `enemies/`: 敌人素材
 - `bases/`: 猫粮罐基地
-- `ui/`: 主菜单、关卡、锁定徽章、战斗 HUD、暂停、设置、胜利/失败结果页、图鉴、奖励、背包、成就、商店弹窗设计稿和关卡缩略图
+- `ui/`: 主菜单、关卡、锁定徽章、战斗 HUD、暂停、设置、胜利/失败结果页、图鉴、奖励、今日任务、背包、成就、商店弹窗设计稿和关卡缩略图
 
 完整清单见 `assets/generated/assets_manifest.json` 和 `artifacts/campaign_asset_inventory.md`。
 
@@ -101,6 +103,8 @@ Godot --path /path/to/MeowDefense
 ![Album overlay](artifacts/album_overlay.png)
 
 ![Reward overlay](artifacts/reward_overlay.png)
+
+![Daily task overlay](artifacts/daily_task_overlay.png)
 
 ![Backpack overlay](artifacts/backpack_overlay.png)
 

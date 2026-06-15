@@ -154,6 +154,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_reward_overlay_tests.gd` to require Image2 reward assets, reject `RewardPanel`, and verify the fish reward is granted.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`.
 
+**Image2 Daily Task Overlay**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/daily_task_overlay_design_reference.png` as the full-screen daily task design reference.
+- Replaced the old main-menu daily task shortcut-to-levels behavior with `DailyTaskOverlay`, using `DailyTaskDesignBackground`, dynamic task labels, transparent claim/close hit areas, and shared pop-in/click feedback.
+- Added claimable daily tasks for first clear, 3-star progress, and yarn-trap readiness; claimed tasks grant fish, disable their claim button, and persist in `claimed_daily_tasks`.
+- Added `/Users/zhaok/cat/tests/run_daily_task_overlay_tests.gd` to require the Image2 design, reject code-drawn task panels, verify reward grants, and verify persistence after reload.
+- Added `/Users/zhaok/cat/tests/capture_daily_task_overlay.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_task_overlay.png`.
+
 **Image2 Town Feature Overlay Restoration**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`.
 - Replaced the main-menu bottom `背包`, `成就`, and `商店` proxy behavior with distinct Image2 full-screen overlays plus transparent close/action hit areas.

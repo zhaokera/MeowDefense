@@ -20,6 +20,7 @@ const REWARD_OVERLAY_PANEL := preload("res://assets/generated/ui/reward_overlay_
 const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
 const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
 const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
+const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_design_reference.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
@@ -45,6 +46,11 @@ const ACHIEVEMENTS: Array[Dictionary] = [
 	{"id": "first_clear", "node": "AchievementFirstClear", "title": "首次守卫", "detail": "通关任意关卡", "target": 1, "reward_fish": 10, "reward_paws": 1, "position": Vector2(410, 250)},
 	{"id": "star_collector", "node": "AchievementStars", "title": "星级收藏", "detail": "累计获得 15 颗星", "target": 15, "reward_fish": 30, "reward_paws": 2, "position": Vector2(410, 367)},
 	{"id": "campaign_clear", "node": "AchievementCampaign", "title": "连续推进", "detail": "完成 5 个关卡", "target": 5, "reward_fish": 50, "reward_paws": 3, "position": Vector2(410, 484)}
+]
+const DAILY_TASKS: Array[Dictionary] = [
+	{"id": "first_clear", "node": "DailyTaskFirstClear", "title": "今日守卫", "detail": "通关任意关卡", "target": 1, "reward_fish": 30, "position": Vector2(388, 220)},
+	{"id": "star_three", "node": "DailyTaskStars", "title": "三星练习", "detail": "累计获得 3 颗星", "target": 3, "reward_fish": 20, "position": Vector2(388, 354)},
+	{"id": "yarn_ready", "node": "DailyTaskYarn", "title": "准备毛线", "detail": "拥有 1 个毛线陷阱", "target": 1, "reward_fish": 15, "position": Vector2(388, 488)}
 ]
 
 const VIEW_SIZE := Vector2(1280, 720)
@@ -72,6 +78,7 @@ var _daily_reward_claimed: bool = false
 var _shop_starter_claimed: bool = false
 var _paw_tokens: int = 0
 var _claimed_achievements: Dictionary = {}
+var _claimed_daily_tasks: Dictionary = {}
 var _yarn_traps: int = 0
 
 
@@ -115,7 +122,7 @@ func _show_main_menu() -> void:
 	screen.add_child(gift_button)
 
 	var daily_task_button: Button = _hotspot_button("DailyTaskButton", Vector2(1005, 426), Vector2(195, 130), "今日任务")
-	daily_task_button.pressed.connect(_show_level_select)
+	daily_task_button.pressed.connect(func() -> void: _show_daily_task_overlay(screen))
 	screen.add_child(daily_task_button)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(326, 633), Vector2(150, 82), "主城")
@@ -460,6 +467,76 @@ func _show_reward_overlay(parent: Node) -> void:
 	_animate_overlay_entry(content)
 
 
+func _show_daily_task_overlay(parent: Node) -> void:
+	var content: Control = _image_overlay(parent, "DailyTaskOverlay", "DailyTaskDesignBackground", DAILY_TASK_OVERLAY_DESIGN)
+	content.add_child(_label("DailyTaskTitle", "今日任务", Vector2(444, 100), Vector2(392, 58), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	for task: Dictionary in DAILY_TASKS:
+		_daily_task_row(content, task)
+	var close_button: Button = _hotspot_button("CloseDailyTaskButton", Vector2(958, 84), Vector2(92, 92), "关闭")
+	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	content.add_child(close_button)
+	_animate_overlay_entry(content)
+
+
+func _daily_task_row(parent: Control, task: Dictionary) -> void:
+	var task_id: String = str(task.get("id", ""))
+	var row_name: String = str(task.get("node", "DailyTask"))
+	var position: Vector2 = task.get("position", Vector2.ZERO) as Vector2
+	var target: int = max(1, int(task.get("target", 1)))
+	var progress_value: int = min(target, _daily_task_progress(task_id))
+	var ready: bool = progress_value >= target
+	var claimed: bool = _is_daily_task_claimed(task_id)
+	var reward_fish: int = max(0, int(task.get("reward_fish", 0)))
+	var title: String = str(task.get("title", "任务"))
+	var detail: String = str(task.get("detail", "完成目标"))
+
+	parent.add_child(_label("%sTitle" % row_name, title, position, Vector2(300, 32), 23, INK, HORIZONTAL_ALIGNMENT_LEFT))
+	parent.add_child(_label("%sDetail" % row_name, detail, position + Vector2(0, 34), Vector2(330, 30), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
+	var reward_label: Label = _label("%sReward" % row_name, "奖励 +%d" % reward_fish, position + Vector2(0, 56), Vector2(250, 26), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT)
+	parent.add_child(reward_label)
+	var progress_label: Label = _label("%sProgress" % row_name, "%d/%d" % [progress_value, target], position + Vector2(330, 30), Vector2(104, 42), 21, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	parent.add_child(progress_label)
+	var claim_label_text: String = "已领取" if claimed else ("领取" if ready else "未完成")
+	var claim_label: Label = _label("%sClaimLabel" % row_name, claim_label_text, position + Vector2(430, 26), Vector2(154, 50), 23, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	parent.add_child(claim_label)
+	var claim_button: Button = _hotspot_button("Claim%sButton" % row_name, position + Vector2(410, 14), Vector2(178, 70), claim_label_text)
+	claim_button.disabled = claimed or not ready
+	claim_button.pressed.connect(func() -> void:
+		_claim_daily_task(task, parent, claim_label, claim_button)
+	)
+	parent.add_child(claim_button)
+
+
+func _daily_task_progress(task_id: String) -> int:
+	match task_id:
+		"first_clear":
+			return min(_completed_level_count(), 1)
+		"star_three":
+			return min(_best_stars, 3)
+		"yarn_ready":
+			return min(_yarn_traps, 1)
+	return 0
+
+
+func _is_daily_task_claimed(task_id: String) -> bool:
+	return bool(_claimed_daily_tasks.get(task_id, false))
+
+
+func _claim_daily_task(task: Dictionary, parent: Control, claim_label: Label, claim_button: Button) -> void:
+	var task_id: String = str(task.get("id", ""))
+	if task_id.is_empty() or _is_daily_task_claimed(task_id):
+		return
+	var target: int = max(1, int(task.get("target", 1)))
+	if _daily_task_progress(task_id) < target:
+		return
+	_claimed_daily_tasks[task_id] = true
+	_total_fish += max(0, int(task.get("reward_fish", 0)))
+	_save_progress()
+	claim_label.text = "已领取"
+	claim_button.disabled = true
+	_pulse_control(parent)
+
+
 func _show_backpack_overlay(parent: Node) -> void:
 	var content: Control = _image_overlay(parent, "BackpackOverlay", "BackpackDesignBackground", BACKPACK_OVERLAY_DESIGN)
 	content.add_child(_label("BackpackTitle", "背包", Vector2(462, 148), Vector2(356, 58), 39, INK, HORIZONTAL_ALIGNMENT_CENTER))
@@ -557,7 +634,7 @@ func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, 
 
 
 func _image_overlay(parent: Node, overlay_name: String, background_name: String, texture: Texture2D) -> Control:
-	for existing_name: String in ["BackpackOverlay", "AchievementsOverlay", "ShopOverlay", "RewardOverlay", "AlbumOverlay", "SettingsOverlay"]:
+	for existing_name: String in ["BackpackOverlay", "AchievementsOverlay", "ShopOverlay", "RewardOverlay", "DailyTaskOverlay", "AlbumOverlay", "SettingsOverlay"]:
 		_remove_named_child(parent, existing_name)
 	var overlay: Control = Control.new()
 	overlay.name = overlay_name
@@ -727,6 +804,7 @@ func _save_progress() -> void:
 		"shop_starter_claimed": _shop_starter_claimed,
 		"paw_tokens": _paw_tokens,
 		"claimed_achievements": _claimed_achievements,
+		"claimed_daily_tasks": _claimed_daily_tasks,
 		"yarn_traps": _yarn_traps,
 		"music_enabled": _music_enabled,
 		"effects_enabled": _effects_enabled,
@@ -778,6 +856,14 @@ func _load_progress() -> void:
 			var achievement_id: String = str(achievement.get("id", ""))
 			if bool(claimed.get(achievement_id, false)):
 				_claimed_achievements[achievement_id] = true
+	_claimed_daily_tasks.clear()
+	var raw_daily_tasks: Variant = data.get("claimed_daily_tasks", {})
+	if raw_daily_tasks is Dictionary:
+		var claimed_daily_tasks: Dictionary = raw_daily_tasks as Dictionary
+		for task: Dictionary in DAILY_TASKS:
+			var task_id: String = str(task.get("id", ""))
+			if bool(claimed_daily_tasks.get(task_id, false)):
+				_claimed_daily_tasks[task_id] = true
 	_recalculate_best_stars()
 
 

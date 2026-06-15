@@ -121,6 +121,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent claim button frame used by `RewardClaimFrame`.
 - `reward_fish_chip`: `/Users/zhaok/cat/assets/generated/ui/reward_fish_chip.png`
   Role: transparent reward amount chip used by `RewardFishChipFrame`.
+- `daily_task_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/daily_task_overlay_design_reference.png`
+  Role: full-screen Image2 daily task overlay used directly by `DailyTaskDesignBackground`.
 - `backpack_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`
   Role: full-screen Image2 backpack overlay design used directly by `BackpackDesignBackground`.
 - `achievements_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`
@@ -179,6 +181,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Defeat result screen screenshot: `/Users/zhaok/cat/artifacts/result_defeat_screen.png`
 - Album overlay screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
+- Daily task overlay screenshot: `/Users/zhaok/cat/artifacts/daily_task_overlay.png`
 - Backpack overlay screenshot: `/Users/zhaok/cat/artifacts/backpack_overlay.png`
 - Achievements overlay screenshot: `/Users/zhaok/cat/artifacts/achievements_overlay.png`
 - Claimed achievements screenshot: `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`
