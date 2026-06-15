@@ -1,6 +1,7 @@
 extends SceneTree
 
 const OUT_PATH := "/Users/zhaok/cat/artifacts/result_screen.png"
+const TEST_SAVE_PATH := "user://meow_defense_result_capture_save.json"
 
 
 func _init() -> void:
@@ -8,8 +9,10 @@ func _init() -> void:
 
 
 func _run() -> void:
+	_clear_save_file()
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	var instance: Node = scene.instantiate()
+	instance.set("_save_path", TEST_SAVE_PATH)
 	root.add_child(instance)
 	await process_frame
 	await process_frame
@@ -33,4 +36,12 @@ func _run() -> void:
 		return
 	print("CAPTURED %s" % OUT_PATH)
 	instance.queue_free()
+	_clear_save_file()
 	quit(0)
+
+
+func _clear_save_file() -> void:
+	if FileAccess.file_exists(TEST_SAVE_PATH):
+		var error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE_PATH))
+		if error != OK:
+			push_error("failed to clear result capture save: %s" % error)

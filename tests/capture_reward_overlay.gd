@@ -1,6 +1,7 @@
 extends SceneTree
 
 const OUT_PATH := "/Users/zhaok/cat/artifacts/reward_overlay.png"
+const TEST_SAVE_PATH := "user://meow_defense_reward_capture_save.json"
 
 
 func _init() -> void:
@@ -8,12 +9,14 @@ func _init() -> void:
 
 
 func _capture() -> void:
+	_clear_save_file()
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	if scene == null:
 		push_error("Main scene failed to load")
 		quit(1)
 		return
 	var instance: Node = scene.instantiate()
+	instance.set("_save_path", TEST_SAVE_PATH)
 	root.add_child(instance)
 	await process_frame
 	var reward_button: Button = instance.find_child("DailyRewardButton", true, false) as Button
@@ -32,4 +35,12 @@ func _capture() -> void:
 		return
 	print("CAPTURED %s" % OUT_PATH)
 	instance.queue_free()
+	_clear_save_file()
 	quit(0)
+
+
+func _clear_save_file() -> void:
+	if FileAccess.file_exists(TEST_SAVE_PATH):
+		var error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE_PATH))
+		if error != OK:
+			push_error("failed to clear reward capture save: %s" % error)

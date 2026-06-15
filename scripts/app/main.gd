@@ -4,6 +4,7 @@ const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
 const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_meadow.png")
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
+const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
 const RESULT_SCREEN_DESIGN := preload("res://assets/generated/ui/result_screen_design_reference.png")
 const SETTINGS_OVERLAY_PANEL := preload("res://assets/generated/ui/settings_overlay_panel.png")
 const SETTINGS_TOGGLE_ON := preload("res://assets/generated/ui/settings_toggle_on.png")
@@ -44,11 +45,14 @@ const ORANGE := Color(0.98, 0.48, 0.20)
 const GREEN := Color(0.46, 0.76, 0.34)
 const BLUE := Color(0.34, 0.67, 0.86)
 const CORAL := Color(0.94, 0.30, 0.22)
+const SAVE_PATH := "user://meow_defense_save.json"
 
 var _current: Node
 var _best_stars: int = 0
 var _best_stars_by_level: Dictionary = {}
 var _total_fish: int = 0
+var _unlocked_level: int = 1
+var _save_path: String = SAVE_PATH
 var _current_level_id: int = 1
 var _current_level_path: String = "res://data/levels/level_001.json"
 var _music_enabled: bool = true
@@ -60,6 +64,7 @@ var _shop_starter_claimed: bool = false
 
 func _ready() -> void:
 	get_tree().paused = false
+	_load_progress()
 	_show_main_menu()
 
 
@@ -140,9 +145,16 @@ func _show_level_select() -> void:
 	]
 	for hotspot: Dictionary in level_hotspots:
 		var rect: Rect2 = hotspot["rect"] as Rect2
+		var level_info: Dictionary = (hotspot["level"] as Dictionary).duplicate(true)
+		var level_id: int = int(level_info.get("id", 1))
+		var unlocked: bool = _is_level_unlocked(level_id)
 		var button: Button = _hotspot_button(str(hotspot["button"]), rect.position, rect.size, "出发")
-		var copied_info: Dictionary = (hotspot["level"] as Dictionary).duplicate(true)
-		button.pressed.connect(func() -> void: _start_level(copied_info))
+		button.disabled = not unlocked
+		if unlocked:
+			button.pressed.connect(func() -> void: _start_level(level_info))
+		else:
+			button.tooltip_text = "通关前一关解锁"
+			_add_level_lock_badge(screen, level_id, rect)
 		screen.add_child(button)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(330, 580), Vector2(118, 120), "主城")
@@ -164,8 +176,12 @@ func _start_level_one() -> void:
 
 
 func _start_level(level_info: Dictionary) -> void:
+	var requested_level_id: int = int(level_info.get("id", 1))
+	if not _is_level_unlocked(requested_level_id):
+		_show_level_select()
+		return
 	_clear_current()
-	_current_level_id = int(level_info.get("id", 1))
+	_current_level_id = requested_level_id
 	_current_level_path = str(level_info.get("path", "res://data/levels/level_001.json"))
 	var battle: Node2D = BattleSceneScript.new()
 	battle.name = "BattleScene"
@@ -179,9 +195,14 @@ func _start_level(level_info: Dictionary) -> void:
 
 func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	get_tree().paused = false
-	_best_stars_by_level[_current_level_id] = max(_level_stars(_current_level_id), stars)
-	_best_stars = max(_best_stars, stars)
+	var earned_stars: int = max(0, min(3, stars))
+	if earned_stars > _level_stars(_current_level_id):
+		_best_stars_by_level[_current_level_id] = earned_stars
+	if won:
+		_unlocked_level = max(_unlocked_level, min(LEVELS.size(), _current_level_id + 1))
 	_total_fish += fish_reward
+	_recalculate_best_stars()
+	_save_progress()
 	_clear_current()
 
 	var screen: Control = _image_design_screen("ResultScreen", RESULT_SCREEN_DESIGN, "ResultDesignBackground")
@@ -192,7 +213,7 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	var title_text: String = "守住啦！" if won else "猫粮罐被偷空了"
 	screen.add_child(_label("ResultTitle", title_text, Vector2(486, 152), Vector2(316, 58), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	screen.add_child(_label("ResultFishReward", "+%d" % fish_reward, Vector2(496, 452), Vector2(108, 48), 28, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	screen.add_child(_label("ResultBestRecord", _star_text(_best_stars), Vector2(736, 452), Vector2(128, 48), 26, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	screen.add_child(_label("ResultBestRecord", _star_text(_level_stars(_current_level_id)), Vector2(736, 452), Vector2(128, 48), 26, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var retry_button: Button = _result_action_button(screen, "RetryButton", "ResultRetryFrame", RESULT_BUTTON_ORANGE, "再来一次", Vector2(272, 562), Vector2(242, 92), 25)
 	retry_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(_current_level_id)))
@@ -201,13 +222,14 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	levels_button.pressed.connect(_show_level_select)
 
 	var next_button: Button = _result_action_button(screen, "NextLevelButton", "ResultNextFrame", RESULT_BUTTON_GREEN, "下一关", Vector2(774, 560), Vector2(258, 98), 25)
-	if _current_level_id >= LEVELS.size():
+	var next_level_id: int = _current_level_id + 1
+	if _current_level_id >= LEVELS.size() or not _is_level_unlocked(next_level_id):
 		next_button.disabled = true
 		var next_label: Label = screen.find_child("NextLevelButtonLabel", true, false) as Label
 		if next_label != null:
-			next_label.text = "已通关"
+			next_label.text = "已通关" if _current_level_id >= LEVELS.size() else "未解锁"
 	else:
-		next_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(_current_level_id + 1)))
+		next_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(next_level_id)))
 
 
 func _show_settings_overlay(parent: Node) -> void:
@@ -229,6 +251,7 @@ func _show_settings_overlay(parent: Node) -> void:
 		_music_enabled = enabled
 		music_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
 		_pulse_control(music_frame)
+		_save_progress()
 	)
 	overlay.add_child(music_toggle)
 
@@ -239,6 +262,7 @@ func _show_settings_overlay(parent: Node) -> void:
 		_effects_enabled = enabled
 		effects_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
 		_pulse_control(effects_frame)
+		_save_progress()
 	)
 	overlay.add_child(effects_toggle)
 
@@ -258,6 +282,7 @@ func _show_settings_overlay(parent: Node) -> void:
 	slider.value_changed.connect(func(value: float) -> void:
 		_volume = value
 		_position_settings_slider_knob(slider_knob, slider)
+		_save_progress()
 	)
 	overlay.add_child(slider)
 
@@ -346,6 +371,7 @@ func _show_reward_overlay(parent: Node) -> void:
 		if not _daily_reward_claimed:
 			_daily_reward_claimed = true
 			_total_fish += 20
+			_save_progress()
 			_pulse_control(chest)
 		overlay.queue_free()
 	)
@@ -408,6 +434,7 @@ func _show_shop_overlay(parent: Node) -> void:
 			return
 		_shop_starter_claimed = true
 		_total_fish += 15
+		_save_progress()
 		fish_counter.text = "%d" % _total_fish
 		claim_status.text = "已领取"
 		claim_button.text = "已领取"
@@ -493,6 +520,81 @@ func _shop_locked_product(parent: Control, node_prefix: String, title: String, d
 	var button: Button = _transparent_text_button("%sButton" % node_prefix, "未开放", Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
 	button.disabled = true
 	parent.add_child(button)
+
+
+func _is_level_unlocked(level_id: int) -> bool:
+	return level_id >= 1 and level_id <= max(1, min(LEVELS.size(), _unlocked_level))
+
+
+func _add_level_lock_badge(parent: Control, level_id: int, rect: Rect2) -> void:
+	var badge_size := Vector2(82, 82)
+	var badge_position: Vector2 = rect.position + Vector2(rect.size.x - badge_size.x - 8, 10)
+	var badge: TextureRect = _ui_texture_rect("Level%dLockedBadge" % level_id, LEVEL_LOCK_BADGE, badge_position, badge_size)
+	parent.add_child(badge)
+	badge.pivot_offset = badge.size * 0.5
+	badge.scale = Vector2(0.86, 0.86)
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(badge, "scale", Vector2.ONE, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(badge, "modulate:a", 1.0, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _save_progress() -> void:
+	var data: Dictionary = {
+		"best_stars_by_level": _best_stars_by_level,
+		"total_fish": _total_fish,
+		"unlocked_level": _unlocked_level,
+		"daily_reward_claimed": _daily_reward_claimed,
+		"shop_starter_claimed": _shop_starter_claimed,
+		"music_enabled": _music_enabled,
+		"effects_enabled": _effects_enabled,
+		"volume": _volume
+	}
+	var file: FileAccess = FileAccess.open(_save_path, FileAccess.WRITE)
+	if file == null:
+		push_warning("Unable to write save file at %s" % _save_path)
+		return
+	file.store_string(JSON.stringify(data))
+
+
+func _load_progress() -> void:
+	if not FileAccess.file_exists(_save_path):
+		return
+	var file: FileAccess = FileAccess.open(_save_path, FileAccess.READ)
+	if file == null:
+		push_warning("Unable to read save file at %s" % _save_path)
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		return
+	var data: Dictionary = parsed as Dictionary
+	_total_fish = max(0, int(data.get("total_fish", 0)))
+	_unlocked_level = max(1, min(LEVELS.size(), int(data.get("unlocked_level", 1))))
+	_daily_reward_claimed = bool(data.get("daily_reward_claimed", false))
+	_shop_starter_claimed = bool(data.get("shop_starter_claimed", false))
+	_music_enabled = bool(data.get("music_enabled", _music_enabled))
+	_effects_enabled = bool(data.get("effects_enabled", _effects_enabled))
+	_volume = max(0.0, min(100.0, float(data.get("volume", _volume))))
+
+	_best_stars_by_level.clear()
+	var raw_stars: Variant = data.get("best_stars_by_level", {})
+	if raw_stars is Dictionary:
+		var stars_by_level: Dictionary = raw_stars as Dictionary
+		for raw_level_id: Variant in stars_by_level.keys():
+			var level_id: int = int(str(raw_level_id))
+			if level_id >= 1 and level_id <= LEVELS.size():
+				_best_stars_by_level[level_id] = max(0, min(3, int(stars_by_level[raw_level_id])))
+				if _level_stars(level_id) > 0:
+					_unlocked_level = max(_unlocked_level, min(LEVELS.size(), level_id + 1))
+	_recalculate_best_stars()
+
+
+func _recalculate_best_stars() -> void:
+	var total: int = 0
+	for raw_level_id: Variant in _best_stars_by_level.keys():
+		total += max(0, min(3, int(_best_stars_by_level[raw_level_id])))
+	_best_stars = total
 
 
 func _completed_level_count() -> int:

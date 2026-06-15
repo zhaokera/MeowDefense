@@ -47,6 +47,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: full-screen Image2 main menu design used as the rendered menu background for high-fidelity restoration.
 - `level_select_design_reference`: `/Users/zhaok/cat/assets/generated/ui/level_select_design_reference.png`
   Role: full-screen Image2 level-select design used as the rendered level map background for high-fidelity restoration.
+- `level_lock_badge`: `/Users/zhaok/cat/assets/generated/ui/level_lock_badge.png`
+  Role: transparent Image2 cat-paw lock badge used by `LevelNLockedBadge` nodes for locked level cards.
 - `battle_hud_design_reference`: `/Users/zhaok/cat/assets/generated/ui/battle_hud_design_reference.png`
   Role: full-screen Image2 battle HUD design reference for the playable battle interface.
 - `battle_hud_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/battle_hud_asset_sheet_source.png`
@@ -155,6 +157,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 
 - Main menu screenshot: `/Users/zhaok/cat/artifacts/main_menu.png`
 - Level select screenshot: `/Users/zhaok/cat/artifacts/level_select.png`
+- Locked level select screenshot: `/Users/zhaok/cat/artifacts/level_select_locked.png`
 - Battle screenshot: `/Users/zhaok/cat/artifacts/battle_level_001.png`
 - Tower action screenshot: `/Users/zhaok/cat/artifacts/tower_action_overlay.png`
 - Pause menu screenshot: `/Users/zhaok/cat/artifacts/pause_menu.png`

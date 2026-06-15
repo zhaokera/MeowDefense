@@ -152,4 +152,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/capture_town_feature_overlays.gd` to regenerate backpack, achievements, and shop screenshots.
 - Latest screenshots: `/Users/zhaok/cat/artifacts/backpack_overlay.png`, `/Users/zhaok/cat/artifacts/achievements_overlay.png`, `/Users/zhaok/cat/artifacts/shop_overlay.png`.
 
+**Progression Persistence And Level Locking**
+- Generated `/Users/zhaok/cat/assets/generated/ui/level_lock_badge.png` as a transparent Image2 cat-paw lock badge for locked level cards.
+- Added persistent progress at `user://meow_defense_save.json` for best stars by level, total fish, unlocked level, reward claims, and basic settings.
+- Fresh progress now unlocks only level 1; winning a level unlocks the next level and writes the save before the result screen appears.
+- Level-select locked cards keep the Image2 map as the visual source of truth and add only `LevelNLockedBadge` Image2 texture overlays plus disabled transparent hit areas.
+- Added `/Users/zhaok/cat/tests/run_progression_persistence_tests.gd` to verify fresh locks, save creation, reload restore, and next-level unlock behavior without touching the real player save.
+- Added `/Users/zhaok/cat/tests/capture_level_select_locked.gd` to regenerate `/Users/zhaok/cat/artifacts/level_select_locked.png`.
+
 final result: passed

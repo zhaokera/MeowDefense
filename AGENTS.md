@@ -46,6 +46,7 @@ Avoid stiff static screens. Generated images provide the visual base; Godot shou
 Prefer work that makes the game more complete and playable:
 
 - Level unlock and best-star persistence.
+- Tests that touch persistence must use an isolated `user://` save path instead of deleting or overwriting the real player save.
 - Tower upgrade, sell/cancel, and clearer tower selection.
 - Wave preview, speed-up, pause/restart, and next-level flow.
 - Reward collection, failure guidance, and post-level progression.
@@ -80,6 +81,7 @@ Before calling work complete:
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_build_input_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_tower_action_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_progression_persistence_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_pause_menu_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_result_screen_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_scene_smoke.gd

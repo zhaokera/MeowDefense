@@ -14,6 +14,7 @@
 - 敌人、塔、基地都有运行时动画反馈
 - 明确的地图 `+` 建造按钮，支持真实玩家点击建塔
 - 已建猫塔可点击打开 Image2 管理面板，支持升级和出售返还鱼干
+- 关卡解锁、最佳星级、小鱼干和奖励领取状态会持久化保存
 
 ## 运行
 
@@ -35,6 +36,7 @@ Godot --path /path/to/MeowDefense
 2. 选择关卡并点击 `出发`
 3. 在战斗地图上点击黄色圆形 `+` 猫爪按钮建造猫塔
 4. 第二关开始可在底部切换塔类型
+5. 通关后会解锁下一关，并保留星级和小鱼干进度
 
 ## 测试
 
@@ -47,6 +49,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_build_input_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_tower_action_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_progression_persistence_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_pause_menu_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_result_screen_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_scene_smoke.gd
@@ -61,13 +64,15 @@ Godot --path /path/to/MeowDefense
 - `towers/`: 猫塔素材
 - `enemies/`: 敌人素材
 - `bases/`: 猫粮罐基地
-- `ui/`: 主菜单、关卡、战斗 HUD、暂停、设置、结果页、图鉴、奖励、背包、成就、商店弹窗设计稿和关卡缩略图
+- `ui/`: 主菜单、关卡、锁定徽章、战斗 HUD、暂停、设置、结果页、图鉴、奖励、背包、成就、商店弹窗设计稿和关卡缩略图
 
 完整清单见 `assets/generated/assets_manifest.json` 和 `artifacts/campaign_asset_inventory.md`。
 
 ## 截图
 
 ![Level select](artifacts/level_select.png)
+
+![Locked level select](artifacts/level_select_locked.png)
 
 ![Battle](artifacts/battle_level_001.png)
 

@@ -82,6 +82,11 @@
       "prompt_summary": "Image2 full-screen level select design reference used directly as the high-fidelity level map background."
     },
     {
+      "id": "level_lock_badge",
+      "path": "res://assets/generated/ui/level_lock_badge.png",
+      "prompt_summary": "Image2 transparent cat-paw lock badge used to show locked level cards on the level-select map."
+    },
+    {
       "id": "battle_hud_design_reference",
       "path": "res://assets/generated/ui/battle_hud_design_reference.png",
       "prompt_summary": "Image2 full-screen battle HUD design reference used to guide the playable battle interface restoration."

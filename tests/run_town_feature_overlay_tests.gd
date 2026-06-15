@@ -1,5 +1,7 @@
 extends SceneTree
 
+const TEST_SAVE_PATH := "user://meow_defense_town_feature_test_save.json"
+
 var _failures: Array[String] = []
 
 
@@ -8,6 +10,7 @@ func _init() -> void:
 
 
 func _run() -> void:
+	_clear_save_file()
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	if scene == null:
 		_failures.append("main scene should load")
@@ -19,6 +22,7 @@ func _run() -> void:
 		_failures.append("main scene should instantiate")
 		_finish()
 		return
+	instance.set("_save_path", TEST_SAVE_PATH)
 
 	root.add_child(instance)
 	await process_frame
@@ -110,6 +114,7 @@ func _assert_level_select_shop(instance: Node) -> void:
 
 
 func _finish() -> void:
+	_clear_save_file()
 	if _failures.is_empty():
 		print("TOWN FEATURE OVERLAY TESTS PASS")
 		quit(0)
@@ -118,6 +123,13 @@ func _finish() -> void:
 			push_error(failure)
 		print("TOWN FEATURE OVERLAY TESTS FAIL: %d" % _failures.size())
 		quit(1)
+
+
+func _clear_save_file() -> void:
+	if FileAccess.file_exists(TEST_SAVE_PATH):
+		var error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE_PATH))
+		if error != OK:
+			_failures.append("failed to clear town feature test save: %s" % error)
 
 
 func _assert_exists(root_node: Node, node_name: String, message: String) -> Node:

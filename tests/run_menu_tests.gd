@@ -1,5 +1,7 @@
 extends SceneTree
 
+const TEST_SAVE_PATH := "user://meow_defense_menu_test_save.json"
+
 var _failures: Array[String] = []
 
 
@@ -8,6 +10,7 @@ func _init() -> void:
 
 
 func _run() -> void:
+	_clear_save_file()
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	if scene == null:
 		_failures.append("main scene should load")
@@ -19,6 +22,7 @@ func _run() -> void:
 		_failures.append("main scene should instantiate")
 		_finish()
 		return
+	instance.set("_save_path", TEST_SAVE_PATH)
 
 	root.add_child(instance)
 	await process_frame
@@ -100,16 +104,25 @@ func _run() -> void:
 					_assert_exists(instance, "LevelSelectScreen", "quit from pause should return to level select")
 					var level_two_button: Button = _assert_button(instance, "StartLevel2Button", "level select should start level two")
 					if level_two_button != null:
-						level_two_button.emit_signal("pressed")
+						_assert_true(level_two_button.disabled, "level two should stay locked until level one is cleared")
+						_assert_exists(instance, "Level2LockedBadge", "locked level two should show a lock badge")
+						instance.set("_unlocked_level", 2)
+						instance.call("_show_level_select")
 						await process_frame
-						_assert_exists(instance, "BattleScene", "level two should start the battle scene")
-						_assert_button(instance, "SelectTowerTabbySlowCatButton", "battle HUD should expose the slow tower selector")
+						level_two_button = _assert_button(instance, "StartLevel2Button", "unlocked level two should be playable")
+						_assert_missing(instance, "Level2LockedBadge", "unlocked level two should hide the lock badge")
+						if level_two_button != null:
+							level_two_button.emit_signal("pressed")
+							await process_frame
+							_assert_exists(instance, "BattleScene", "level two should start the battle scene")
+							_assert_button(instance, "SelectTowerTabbySlowCatButton", "battle HUD should expose the slow tower selector")
 
 	instance.queue_free()
 	_finish()
 
 
 func _finish() -> void:
+	_clear_save_file()
 	if _failures.is_empty():
 		print("MENU TESTS PASS")
 		quit(0)
@@ -118,6 +131,13 @@ func _finish() -> void:
 			push_error(failure)
 		print("MENU TESTS FAIL: %d" % _failures.size())
 		quit(1)
+
+
+func _clear_save_file() -> void:
+	if FileAccess.file_exists(TEST_SAVE_PATH):
+		var error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE_PATH))
+		if error != OK:
+			_failures.append("failed to clear menu test save: %s" % error)
 
 
 func _assert_exists(root_node: Node, node_name: String, message: String) -> Node:

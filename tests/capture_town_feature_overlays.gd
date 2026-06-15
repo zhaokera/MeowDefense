@@ -1,6 +1,7 @@
 extends SceneTree
 
 const OUT_DIR := "/Users/zhaok/cat/artifacts"
+const TEST_SAVE_PATH := "user://meow_defense_town_feature_capture_save.json"
 
 
 func _init() -> void:
@@ -8,12 +9,14 @@ func _init() -> void:
 
 
 func _capture() -> void:
+	_clear_save_file()
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	if scene == null:
 		push_error("main scene missing")
 		quit(1)
 		return
 	var instance: Node = scene.instantiate()
+	instance.set("_save_path", TEST_SAVE_PATH)
 	root.add_child(instance)
 	await process_frame
 
@@ -25,7 +28,15 @@ func _capture() -> void:
 		return
 
 	instance.queue_free()
+	_clear_save_file()
 	quit(0)
+
+
+func _clear_save_file() -> void:
+	if FileAccess.file_exists(TEST_SAVE_PATH):
+		var error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE_PATH))
+		if error != OK:
+			push_error("failed to clear town capture save: %s" % error)
 
 
 func _press_and_capture(instance: Node, button_name: String, file_name: String) -> bool:
