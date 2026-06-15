@@ -16,6 +16,7 @@
 - 明确的地图 `+` 建造按钮，支持真实玩家点击建塔
 - 已建猫塔可点击打开 Image2 管理面板，支持升级和出售返还鱼干
 - 战斗 HUD 支持下一波敌人预告和 1x/2x 加速切换
+- 体力从静态 `15/15` 变成真实资源，进入关卡消耗体力，体力不足时显示 Image2 提示，并按真实日期恢复
 - 胜利结果页带有 Image2 星星和鱼干奖励脉冲动效，失败页不会播放胜利奖励反馈
 - 首页每日奖励按真实日期重置，支持连续领取天数和同日防重复领取
 - 首页今日任务现在是独立 Image2 弹窗，可按通关、星级和毛线陷阱进度领取小鱼干奖励，并按真实日期重置
@@ -24,7 +25,7 @@
 - 背包整理会弹出 Image2 奖励反馈，并一次性发放小鱼干
 - 商店可购买猫爪徽章包和毛线陷阱包，背包会显示持有数量
 - 战斗中可使用背包里的毛线陷阱减速小鼠，并带有 Image2 毛线缠绕特效
-- 关卡解锁、最佳星级、小鱼干、猫爪徽章、毛线陷阱和奖励领取状态会持久化保存
+- 关卡解锁、最佳星级、小鱼干、体力、猫爪徽章、毛线陷阱和奖励领取状态会持久化保存
 
 ## 运行
 
@@ -61,6 +62,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_reward_reset_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_task_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_task_reset_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_energy_flow_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_backpack_item_detail_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_backpack_organize_reward_tests.gd
@@ -88,7 +90,7 @@ Godot --path /path/to/MeowDefense
 - `towers/`: 猫塔素材
 - `enemies/`: 敌人素材
 - `bases/`: 猫粮罐基地
-- `ui/`: 主菜单、关卡、锁定徽章、战斗 HUD、暂停、设置、胜利/失败结果页、图鉴、奖励、今日任务、背包、成就、商店弹窗设计稿和关卡缩略图
+- `ui/`: 主菜单、关卡、锁定徽章、战斗 HUD、暂停、设置、胜利/失败结果页、图鉴、奖励、今日任务、体力不足、背包、成就、商店弹窗设计稿和关卡缩略图
 
 完整清单见 `assets/generated/assets_manifest.json` 和 `artifacts/campaign_asset_inventory.md`。
 
@@ -119,6 +121,8 @@ Godot --path /path/to/MeowDefense
 ![Daily reward streak](artifacts/daily_reward_streak.png)
 
 ![Daily task overlay](artifacts/daily_task_overlay.png)
+
+![Energy empty overlay](artifacts/energy_empty_overlay.png)
 
 ![Backpack overlay](artifacts/backpack_overlay.png)
 

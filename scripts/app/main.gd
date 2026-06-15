@@ -22,6 +22,7 @@ const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
 const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
 const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
 const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_design_reference.png")
+const ENERGY_EMPTY_DESIGN := preload("res://assets/generated/ui/energy_empty_overlay_design_reference.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
 const BACKPACK_ORGANIZE_REWARD_DESIGN := preload("res://assets/generated/ui/backpack_organize_reward_design_reference.png")
@@ -66,6 +67,7 @@ const GREEN := Color(0.46, 0.76, 0.34)
 const BLUE := Color(0.34, 0.67, 0.86)
 const CORAL := Color(0.94, 0.30, 0.22)
 const SAVE_PATH := "user://meow_defense_save.json"
+const DEFAULT_MAX_ENERGY := 15
 
 var _current: Node
 var _best_stars: int = 0
@@ -89,11 +91,15 @@ var _claimed_daily_tasks: Dictionary = {}
 var _claimed_daily_tasks_by_date: Dictionary = {}
 var _yarn_traps: int = 0
 var _backpack_organized: bool = false
+var _max_energy: int = DEFAULT_MAX_ENERGY
+var _energy: int = DEFAULT_MAX_ENERGY
+var _energy_refilled_on: String = ""
 
 
 func _ready() -> void:
 	get_tree().paused = false
 	_load_progress()
+	_sync_energy_for_today()
 	_show_main_menu()
 
 
@@ -106,9 +112,11 @@ func _clear_current() -> void:
 
 func _show_main_menu() -> void:
 	_clear_current()
+	_sync_energy_for_today()
 	var screen: Control = _image_design_screen("MainMenuScreen", MAIN_MENU_DESIGN)
 	_current = screen
 	add_child(screen)
+	screen.add_child(_label("MainEnergyCounter", _energy_text(), Vector2(1044, 28), Vector2(112, 42), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var start_button: Button = _hotspot_button("StartLevelSelectButton", Vector2(115, 263), Vector2(408, 100), "开始闯关")
 	start_button.pressed.connect(_show_level_select)
@@ -153,9 +161,11 @@ func _show_main_menu() -> void:
 
 func _show_level_select() -> void:
 	_clear_current()
+	_sync_energy_for_today()
 	var screen: Control = _image_design_screen("LevelSelectScreen", LEVEL_SELECT_DESIGN, "LevelSelectDesignBackground")
 	_current = screen
 	add_child(screen)
+	screen.add_child(_label("LevelEnergyCounter", _energy_text(), Vector2(1044, 28), Vector2(112, 42), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var back_button: Button = _hotspot_button("BackToMainButton", Vector2(330, 580), Vector2(118, 120), "返回主城")
 	back_button.pressed.connect(_show_main_menu)
@@ -209,6 +219,13 @@ func _start_level(level_info: Dictionary) -> void:
 	if not _is_level_unlocked(requested_level_id):
 		_show_level_select()
 		return
+	_sync_energy_for_today()
+	if _energy <= 0:
+		if _current != null:
+			_show_energy_empty_overlay(_current)
+		return
+	_energy = max(0, _energy - 1)
+	_save_progress()
 	_clear_current()
 	_current_level_id = requested_level_id
 	_current_level_path = str(level_info.get("path", "res://data/levels/level_001.json"))
@@ -532,6 +549,39 @@ func _date_key_to_day_index(date_key: String) -> int:
 	return int(floor(float(unix_time) / 86400.0))
 
 
+func _sync_energy_for_today() -> void:
+	var today: String = _today_key()
+	_max_energy = max(1, _max_energy)
+	if _energy_refilled_on != today:
+		_energy = _max_energy
+		_energy_refilled_on = today
+	else:
+		_energy = max(0, min(_max_energy, _energy))
+
+
+func _energy_text() -> String:
+	return "%d/%d" % [max(0, min(_max_energy, _energy)), max(1, _max_energy)]
+
+
+func _show_energy_empty_overlay(parent: Node) -> void:
+	_remove_named_child(parent, "EnergyEmptyOverlay")
+	var overlay: Control = Control.new()
+	overlay.name = "EnergyEmptyOverlay"
+	overlay.size = VIEW_SIZE
+	overlay.z_index = 30
+	parent.add_child(overlay)
+
+	var design: TextureRect = _ui_texture_rect("EnergyEmptyDesignBackground", ENERGY_EMPTY_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	overlay.add_child(design)
+	overlay.add_child(_label("EnergyEmptyTitle", "体力不足", Vector2(450, 118), Vector2(380, 60), 40, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	overlay.add_child(_label("EnergyEmptyStatus", "当前体力 %s" % _energy_text(), Vector2(482, 446), Vector2(316, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var close_button: Button = _transparent_text_button("CloseEnergyEmptyButton", "知道了", Rect2(Vector2(420, 505), Vector2(440, 92)), 30)
+	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	overlay.add_child(close_button)
+	_animate_overlay_entry(overlay)
+
+
 func _show_daily_task_overlay(parent: Node) -> void:
 	_sync_claimed_daily_tasks_for_today()
 	var content: Control = _image_overlay(parent, "DailyTaskOverlay", "DailyTaskDesignBackground", DAILY_TASK_OVERLAY_DESIGN)
@@ -634,11 +684,12 @@ func _normalized_daily_task_claims(raw_claims: Variant) -> Dictionary:
 
 
 func _show_backpack_overlay(parent: Node) -> void:
+	_sync_energy_for_today()
 	var content: Control = _image_overlay(parent, "BackpackOverlay", "BackpackDesignBackground", BACKPACK_OVERLAY_DESIGN)
 	content.add_child(_label("BackpackTitle", "背包", Vector2(462, 148), Vector2(356, 58), 39, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	content.add_child(_label("BackpackFishCounter", "%d" % _total_fish, Vector2(496, 31), Vector2(104, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	content.add_child(_label("BackpackStarsCounter", "%d" % _best_stars, Vector2(735, 31), Vector2(104, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	content.add_child(_label("BackpackEnergyCounter", "15/15", Vector2(910, 31), Vector2(92, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	content.add_child(_label("BackpackEnergyCounter", _energy_text(), Vector2(910, 31), Vector2(92, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	_backpack_item(
 		content,
@@ -709,12 +760,13 @@ func _show_achievements_overlay(parent: Node) -> void:
 
 
 func _show_shop_overlay(parent: Node) -> void:
+	_sync_energy_for_today()
 	var content: Control = _image_overlay(parent, "ShopOverlay", "ShopDesignBackground", SHOP_OVERLAY_DESIGN)
 	content.add_child(_label("ShopTitle", "猫猫商店", Vector2(460, 128), Vector2(360, 62), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var fish_counter: Label = _label("ShopFishCounter", "%d" % _total_fish, Vector2(584, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	content.add_child(fish_counter)
 	content.add_child(_label("ShopStarsCounter", "%d" % _best_stars, Vector2(804, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	content.add_child(_label("ShopEnergyCounter", "15/15", Vector2(966, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	content.add_child(_label("ShopEnergyCounter", _energy_text(), Vector2(966, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	content.add_child(_label("ShopFishPackTitle", "小鱼干补给", Vector2(270, 294), Vector2(214, 36), 21, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var claim_status: Label = _label("ShopClaimStatus", "已领取" if _shop_starter_claimed else "免费领取", Vector2(324, 482), Vector2(136, 36), 20, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
@@ -810,7 +862,7 @@ func _show_album_entry_detail(parent: Control, texture: Texture2D, title: String
 
 
 func _image_overlay(parent: Node, overlay_name: String, background_name: String, texture: Texture2D) -> Control:
-	for existing_name: String in ["BackpackOverlay", "AchievementsOverlay", "ShopOverlay", "RewardOverlay", "DailyTaskOverlay", "AlbumOverlay", "SettingsOverlay"]:
+	for existing_name: String in ["BackpackOverlay", "AchievementsOverlay", "ShopOverlay", "RewardOverlay", "DailyTaskOverlay", "AlbumOverlay", "SettingsOverlay", "EnergyEmptyOverlay"]:
 		_remove_named_child(parent, existing_name)
 	var overlay: Control = Control.new()
 	overlay.name = overlay_name
@@ -1111,11 +1163,15 @@ func _add_level_lock_badge(parent: Control, level_id: int, rect: Rect2) -> void:
 
 
 func _save_progress() -> void:
+	_sync_energy_for_today()
 	_sync_claimed_daily_tasks_for_today()
 	var data: Dictionary = {
 		"best_stars_by_level": _best_stars_by_level,
 		"total_fish": _total_fish,
 		"unlocked_level": _unlocked_level,
+		"energy": _energy,
+		"max_energy": _max_energy,
+		"energy_refilled_on": _energy_refilled_on,
 		"daily_reward_claimed": _daily_reward_claimed,
 		"daily_reward_claimed_on": _daily_reward_claimed_on,
 		"daily_reward_streak": _daily_reward_streak,
@@ -1150,6 +1206,10 @@ func _load_progress() -> void:
 	var data: Dictionary = parsed as Dictionary
 	_total_fish = max(0, int(data.get("total_fish", 0)))
 	_unlocked_level = max(1, min(LEVELS.size(), int(data.get("unlocked_level", 1))))
+	_max_energy = max(1, int(data.get("max_energy", DEFAULT_MAX_ENERGY)))
+	_energy = max(0, min(_max_energy, int(data.get("energy", _max_energy))))
+	_energy_refilled_on = str(data.get("energy_refilled_on", ""))
+	_sync_energy_for_today()
 	_daily_reward_claimed_on = str(data.get("daily_reward_claimed_on", ""))
 	_daily_reward_streak = max(0, int(data.get("daily_reward_streak", 0)))
 	if _daily_reward_claimed_on.is_empty() and bool(data.get("daily_reward_claimed", false)):

@@ -277,6 +277,11 @@
       "prompt_summary": "Image2 full-screen daily task overlay design with three task rows, claim buttons, close control, and blank runtime text areas."
     },
     {
+      "id": "energy_empty_overlay_design_reference",
+      "path": "res://assets/generated/ui/energy_empty_overlay_design_reference.png",
+      "prompt_summary": "Image2 full-screen out-of-energy overlay design with blank title, status, and button areas for dynamic Godot labels."
+    },
+    {
       "id": "backpack_overlay_design_reference",
       "path": "res://assets/generated/ui/backpack_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen backpack overlay design used directly as the inventory popup background."

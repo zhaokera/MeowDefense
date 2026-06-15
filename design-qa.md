@@ -183,6 +183,15 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_task_reset_tests.gd` to verify same-day lockout, reload persistence, next-day reset, repeat rewards, and date-bucket save state.
 - Re-captured `/Users/zhaok/cat/artifacts/daily_task_overlay.png` after the persistence change.
 
+**Energy Flow And Empty State**
+- Generated `/Users/zhaok/cat/assets/generated/ui/energy_empty_overlay_design_reference.png` as a full-screen Image2 out-of-energy feedback design.
+- Converted the static `15/15` energy display into persistent `_energy`, `_max_energy`, and `_energy_refilled_on` state.
+- Starting a level now consumes 1 energy, zero energy blocks battle entry, and the Image2 `EnergyEmptyOverlay` explains the current energy state.
+- Energy refills to max on the next real date through the same date-key helper used by daily rewards and tasks.
+- Backpack and shop energy counters now show `_energy_text()` instead of hard-coded `15/15`.
+- Added `/Users/zhaok/cat/tests/run_energy_flow_tests.gd` to verify consumption, zero-energy blocking, Image2 empty-state rendering, persistence, and next-day refill.
+- Added `/Users/zhaok/cat/tests/capture_energy_empty_overlay.gd` to regenerate `/Users/zhaok/cat/artifacts/energy_empty_overlay.png`.
+
 **Image2 Town Feature Overlay Restoration**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`.
 - Replaced the main-menu bottom `背包`, `成就`, and `商店` proxy behavior with distinct Image2 full-screen overlays plus transparent close/action hit areas.

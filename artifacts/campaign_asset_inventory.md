@@ -125,6 +125,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent reward amount chip used by `RewardFishChipFrame`.
 - `daily_task_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/daily_task_overlay_design_reference.png`
   Role: full-screen Image2 daily task overlay used directly by `DailyTaskDesignBackground`.
+- `energy_empty_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/energy_empty_overlay_design_reference.png`
+  Role: full-screen Image2 out-of-energy feedback overlay used directly by `EnergyEmptyDesignBackground`.
 - `backpack_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`
   Role: full-screen Image2 backpack overlay design used directly by `BackpackDesignBackground`.
 - `backpack_item_detail_design_reference`: `/Users/zhaok/cat/assets/generated/ui/backpack_item_detail_design_reference.png`
@@ -189,6 +191,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Album entry detail screenshot: `/Users/zhaok/cat/artifacts/album_entry_detail.png`
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
 - Daily task overlay screenshot: `/Users/zhaok/cat/artifacts/daily_task_overlay.png`
+- Energy empty overlay screenshot: `/Users/zhaok/cat/artifacts/energy_empty_overlay.png`
 - Backpack overlay screenshot: `/Users/zhaok/cat/artifacts/backpack_overlay.png`
 - Backpack item detail screenshot: `/Users/zhaok/cat/artifacts/backpack_item_detail.png`
 - Backpack organize reward screenshot: `/Users/zhaok/cat/artifacts/backpack_organize_reward.png`
