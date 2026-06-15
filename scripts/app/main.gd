@@ -24,6 +24,7 @@ const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.pn
 const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_design_reference.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
+const BACKPACK_ORGANIZE_REWARD_DESIGN := preload("res://assets/generated/ui/backpack_organize_reward_design_reference.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
@@ -83,6 +84,7 @@ var _paw_tokens: int = 0
 var _claimed_achievements: Dictionary = {}
 var _claimed_daily_tasks: Dictionary = {}
 var _yarn_traps: int = 0
+var _backpack_organized: bool = false
 
 
 func _ready() -> void:
@@ -587,8 +589,13 @@ func _show_backpack_overlay(parent: Node) -> void:
 		"levels"
 	)
 
-	var organize: Button = _transparent_text_button("OrganizeBackpackButton", "整理背包", Rect2(Vector2(466, 574), Vector2(348, 76)), 27)
-	organize.pressed.connect(func() -> void: _pulse_control(content))
+	var organize_text: String = "已整理" if _backpack_organized else "整理背包"
+	var organize: Button = _transparent_text_button("OrganizeBackpackButton", organize_text, Rect2(Vector2(466, 574), Vector2(348, 76)), 27)
+	organize.disabled = _backpack_organized
+	var fish_counter: Label = content.find_child("BackpackFishCounter", true, false) as Label
+	organize.pressed.connect(func() -> void:
+		_claim_backpack_organize_reward(content, fish_counter, organize)
+	)
 	content.add_child(organize)
 	var close_button: Button = _hotspot_button("CloseBackpackButton", Vector2(948, 130), Vector2(122, 114), "关闭")
 	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
@@ -811,6 +818,46 @@ func _run_backpack_item_action(backpack_content: Control, host: Node, action_nam
 			_remove_named_child(backpack_content, "BackpackItemDetailOverlay")
 
 
+func _claim_backpack_organize_reward(parent: Control, fish_counter: Label, organize_button: Button) -> void:
+	if _backpack_organized:
+		return
+	_backpack_organized = true
+	_total_fish += 5
+	_save_progress()
+	if fish_counter != null:
+		fish_counter.text = "%d" % _total_fish
+	organize_button.text = "已整理"
+	organize_button.disabled = true
+	_show_backpack_organize_reward(parent)
+
+
+func _show_backpack_organize_reward(parent: Control) -> void:
+	_remove_named_child(parent, "BackpackOrganizeRewardOverlay")
+	var reward: Control = Control.new()
+	reward.name = "BackpackOrganizeRewardOverlay"
+	reward.size = VIEW_SIZE
+	reward.z_index = 10
+	parent.add_child(reward)
+
+	var design: TextureRect = _ui_texture_rect("BackpackOrganizeRewardDesignBackground", BACKPACK_ORGANIZE_REWARD_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	reward.add_child(design)
+	reward.add_child(_label("BackpackOrganizeRewardTitle", "整理完成", Vector2(448, 132), Vector2(384, 58), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var fish_icon: TextureRect = _ui_texture_rect("BackpackOrganizeRewardIcon", RESULT_REWARD_FISH_CHIP, Vector2(536, 258), Vector2(208, 172))
+	fish_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	reward.add_child(fish_icon)
+	reward.add_child(_label("BackpackOrganizeRewardAmount", "小鱼干 +5", Vector2(484, 444), Vector2(312, 44), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	reward.add_child(_label("BackpackOrganizeRewardCopy", "猫爪仓库变清爽了，顺手找到了小鱼干。", Vector2(426, 518), Vector2(428, 44), 19, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
+	var done_button: Button = _transparent_text_button("CloseBackpackOrganizeRewardButton", "收好奖励", Rect2(Vector2(470, 594), Vector2(340, 78)), 26)
+	done_button.pressed.connect(func() -> void: reward.queue_free())
+	reward.add_child(done_button)
+	var close_button: Button = _hotspot_button("DismissBackpackOrganizeRewardButton", Vector2(904, 132), Vector2(96, 96), "关闭")
+	close_button.pressed.connect(func() -> void: reward.queue_free())
+	reward.add_child(close_button)
+	_animate_overlay_entry(reward)
+	_pulse_control(fish_icon)
+
+
 func _achievement_row(parent: Control, achievement: Dictionary) -> void:
 	var achievement_id: String = str(achievement.get("id", ""))
 	var row_name: String = str(achievement.get("node", "Achievement"))
@@ -983,6 +1030,7 @@ func _save_progress() -> void:
 		"claimed_achievements": _claimed_achievements,
 		"claimed_daily_tasks": _claimed_daily_tasks,
 		"yarn_traps": _yarn_traps,
+		"backpack_organized": _backpack_organized,
 		"music_enabled": _music_enabled,
 		"effects_enabled": _effects_enabled,
 		"volume": _volume
@@ -1011,6 +1059,7 @@ func _load_progress() -> void:
 	_shop_starter_claimed = bool(data.get("shop_starter_claimed", false))
 	_paw_tokens = max(0, int(data.get("paw_tokens", 0)))
 	_yarn_traps = max(0, int(data.get("yarn_traps", 0)))
+	_backpack_organized = bool(data.get("backpack_organized", false))
 	_music_enabled = bool(data.get("music_enabled", _music_enabled))
 	_effects_enabled = bool(data.get("effects_enabled", _effects_enabled))
 	_volume = max(0.0, min(100.0, float(data.get("volume", _volume))))

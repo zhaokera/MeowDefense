@@ -183,6 +183,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_backpack_item_detail_tests.gd` to verify Image2 detail rendering, selected item data, and action routing.
 - Added `/Users/zhaok/cat/tests/capture_backpack_item_detail.gd` to regenerate `/Users/zhaok/cat/artifacts/backpack_item_detail.png`.
 
+**Backpack Organize Reward**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/backpack_organize_reward_design_reference.png` as the Image2 full-screen organize reward design.
+- `OrganizeBackpackButton` now grants a one-time `+5` fish reward, updates the backpack fish counter, disables itself as `已整理`, and persists `_backpack_organized`.
+- The reward appears in `BackpackOrganizeRewardOverlay` with the Image2 background, fish chip, dynamic reward amount, close control, and confirmation button.
+- Added `/Users/zhaok/cat/tests/run_backpack_organize_reward_tests.gd` to verify reward grant, Image2 overlay, counter refresh, disabled state, and persistence after reload.
+- Added `/Users/zhaok/cat/tests/capture_backpack_organize_reward.gd` to regenerate `/Users/zhaok/cat/artifacts/backpack_organize_reward.png`.
+
 **Achievement Claim Rewards**
 - Generated `/Users/zhaok/cat/assets/generated/ui/achievement_claimed_stamp.png` as a transparent Image2 cat-paw claimed stamp for achievement rows.
 - Added claimable achievement rewards for first clear, 15-star collection, and full campaign completion; rewards grant fish and cat-paw badges, then persist in `claimed_achievements` and `paw_tokens`.
