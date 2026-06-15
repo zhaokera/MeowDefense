@@ -351,4 +351,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_orange_cat_tower_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, and firing frame switch.
 - Added `/Users/zhaok/cat/tests/capture_orange_cat_tower_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/orange_cat_tower_animation.png`.
 
+**Basic Mouse Enemy Animation Sheet**
+- Generated `/Users/zhaok/cat/assets/generated/enemies/mouse_basic_animation_design_reference.png` as the full-screen Image2 direction for the first common mouse enemy feeling animated in battle.
+- Generated `/Users/zhaok/cat/assets/generated/enemies/mouse_basic_sheet_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/enemies/mouse_basic_sheet.png` for runtime use.
+- The `mouse_basic` enemy now uses the 2x2 Image2 sprite sheet instead of the old single static enemy image.
+- Moving enemies with sprite sheets now alternate between walking frames 0 and 2 based on distance traveled, while hit and defeated poses still use frames 1 and 3.
+- Added `/Users/zhaok/cat/tests/run_mouse_basic_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, and walking-frame cycling.
+- Added `/Users/zhaok/cat/tests/capture_mouse_basic_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/mouse_basic_animation.png`.
+
 final result: passed

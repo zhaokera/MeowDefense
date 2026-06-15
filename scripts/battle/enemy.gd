@@ -26,6 +26,7 @@ var _slow_timer: float = 0.0
 var _slow_multiplier: float = 1.0
 var _sprite_frame: int = 0
 var _uses_sprite_sheet: bool = false
+var _walk_distance: float = 0.0
 
 
 func _ready() -> void:
@@ -52,6 +53,7 @@ func configure(data: Dictionary, points: Array) -> void:
 	reached_base = false
 	if not _path_points.is_empty():
 		global_position = _path_points[0]
+	_walk_distance = 0.0
 	if is_inside_tree():
 		_apply_visuals()
 		_update_hp_bar()
@@ -72,6 +74,7 @@ func advance_along_path(delta: float) -> void:
 
 		var step: float = min(remaining, distance)
 		global_position = global_position.move_toward(target, step)
+		_walk_distance += step
 		remaining -= step
 
 		if step >= distance - 0.001:
@@ -160,7 +163,13 @@ func _update_animation(delta: float) -> void:
 		_visual_root.position = Vector2(0, bob)
 		_visual_root.scale = Vector2(1.0 + (1.0 - squash) * 0.5, squash)
 	if _hit_flash_timer <= 0.0 and not is_defeated():
-		_set_sprite_frame(0)
+		_set_sprite_frame(_walk_frame())
+
+
+func _walk_frame() -> int:
+	if not _uses_sprite_sheet:
+		return 0
+	return 2 if int(_walk_distance / 9.0) % 2 == 1 else 0
 
 
 func _set_sprite_frame(frame: int) -> void:

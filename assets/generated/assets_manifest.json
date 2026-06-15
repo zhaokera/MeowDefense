@@ -54,8 +54,18 @@
   "enemies": [
     {
       "id": "mouse_basic",
-      "path": "res://assets/generated/enemies/mouse_basic.png",
-      "prompt_summary": "Cute grey-brown mouse carrying a stolen dried fish."
+      "path": "res://assets/generated/enemies/mouse_basic_sheet.png",
+      "prompt_summary": "Cute grey-brown mouse carrying stolen dried fish, as a sprite sheet with walking, hit, alternate walking, and tumble poses."
+    },
+    {
+      "id": "mouse_basic_animation_design_reference",
+      "path": "res://assets/generated/enemies/mouse_basic_animation_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle design reference showing the basic mouse enemy with visible animated pose beats."
+    },
+    {
+      "id": "mouse_basic_sheet_source",
+      "path": "res://assets/generated/enemies/mouse_basic_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the basic mouse enemy sprite sheet."
     },
     {
       "id": "mouse_fast",
