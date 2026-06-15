@@ -32,6 +32,8 @@ const ACHIEVEMENT_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/achi
 const ACHIEVEMENT_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/achievement_claim_reward_burst.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_design_reference.png")
+const SHOP_PURCHASE_FEEDBACK_DESIGN := preload("res://assets/generated/ui/shop_purchase_feedback_design_reference.png")
+const SHOP_PURCHASE_REWARD_BURST := preload("res://assets/generated/ui/shop_purchase_reward_burst.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
@@ -791,6 +793,7 @@ func _show_shop_overlay(parent: Node) -> void:
 		claim_button.text = "已领取"
 		claim_button.disabled = true
 		_pulse_control(content)
+		_show_shop_purchase_reward_overlay(content, "小鱼干补给", "小鱼干 +15")
 	)
 	content.add_child(claim_button)
 
@@ -811,6 +814,7 @@ func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counte
 	buy_button.pressed.connect(func() -> void:
 		if not _can_buy_energy_refill():
 			return
+		var restored_energy: int = min(ENERGY_REFILL_AMOUNT, _max_energy - _energy)
 		_total_fish -= ENERGY_REFILL_COST
 		_energy = min(_max_energy, _energy + ENERGY_REFILL_AMOUNT)
 		_energy_refilled_on = _today_key()
@@ -820,6 +824,7 @@ func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counte
 		status.text = _energy_refill_status_text()
 		buy_button.disabled = not _can_buy_energy_refill()
 		_pulse_control(energy_counter)
+		_show_shop_purchase_reward_overlay(parent, "体力补充", "体力 +%d" % restored_energy)
 	)
 	parent.add_child(buy_button)
 
@@ -1167,6 +1172,46 @@ func _add_achievement_claimed_stamp(parent: Control, row_name: String, position:
 	tween.tween_property(stamp, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_text: String) -> void:
+	_remove_named_child(parent, "ShopPurchaseRewardOverlay")
+	var reward: Control = Control.new()
+	reward.name = "ShopPurchaseRewardOverlay"
+	reward.size = VIEW_SIZE
+	reward.z_index = 18
+	parent.add_child(reward)
+
+	var design: TextureRect = _ui_texture_rect("ShopPurchaseRewardDesignBackground", SHOP_PURCHASE_FEEDBACK_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	reward.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("ShopPurchaseRewardBurst", SHOP_PURCHASE_REWARD_BURST, Vector2(392, 410), Vector2(128, 128))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.95)
+	burst.z_index = 1
+	reward.add_child(burst)
+
+	var title_label: Label = _label("ShopPurchaseRewardTitle", "购买成功：%s" % title, Vector2(410, 302), Vector2(460, 52), 31, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title_label.z_index = 2
+	reward.add_child(title_label)
+	var copy: Label = _label("ShopPurchaseRewardCopy", "已放入猫猫补给箱", Vector2(420, 366), Vector2(440, 42), 21, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.z_index = 2
+	reward.add_child(copy)
+	var amount: Label = _label("ShopPurchaseRewardAmount", amount_text, Vector2(520, 450), Vector2(330, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	amount.z_index = 2
+	reward.add_child(amount)
+	var done_button: Button = _transparent_text_button("CloseShopPurchaseRewardButton", "收好补给", Rect2(Vector2(470, 594), Vector2(340, 78)), 26)
+	done_button.z_index = 3
+	done_button.pressed.connect(func() -> void: reward.queue_free())
+	_attach_button_feedback(done_button, burst)
+	reward.add_child(done_button)
+	var dismiss_button: Button = _hotspot_button("DismissShopPurchaseRewardButton", Vector2(888, 138), Vector2(96, 96), "关闭")
+	dismiss_button.z_index = 3
+	dismiss_button.pressed.connect(func() -> void: reward.queue_free())
+	reward.add_child(dismiss_button)
+	_animate_overlay_entry(reward)
+	_pulse_control(burst)
+
+
 func _shop_locked_product(parent: Control, node_prefix: String, title: String, detail: String, position: Vector2, size: Vector2) -> void:
 	parent.add_child(_label("%sTitle" % node_prefix, title, position, Vector2(size.x, 36), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	parent.add_child(_label("%sDetail" % node_prefix, detail, position + Vector2(58, 188), Vector2(size.x - 70, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
@@ -1198,6 +1243,7 @@ func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Ve
 		buy_button.text = "再买 %d" % price if _total_fish >= price else "鱼干不足"
 		buy_button.disabled = _total_fish < price
 		_pulse_control(icon)
+		_show_shop_purchase_reward_overlay(parent, "猫爪徽章包", "徽章 +%d" % token_count)
 	)
 	parent.add_child(buy_button)
 
@@ -1225,6 +1271,7 @@ func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vec
 		buy_button.text = "再买 25" if _total_fish >= price else "鱼干不足"
 		buy_button.disabled = _total_fish < price
 		_pulse_control(icon)
+		_show_shop_purchase_reward_overlay(parent, "毛线陷阱", "毛线陷阱 +1")
 	)
 	parent.add_child(buy_button)
 

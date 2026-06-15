@@ -549,6 +549,21 @@
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."
     },
     {
+      "id": "shop_purchase_feedback_design_reference",
+      "path": "res://assets/generated/ui/shop_purchase_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen shop purchase success overlay for fish, badge, trap, and energy purchases."
+    },
+    {
+      "id": "shop_purchase_reward_burst_source",
+      "path": "res://assets/generated/ui/shop_purchase_reward_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the shop purchase reward burst."
+    },
+    {
+      "id": "shop_purchase_reward_burst",
+      "path": "res://assets/generated/ui/shop_purchase_reward_burst.png",
+      "prompt_summary": "Transparent Image2 shop purchase reward burst layered over purchase success overlays."
+    },
+    {
       "id": "result_screen_design_reference",
       "path": "res://assets/generated/ui/result_screen_design_reference.png",
       "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."

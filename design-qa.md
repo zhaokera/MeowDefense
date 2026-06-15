@@ -250,6 +250,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_energy_refill_tests.gd` to verify affordability, purchase cost, energy restore, persistence, and post-refill battle entry.
 - Added `/Users/zhaok/cat/tests/capture_shop_energy_refill.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_energy_refill_purchase.png`.
 
+**Shop Purchase Reward Feedback Overlay**
+- Generated `/Users/zhaok/cat/assets/generated/ui/shop_purchase_feedback_design_reference.png` as the full-screen Image2 purchase-success reward moment for fish packs, paw badge bundles, yarn traps, and energy refills.
+- Generated `/Users/zhaok/cat/assets/generated/ui/shop_purchase_reward_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/shop_purchase_reward_burst.png` for runtime use.
+- Fish pack, paw bundle, yarn trap, and energy refill purchases now open `ShopPurchaseRewardOverlay` with the Image2 design background, dynamic purchase/reward labels, the transparent reward burst, close hit areas, and button/burst pulse feedback.
+- Added `/Users/zhaok/cat/tests/run_shop_purchase_feedback_tests.gd` to verify all four shop purchase paths trigger the Image2 feedback layer, use the manifest-registered assets, display the correct dynamic reward text, and close cleanly.
+- Added `/Users/zhaok/cat/tests/capture_shop_purchase_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_purchase_feedback.png`.
+- Verified `/Users/zhaok/cat/artifacts/shop_purchase_feedback.png` visually, passed the targeted shop/backpack/inventory checks, and passed the full `tests/run_*.gd` regression suite with 45 clean Godot tests.
+
 **Battle Yarn Trap Consumable**
 - Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_field_effect.png` as a transparent Image2 battlefield yarn snare effect.
 - Battle HUD now exposes `YarnTrapHudIcon`, `YarnTrapCountLabel`, and `UseYarnTrapButton` using the Image2 item icon plus transparent interaction layer.
