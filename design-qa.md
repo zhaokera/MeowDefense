@@ -311,4 +311,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_upgrade_feedback_tests.gd` to verify real upgrade behavior and Image2 upgrade feedback rendering.
 - Added `/Users/zhaok/cat/tests/capture_tower_upgrade_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_upgrade_feedback.png`.
 
+**Battle Tower Sell Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/effects/tower_sell_feedback_design_reference.png` as the full-screen Image2 direction for selling a tower and refunding fish-cookie currency.
+- Generated `/Users/zhaok/cat/assets/generated/effects/tower_sell_fish_refund_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/tower_sell_fish_refund_burst.png` for runtime use.
+- Successful sells now show `TowerSellFeedbackN` at the sold tower slot using the Image2 fish-cookie and cat-paw refund burst.
+- The sell feedback pops, rotates, travels up-left toward the fish counter, and fades while the tower slot immediately becomes buildable again.
+- Added `/Users/zhaok/cat/tests/run_tower_sell_feedback_tests.gd` to verify real sell behavior, refund accounting, and Image2 sell feedback rendering.
+- Added `/Users/zhaok/cat/tests/capture_tower_sell_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_sell_feedback.png`.
+
 final result: passed

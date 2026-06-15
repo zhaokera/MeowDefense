@@ -36,6 +36,7 @@ const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_re
 const EnemyHitFishSparkTexture := preload("res://assets/generated/effects/enemy_hit_fish_spark.png")
 const BuildSuccessCatPawPuffTexture := preload("res://assets/generated/effects/build_success_cat_paw_puff.png")
 const TowerUpgradeCatStarburstTexture := preload("res://assets/generated/effects/tower_upgrade_cat_starburst.png")
+const TowerSellFishRefundBurstTexture := preload("res://assets/generated/effects/tower_sell_fish_refund_burst.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -82,6 +83,7 @@ var _enemy_reward_feedback_index: int = 0
 var _enemy_hit_feedback_index: int = 0
 var _build_success_feedback_index: int = 0
 var _tower_upgrade_feedback_index: int = 0
+var _tower_sell_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -109,6 +111,7 @@ func start_level(path: String) -> void:
 	_enemy_hit_feedback_index = 0
 	_build_success_feedback_index = 0
 	_tower_upgrade_feedback_index = 0
+	_tower_sell_feedback_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -597,11 +600,13 @@ func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control) -> 
 	if tower == null or not is_instance_valid(tower):
 		return
 	var refund: int = _tower_sell_refund(tower)
+	var feedback_anchor: Vector2 = tower.global_position
 	coins += refund
 	towers.erase(tower)
 	_tower_by_slot.erase(slot)
 	slot.set_occupied(false)
 	_mark_slot_button_empty(slot)
+	_show_tower_sell_feedback(feedback_anchor)
 	tower.queue_free()
 	if overlay != null and is_instance_valid(overlay):
 		overlay.queue_free()
@@ -814,6 +819,31 @@ func _show_tower_upgrade_feedback(world_anchor: Vector2) -> void:
 	tween.tween_property(effect, "position:y", effect.position.y - 28.0, 0.42).set_delay(0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(effect, "modulate:a", 0.0, 0.24).set_delay(0.58).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.88)
+
+
+func _show_tower_sell_feedback(world_anchor: Vector2) -> void:
+	if _world == null:
+		return
+	_tower_sell_feedback_index += 1
+	var effect: Sprite2D = Sprite2D.new()
+	effect.name = "TowerSellFeedback%d" % _tower_sell_feedback_index
+	effect.texture = TowerSellFishRefundBurstTexture
+	effect.centered = true
+	effect.position = world_anchor + Vector2(4, -34)
+	effect.scale = Vector2(0.055, 0.055)
+	effect.rotation_degrees = -12.0
+	effect.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	effect.z_index = 28
+	_world.add_child(effect)
+
+	var tween: Tween = effect.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(effect, "modulate:a", 0.96, 0.06).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "scale", Vector2(0.102, 0.102), 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "rotation_degrees", 5.0, 0.26).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "position", effect.position + Vector2(-62.0, -86.0), 0.52).set_delay(0.10).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "modulate:a", 0.0, 0.22).set_delay(0.48).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.76)
 
 
 func _pop_in_control(target: Control) -> void:

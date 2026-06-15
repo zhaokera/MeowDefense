@@ -115,6 +115,21 @@
       "id": "tower_upgrade_cat_starburst",
       "path": "res://assets/generated/effects/tower_upgrade_cat_starburst.png",
       "prompt_summary": "Image2 transparent golden cat-paw starburst used when a player successfully upgrades a tower."
+    },
+    {
+      "id": "tower_sell_feedback_design_reference",
+      "path": "res://assets/generated/effects/tower_sell_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing fish-cookie currency arcing back when a tower is sold."
+    },
+    {
+      "id": "tower_sell_fish_refund_burst_source",
+      "path": "res://assets/generated/effects/tower_sell_fish_refund_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the successful tower sell refund burst."
+    },
+    {
+      "id": "tower_sell_fish_refund_burst",
+      "path": "res://assets/generated/effects/tower_sell_fish_refund_burst.png",
+      "prompt_summary": "Image2 transparent fish-cookie and cat-paw refund burst used when a player sells a tower."
     }
   ],
   "ui": [
