@@ -161,6 +161,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_reward_overlay_tests.gd` to require Image2 reward assets, reject `RewardPanel`, and verify the fish reward is granted.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`.
 
+**Daily Reward Reset And Streak**
+- Upgraded the Image2 daily reward overlay from a permanent one-time claim into a date-based daily claim flow.
+- Added `daily_reward_claimed_on` and `daily_reward_streak` save fields while keeping the old `daily_reward_claimed` field as a migration-compatible current-day state.
+- Same-day claims now disable the transparent claim hit area, while the new transparent close hit area keeps the overlay dismissible.
+- The reward overlay now shows a dynamic streak label on top of the existing Image2 reward panel without adding code-drawn visual panels.
+- Added `/Users/zhaok/cat/tests/run_daily_reward_reset_tests.gd` to verify same-day lockout, reload persistence, next-day reset, and consecutive streak growth.
+- Added `/Users/zhaok/cat/tests/capture_daily_reward_streak.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_reward_streak.png`.
+
 **Image2 Daily Task Overlay**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/daily_task_overlay_design_reference.png` as the full-screen daily task design reference.
 - Replaced the old main-menu daily task shortcut-to-levels behavior with `DailyTaskOverlay`, using `DailyTaskDesignBackground`, dynamic task labels, transparent claim/close hit areas, and shared pop-in/click feedback.

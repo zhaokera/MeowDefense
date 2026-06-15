@@ -79,6 +79,9 @@ var _music_enabled: bool = true
 var _effects_enabled: bool = true
 var _volume: float = 82.0
 var _daily_reward_claimed: bool = false
+var _daily_reward_claimed_on: String = ""
+var _daily_reward_streak: int = 0
+var _reward_date_override: String = ""
 var _shop_starter_claimed: bool = false
 var _paw_tokens: int = 0
 var _claimed_achievements: Dictionary = {}
@@ -438,6 +441,8 @@ func _show_reward_overlay(parent: Node) -> void:
 	_remove_named_child(parent, "RewardOverlay")
 	var overlay: Control = _overlay("RewardOverlay")
 	parent.add_child(overlay)
+	var claimed_today: bool = _is_daily_reward_claimed_today()
+	_daily_reward_claimed = claimed_today
 
 	var content: Control = Control.new()
 	content.name = "RewardContent"
@@ -452,24 +457,78 @@ func _show_reward_overlay(parent: Node) -> void:
 	content.add_child(chest)
 	var reward_chip: TextureRect = _ui_texture_rect("RewardFishChipFrame", REWARD_FISH_CHIP, Vector2(478, 426), Vector2(324, 84))
 	content.add_child(reward_chip)
-	var reward_text: String = "小鱼干 +20" if not _daily_reward_claimed else "今日已领取"
+	var reward_text: String = "小鱼干 +20" if not claimed_today else "今日已领取"
 	content.add_child(_label("RewardFishAmount", reward_text, Vector2(570, 442), Vector2(210, 48), 26, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var streak_text: String = "连续 %d 天" % max(0, _daily_reward_streak)
+	if _daily_reward_streak <= 0:
+		streak_text = "连续奖励"
+	content.add_child(_label("RewardStreakLabel", streak_text, Vector2(800, 384), Vector2(118, 28), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
 
 	var claim_frame: TextureRect = _ui_texture_rect("RewardClaimFrame", REWARD_CLAIM_BUTTON, Vector2(468, 560), Vector2(344, 78))
 	content.add_child(claim_frame)
-	var claim_text: String = "领取奖励" if not _daily_reward_claimed else "知道了"
+	var claim_text: String = "领取奖励" if not claimed_today else "今日已领取"
 	var claim: Button = _transparent_text_button("ClaimRewardButton", claim_text, Rect2(claim_frame.position, claim_frame.size), 26)
+	claim.disabled = claimed_today
 	_attach_button_feedback(claim, claim_frame)
 	claim.pressed.connect(func() -> void:
-		if not _daily_reward_claimed:
-			_daily_reward_claimed = true
-			_total_fish += 20
-			_save_progress()
+		if _claim_daily_reward():
 			_pulse_control(chest)
 		overlay.queue_free()
 	)
 	content.add_child(claim)
+	var close_button: Button = _hotspot_button("CloseRewardButton", Vector2(846, 92), Vector2(88, 88), "关闭")
+	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	content.add_child(close_button)
 	_animate_overlay_entry(content)
+
+
+func _claim_daily_reward() -> bool:
+	if _is_daily_reward_claimed_today():
+		_daily_reward_claimed = true
+		return false
+	var today: String = _today_key()
+	var previous_claimed_on: String = _daily_reward_claimed_on
+	var day_gap: int = _days_between(previous_claimed_on, today)
+	_daily_reward_streak = _daily_reward_streak + 1 if day_gap == 1 else 1
+	_daily_reward_claimed_on = today
+	_daily_reward_claimed = true
+	_total_fish += 20
+	_save_progress()
+	return true
+
+
+func _is_daily_reward_claimed_today() -> bool:
+	return not _daily_reward_claimed_on.is_empty() and _daily_reward_claimed_on == _today_key()
+
+
+func _today_key() -> String:
+	if not _reward_date_override.is_empty():
+		return _reward_date_override
+	var date_parts: Dictionary = Time.get_date_dict_from_system(false)
+	return "%04d-%02d-%02d" % [int(date_parts.get("year", 0)), int(date_parts.get("month", 0)), int(date_parts.get("day", 0))]
+
+
+func _days_between(from_date: String, to_date: String) -> int:
+	var from_index: int = _date_key_to_day_index(from_date)
+	var to_index: int = _date_key_to_day_index(to_date)
+	if from_index < 0 or to_index < 0:
+		return 0
+	return to_index - from_index
+
+
+func _date_key_to_day_index(date_key: String) -> int:
+	var parts: PackedStringArray = date_key.split("-")
+	if parts.size() != 3:
+		return -1
+	var unix_time: int = int(Time.get_unix_time_from_datetime_dict({
+		"year": int(parts[0]),
+		"month": int(parts[1]),
+		"day": int(parts[2]),
+		"hour": 0,
+		"minute": 0,
+		"second": 0
+	}))
+	return int(floor(float(unix_time) / 86400.0))
 
 
 func _show_daily_task_overlay(parent: Node) -> void:
@@ -1025,6 +1084,8 @@ func _save_progress() -> void:
 		"total_fish": _total_fish,
 		"unlocked_level": _unlocked_level,
 		"daily_reward_claimed": _daily_reward_claimed,
+		"daily_reward_claimed_on": _daily_reward_claimed_on,
+		"daily_reward_streak": _daily_reward_streak,
 		"shop_starter_claimed": _shop_starter_claimed,
 		"paw_tokens": _paw_tokens,
 		"claimed_achievements": _claimed_achievements,
@@ -1055,7 +1116,12 @@ func _load_progress() -> void:
 	var data: Dictionary = parsed as Dictionary
 	_total_fish = max(0, int(data.get("total_fish", 0)))
 	_unlocked_level = max(1, min(LEVELS.size(), int(data.get("unlocked_level", 1))))
-	_daily_reward_claimed = bool(data.get("daily_reward_claimed", false))
+	_daily_reward_claimed_on = str(data.get("daily_reward_claimed_on", ""))
+	_daily_reward_streak = max(0, int(data.get("daily_reward_streak", 0)))
+	if _daily_reward_claimed_on.is_empty() and bool(data.get("daily_reward_claimed", false)):
+		_daily_reward_claimed_on = _today_key()
+		_daily_reward_streak = max(1, _daily_reward_streak)
+	_daily_reward_claimed = _is_daily_reward_claimed_today()
 	_shop_starter_claimed = bool(data.get("shop_starter_claimed", false))
 	_paw_tokens = max(0, int(data.get("paw_tokens", 0)))
 	_yarn_traps = max(0, int(data.get("yarn_traps", 0)))
@@ -1260,6 +1326,7 @@ func _transparent_text_button(button_name: String, text: String, rect: Rect2, fo
 	button.clip_text = true
 	button.add_theme_font_size_override("font_size", font_size)
 	button.add_theme_color_override("font_color", INK)
+	button.add_theme_color_override("font_disabled_color", INK)
 	button.add_theme_color_override("font_hover_color", INK)
 	button.add_theme_color_override("font_pressed_color", Color(0.18, 0.08, 0.04))
 	button.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))

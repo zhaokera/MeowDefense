@@ -26,7 +26,7 @@ func _capture() -> void:
 		return
 	reward_button.emit_signal("pressed")
 	await process_frame
-	await process_frame
+	await create_timer(0.25).timeout
 	var image: Image = root.get_texture().get_image()
 	var error: Error = image.save_png(OUT_PATH)
 	if error != OK:
