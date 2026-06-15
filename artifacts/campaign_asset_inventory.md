@@ -61,6 +61,10 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent pause button art used by `BattlePauseFrame`.
 - `battle_build_slot_marker`: `/Users/zhaok/cat/assets/generated/ui/battle_build_slot_marker.png`
   Role: transparent cat-paw build marker used by `BuildSlotNVisual` nodes.
+- `battle_wave_preview_chip`: `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_chip.png`
+  Role: transparent Image2 wave preview chip used by `WavePreviewFrame` for incoming enemy and countdown status.
+- `battle_speed_button`: `/Users/zhaok/cat/assets/generated/ui/battle_speed_button.png`
+  Role: transparent Image2 speed button used by `SpeedControlFrame` for 1x/2x battle speed.
 - `tower_action_panel`: `/Users/zhaok/cat/assets/generated/ui/tower_action_panel.png`
   Role: transparent Image2 tower management panel used by `TowerActionDesignPanel` for upgrade, sell, and close actions.
 - `battle_pause_menu_design_reference`: `/Users/zhaok/cat/assets/generated/ui/battle_pause_menu_design_reference.png`

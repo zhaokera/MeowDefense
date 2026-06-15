@@ -13,6 +13,8 @@ const BattleHudTopBarTexture := preload("res://assets/generated/ui/battle_hud_to
 const BattleHudBottomDockTexture := preload("res://assets/generated/ui/battle_hud_bottom_dock.png")
 const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_pause_button.png")
 const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
+const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
+const BattleSpeedButtonTexture := preload("res://assets/generated/ui/battle_speed_button.png")
 const BattlePauseMenuPanelTexture := preload("res://assets/generated/ui/battle_pause_menu_panel.png")
 const BattlePauseMenuGreenButtonTexture := preload("res://assets/generated/ui/battle_pause_button_green.png")
 const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/battle_pause_button_orange.png")
@@ -47,7 +49,10 @@ var _slot_buttons: Control
 var _coins_label: Label
 var _base_label: Label
 var _wave_label: Label
+var _wave_preview_label: Label
 var _tip_label: Label
+var _speed_multiplier_label: Label
+var _speed_control_frame: TextureRect
 var _background_sprite: Sprite2D
 var _pause_overlay: Control
 var _base_node: Node2D
@@ -59,6 +64,7 @@ var _tower_by_slot: Dictionary = {}
 var _pause_music_enabled: bool = true
 var _pause_effects_enabled: bool = true
 var _pause_volume: float = 82.0
+var _battle_speed_multiplier: float = 1.0
 
 
 func _ready() -> void:
@@ -80,6 +86,7 @@ func start_level(path: String) -> void:
 	_tower_by_slot.clear()
 	_wave_states.clear()
 	_selected_tower_id = level.allowed_towers[0] if not level.allowed_towers.is_empty() else "orange_cat"
+	_battle_speed_multiplier = 1.0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -93,7 +100,7 @@ func start_level(path: String) -> void:
 func _process(delta: float) -> void:
 	if finished or level == null:
 		return
-	simulate_step(delta)
+	simulate_step(delta * _battle_speed_multiplier)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -222,6 +229,16 @@ func _build_hud() -> void:
 	_wave_label.size = Vector2(150, 34)
 	_hud.add_child(_wave_label)
 
+	var wave_preview_frame: TextureRect = _hud_texture_rect("WavePreviewFrame", BattleWavePreviewChipTexture, Vector2(310, 114), Vector2(582, 92))
+	_hud.add_child(wave_preview_frame)
+
+	_wave_preview_label = _hud_label("下一波")
+	_wave_preview_label.name = "WavePreviewLabel"
+	_wave_preview_label.position = Vector2(448, 140)
+	_wave_preview_label.size = Vector2(350, 34)
+	_wave_preview_label.add_theme_font_size_override("font_size", 20)
+	_hud.add_child(_wave_preview_label)
+
 	var bottom_frame: TextureRect = _hud_texture_rect("BattleHudBottomFrame", BattleHudBottomDockTexture, Vector2(14, 528), Vector2(920, 210))
 	_hud.add_child(bottom_frame)
 
@@ -259,6 +276,28 @@ func _build_hud() -> void:
 	_make_button_transparent(pause_button)
 	_attach_press_feedback(pause_button, pause_frame)
 	_hud.add_child(pause_button)
+
+	_speed_control_frame = _hud_texture_rect("SpeedControlFrame", BattleSpeedButtonTexture, Vector2(1030, 20), Vector2(96, 96))
+	_hud.add_child(_speed_control_frame)
+
+	_speed_multiplier_label = _hud_label("1x")
+	_speed_multiplier_label.name = "SpeedMultiplierLabel"
+	_speed_multiplier_label.position = Vector2(1054, 51)
+	_speed_multiplier_label.size = Vector2(48, 32)
+	_speed_multiplier_label.add_theme_font_size_override("font_size", 23)
+	_hud.add_child(_speed_multiplier_label)
+
+	var speed_button: Button = Button.new()
+	speed_button.name = "SpeedToggleButton"
+	speed_button.text = ""
+	speed_button.position = _speed_control_frame.position
+	speed_button.size = _speed_control_frame.size
+	speed_button.tooltip_text = "切换战斗速度"
+	speed_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	speed_button.pressed.connect(_toggle_battle_speed)
+	_make_button_transparent(speed_button)
+	_attach_press_feedback(speed_button, _speed_control_frame)
+	_hud.add_child(speed_button)
 	_build_slot_buttons()
 
 
@@ -326,13 +365,18 @@ func _panel_style(fill: Color, border: Color, radius: int = 8, border_width: int
 
 
 func _prepare_waves() -> void:
+	var wave_index: int = 1
 	for wave: Dictionary in level.waves:
 		_wave_states.append({
+			"index": wave_index,
 			"enemy": str(wave.get("enemy", "mouse_basic")),
 			"remaining": int(wave.get("count", 1)),
+			"total_count": int(wave.get("count", 1)),
 			"interval": float(wave.get("interval", 1.0)),
+			"start_time": float(wave.get("time", 0.0)),
 			"next_time": float(wave.get("time", 0.0))
 		})
+		wave_index += 1
 
 
 func _spawn_due_enemies() -> void:
@@ -603,6 +647,17 @@ func _select_tower(tower_id: String) -> void:
 	_selected_tower_id = tower_id
 	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
 	_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
+
+
+func _toggle_battle_speed() -> void:
+	_battle_speed_multiplier = 2.0 if _battle_speed_multiplier < 2.0 else 1.0
+	if _speed_multiplier_label != null:
+		_speed_multiplier_label.text = "%dx" % int(_battle_speed_multiplier)
+	if _speed_control_frame != null:
+		_speed_control_frame.modulate = Color(1.0, 0.90, 0.66) if _battle_speed_multiplier > 1.0 else Color.WHITE
+		_animate_control_scale(_speed_control_frame, 1.08, 0.08)
+	if _tip_label != null:
+		_tip_label.text = "战斗速度已切换为 %dx。" % int(_battle_speed_multiplier)
 
 
 func _tower_button_name(tower_id: String) -> String:
@@ -907,6 +962,28 @@ func _update_hud() -> void:
 	_coins_label.text = "小鱼干 %d" % coins
 	_base_label.text = "猫粮罐 %d/%d" % [base_hp, int(level.base_hp)]
 	_wave_label.text = "波次 %d/%d" % [min(spawned_waves, _wave_states.size()), _wave_states.size()]
+	if _wave_preview_label != null:
+		_wave_preview_label.text = _wave_preview_text()
+
+
+func _wave_preview_text() -> String:
+	for state: Dictionary in _wave_states:
+		var enemy_name: String = _enemy_display_name(str(state.get("enemy", "mouse_basic")))
+		var wave_index: int = int(state.get("index", 1))
+		var start_time: float = float(state.get("start_time", 0.0))
+		var next_time: float = float(state.get("next_time", start_time))
+		if int(state.get("remaining", 0)) > 0:
+			if elapsed < start_time:
+				return "下一波 %d/%d：%s %.1f秒" % [wave_index, _wave_states.size(), enemy_name, max(0.0, start_time - elapsed)]
+			return "第 %d/%d 波：%s x%d  %.1f秒" % [wave_index, _wave_states.size(), enemy_name, int(state.get("remaining", 0)), max(0.0, next_time - elapsed)]
+		if elapsed < float(state.get("start_time", 0.0)):
+			return "下一波 %d/%d：%s %.1f秒" % [wave_index, _wave_states.size(), enemy_name, max(0.0, next_time - elapsed)]
+	return "最后一波清场中"
+
+
+func _enemy_display_name(enemy_id: String) -> String:
+	var enemy_data: Dictionary = TowerStatsScript.get_enemy(enemy_id)
+	return str(enemy_data.get("name", enemy_id))
 
 
 func has_base_animation_support() -> bool:

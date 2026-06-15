@@ -117,6 +117,16 @@
       "prompt_summary": "Cropped Image2 cat-paw build slot marker with transparent background."
     },
     {
+      "id": "battle_wave_preview_chip",
+      "path": "res://assets/generated/ui/battle_wave_preview_chip.png",
+      "prompt_summary": "Image2 transparent wave preview chip used by the battle HUD for incoming enemy and countdown text."
+    },
+    {
+      "id": "battle_speed_button",
+      "path": "res://assets/generated/ui/battle_speed_button.png",
+      "prompt_summary": "Image2 transparent speed-toggle button used by the battle HUD for 1x/2x battle speed."
+    },
+    {
       "id": "tower_action_panel",
       "path": "res://assets/generated/ui/tower_action_panel.png",
       "prompt_summary": "Image2 transparent tower management panel used for upgrade, sell, and close actions during battle."

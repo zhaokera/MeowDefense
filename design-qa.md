@@ -160,4 +160,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_progression_persistence_tests.gd` to verify fresh locks, save creation, reload restore, and next-level unlock behavior without touching the real player save.
 - Added `/Users/zhaok/cat/tests/capture_level_select_locked.gd` to regenerate `/Users/zhaok/cat/artifacts/level_select_locked.png`.
 
+**Battle Wave Preview And Speed Control**
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_chip.png` and `/Users/zhaok/cat/assets/generated/ui/battle_speed_button.png` as transparent Image2 HUD assets.
+- Added `WavePreviewFrame` and `WavePreviewLabel` to show the next/current wave enemy, count, and countdown without drawing a code panel.
+- Added `SpeedControlFrame`, `SpeedToggleButton`, and `SpeedMultiplierLabel` so players can toggle battle simulation between 1x and 2x with press feedback.
+- Added `/Users/zhaok/cat/tests/run_battle_speed_wave_tests.gd` to verify Image2 asset use, 1x/2x state, doubled process-time simulation, and live wave preview updates.
+
 final result: passed
