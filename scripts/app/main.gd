@@ -196,12 +196,20 @@ func _start_level(level_info: Dictionary) -> void:
 	_current_level_path = str(level_info.get("path", "res://data/levels/level_001.json"))
 	var battle: Node2D = BattleSceneScript.new()
 	battle.name = "BattleScene"
+	battle.set("yarn_traps_available", _yarn_traps)
 	battle.battle_finished.connect(_show_result)
 	if battle.has_signal("exit_to_levels_requested"):
 		battle.exit_to_levels_requested.connect(_show_level_select)
+	if battle.has_signal("yarn_traps_changed"):
+		battle.yarn_traps_changed.connect(_on_battle_yarn_traps_changed)
 	_current = battle
 	add_child(battle)
 	battle.start_level(_current_level_path)
+
+
+func _on_battle_yarn_traps_changed(count: int) -> void:
+	_yarn_traps = max(0, count)
+	_save_progress()
 
 
 func _show_result(won: bool, stars: int, fish_reward: int) -> void:

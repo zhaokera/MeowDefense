@@ -287,6 +287,11 @@
       "prompt_summary": "Image2 transparent yarn trap item icon used by the shop purchase state and inventory flow."
     },
     {
+      "id": "yarn_trap_field_effect",
+      "path": "res://assets/generated/ui/yarn_trap_field_effect.png",
+      "prompt_summary": "Image2 transparent battlefield yarn snare effect used when deploying the yarn trap consumable."
+    },
+    {
       "id": "shop_overlay_design_reference",
       "path": "res://assets/generated/ui/shop_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."

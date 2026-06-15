@@ -174,6 +174,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_yarn_trap_tests.gd` to verify purchase, cost, inventory count, persistence, and backpack display.
 - Added `/Users/zhaok/cat/tests/capture_shop_yarn_trap.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png` and `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`.
 
+**Battle Yarn Trap Consumable**
+- Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_field_effect.png` as a transparent Image2 battlefield yarn snare effect.
+- Battle HUD now exposes `YarnTrapHudIcon`, `YarnTrapCountLabel`, and `UseYarnTrapButton` using the Image2 item icon plus transparent interaction layer.
+- Pressing the trap button consumes one saved inventory item, emits `yarn_traps_changed`, slows active enemies near the target, and shows `YarnTrapFieldEffectN` on the battlefield.
+- Main scene passes `_yarn_traps` into `CatDefenseBattleScene` before level start and persists the reduced count when a trap is used.
+- Added `/Users/zhaok/cat/tests/run_battle_yarn_trap_tests.gd` and `/Users/zhaok/cat/tests/run_battle_yarn_inventory_flow_tests.gd` to verify battle behavior, inventory handoff, and save persistence.
+- Added `/Users/zhaok/cat/tests/capture_battle_yarn_trap.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_yarn_trap.png`.
+
 **Progression Persistence And Level Locking**
 - Generated `/Users/zhaok/cat/assets/generated/ui/level_lock_badge.png` as a transparent Image2 cat-paw lock badge for locked level cards.
 - Added persistent progress at `user://meow_defense_save.json` for best stars by level, total fish, unlocked level, reward claims, and basic settings.

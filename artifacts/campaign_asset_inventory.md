@@ -129,6 +129,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: transparent Image2 claimed stamp used by completed achievement rows after reward collection.
 - `yarn_trap_item_icon`: `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png`
   Role: transparent Image2 item icon used by the purchasable yarn trap shop product and inventory flow.
+- `yarn_trap_field_effect`: `/Users/zhaok/cat/assets/generated/ui/yarn_trap_field_effect.png`
+  Role: transparent Image2 battlefield snare effect shown when a yarn trap is deployed in battle.
 - `shop_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`
   Role: full-screen Image2 shop overlay design used directly by `ShopDesignBackground`.
 - `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
@@ -183,4 +185,5 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Shop overlay screenshot: `/Users/zhaok/cat/artifacts/shop_overlay.png`
 - Yarn trap shop purchase screenshot: `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png`
 - Backpack yarn trap screenshot: `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`
+- Battle yarn trap screenshot: `/Users/zhaok/cat/artifacts/battle_yarn_trap.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

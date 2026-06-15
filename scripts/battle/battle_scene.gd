@@ -3,6 +3,7 @@ class_name CatDefenseBattleScene
 
 signal battle_finished(won: bool, stars: int, fish_reward: int)
 signal exit_to_levels_requested
+signal yarn_traps_changed(count: int)
 
 const LevelDataScript := preload("res://scripts/core/level_data.gd")
 const TowerStatsScript := preload("res://scripts/core/tower_stats.gd")
@@ -27,6 +28,8 @@ const SettingsToggleOffTexture := preload("res://assets/generated/ui/settings_to
 const SettingsSliderTrackTexture := preload("res://assets/generated/ui/settings_slider_track.png")
 const SettingsSliderKnobTexture := preload("res://assets/generated/ui/settings_slider_knob.png")
 const SettingsCloseButtonTexture := preload("res://assets/generated/ui/settings_close_button.png")
+const YarnTrapItemIconTexture := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
+const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap_field_effect.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -65,6 +68,10 @@ var _pause_music_enabled: bool = true
 var _pause_effects_enabled: bool = true
 var _pause_volume: float = 82.0
 var _battle_speed_multiplier: float = 1.0
+var yarn_traps_available: int = 0
+var _yarn_trap_count_label: Label
+var _yarn_trap_hud_icon: TextureRect
+var _yarn_trap_effect_index: int = 0
 
 
 func _ready() -> void:
@@ -87,6 +94,7 @@ func start_level(path: String) -> void:
 	_wave_states.clear()
 	_selected_tower_id = level.allowed_towers[0] if not level.allowed_towers.is_empty() else "orange_cat"
 	_battle_speed_multiplier = 1.0
+	_yarn_trap_effect_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -298,6 +306,7 @@ func _build_hud() -> void:
 	_make_button_transparent(speed_button)
 	_attach_press_feedback(speed_button, _speed_control_frame)
 	_hud.add_child(speed_button)
+	_build_yarn_trap_hud()
 	_build_slot_buttons()
 
 
@@ -660,6 +669,102 @@ func _toggle_battle_speed() -> void:
 		_tip_label.text = "战斗速度已切换为 %dx。" % int(_battle_speed_multiplier)
 
 
+func _build_yarn_trap_hud() -> void:
+	_yarn_trap_hud_icon = _hud_texture_rect("YarnTrapHudIcon", YarnTrapItemIconTexture, Vector2(936, 536), Vector2(96, 96))
+	_yarn_trap_hud_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_hud.add_child(_yarn_trap_hud_icon)
+
+	_yarn_trap_count_label = _hud_label("x%d" % yarn_traps_available)
+	_yarn_trap_count_label.name = "YarnTrapCountLabel"
+	_yarn_trap_count_label.position = Vector2(980, 614)
+	_yarn_trap_count_label.size = Vector2(72, 34)
+	_yarn_trap_count_label.add_theme_font_size_override("font_size", 20)
+	_hud.add_child(_yarn_trap_count_label)
+
+	var trap_button: Button = Button.new()
+	trap_button.name = "UseYarnTrapButton"
+	trap_button.text = ""
+	trap_button.position = _yarn_trap_hud_icon.position
+	trap_button.size = Vector2(116, 116)
+	trap_button.tooltip_text = "使用毛线陷阱"
+	trap_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	_make_button_transparent(trap_button)
+	_attach_press_feedback(trap_button, _yarn_trap_hud_icon)
+	trap_button.pressed.connect(_use_yarn_trap)
+	_hud.add_child(trap_button)
+	_update_yarn_trap_hud()
+
+
+func _use_yarn_trap() -> void:
+	if yarn_traps_available <= 0:
+		if _tip_label != null:
+			_tip_label.text = "背包里没有毛线陷阱。"
+		_update_yarn_trap_hud()
+		return
+	var target: Node2D = _first_active_enemy()
+	if target == null:
+		if _tip_label != null:
+			_tip_label.text = "等小老鼠出现后再放毛线陷阱。"
+		return
+	yarn_traps_available = max(0, yarn_traps_available - 1)
+	_apply_yarn_trap_at(target.global_position)
+	_update_yarn_trap_hud()
+	yarn_traps_changed.emit(yarn_traps_available)
+	if _tip_label != null:
+		_tip_label.text = "毛线陷阱缠住了小老鼠！"
+
+
+func _first_active_enemy() -> Node2D:
+	for enemy: Node2D in enemies:
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		if bool(enemy.get("reached_base")):
+			continue
+		if enemy.has_method("is_defeated") and bool(enemy.call("is_defeated")):
+			continue
+		return enemy
+	return null
+
+
+func _apply_yarn_trap_at(center: Vector2) -> void:
+	for enemy: Node2D in enemies:
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		if bool(enemy.get("reached_base")):
+			continue
+		if enemy.has_method("is_defeated") and bool(enemy.call("is_defeated")):
+			continue
+		if enemy.global_position.distance_to(center) <= 190.0 and enemy.has_method("apply_slow"):
+			enemy.call("apply_slow", 0.35, 4.0)
+
+	_yarn_trap_effect_index += 1
+	var effect: Sprite2D = Sprite2D.new()
+	effect.name = "YarnTrapFieldEffect%d" % _yarn_trap_effect_index
+	effect.texture = YarnTrapFieldEffectTexture
+	effect.centered = true
+	effect.position = center
+	effect.scale = Vector2(0.13, 0.13)
+	effect.z_index = 3
+	_world.add_child(effect)
+
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(effect, "scale", Vector2(0.16, 0.16), 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "modulate:a", 0.78, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _update_yarn_trap_hud() -> void:
+	if _yarn_trap_count_label != null:
+		_yarn_trap_count_label.text = "x%d" % yarn_traps_available
+	if _yarn_trap_hud_icon != null:
+		_yarn_trap_hud_icon.modulate = Color.WHITE if yarn_traps_available > 0 else Color(0.70, 0.70, 0.70, 0.62)
+	var trap_button: Button = null
+	if _hud != null:
+		trap_button = _hud.find_child("UseYarnTrapButton", true, false) as Button
+	if trap_button != null:
+		trap_button.disabled = false
+
+
 func _tower_button_name(tower_id: String) -> String:
 	if tower_id == "orange_cat":
 		return "SelectTowerOrangeCatButton"
@@ -964,6 +1069,7 @@ func _update_hud() -> void:
 	_wave_label.text = "波次 %d/%d" % [min(spawned_waves, _wave_states.size()), _wave_states.size()]
 	if _wave_preview_label != null:
 		_wave_preview_label.text = _wave_preview_text()
+	_update_yarn_trap_hud()
 
 
 func _wave_preview_text() -> String:

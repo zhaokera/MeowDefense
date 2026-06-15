@@ -17,6 +17,7 @@
 - 战斗 HUD 支持下一波敌人预告和 1x/2x 加速切换
 - 成就页可按进度领取小鱼干和猫爪徽章，背包会显示徽章数量
 - 商店可购买毛线陷阱包，背包会显示持有数量
+- 战斗中可使用背包里的毛线陷阱减速小鼠，并带有 Image2 毛线缠绕特效
 - 关卡解锁、最佳星级、小鱼干、猫爪徽章、毛线陷阱和奖励领取状态会持久化保存
 
 ## 运行
@@ -39,7 +40,8 @@ Godot --path /path/to/MeowDefense
 2. 选择关卡并点击 `出发`
 3. 在战斗地图上点击黄色圆形 `+` 猫爪按钮建造猫塔
 4. 第二关开始可在底部切换塔类型
-5. 通关后会解锁下一关，并保留星级和小鱼干进度
+5. 在商店购买毛线陷阱后，可在战斗右下角点击道具图标减速敌人
+6. 通关后会解锁下一关，并保留星级和小鱼干进度
 
 ## 测试
 
@@ -52,6 +54,8 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_achievement_claim_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_shop_yarn_trap_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_battle_yarn_trap_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_battle_yarn_inventory_flow_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_build_input_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_tower_action_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_battle_speed_wave_tests.gd
@@ -82,6 +86,8 @@ Godot --path /path/to/MeowDefense
 ![Locked level select](artifacts/level_select_locked.png)
 
 ![Battle](artifacts/battle_level_001.png)
+
+![Battle yarn trap](artifacts/battle_yarn_trap.png)
 
 ![Tower action](artifacts/tower_action_overlay.png)
 
