@@ -343,4 +343,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_fire_feedback_tests.gd` to verify real tower attack behavior and Image2 firing feedback rendering.
 - Added `/Users/zhaok/cat/tests/capture_tower_fire_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_fire_feedback.png`.
 
+**Orange Cat Tower Animation Sheet**
+- Generated `/Users/zhaok/cat/assets/generated/towers/orange_cat_tower_animation_design_reference.png` as the full-screen Image2 direction for the core orange cat tower feeling animated in battle.
+- Generated `/Users/zhaok/cat/assets/generated/towers/orange_cat_tower_sheet_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/towers/orange_cat_tower_sheet.png` for runtime use.
+- The `orange_cat` tower now uses the 2x2 Image2 sprite sheet instead of the old single static tower image.
+- Firing switches the orange cat tower from idle to the recoil frame, so the first playable tower has character motion in addition to muzzle and hit effects.
+- Added `/Users/zhaok/cat/tests/run_orange_cat_tower_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, and firing frame switch.
+- Added `/Users/zhaok/cat/tests/capture_orange_cat_tower_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/orange_cat_tower_animation.png`.
+
 final result: passed

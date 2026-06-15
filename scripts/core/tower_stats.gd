@@ -11,7 +11,7 @@ const TOWERS: Dictionary = {
 		"range": 188.0,
 		"damage": 5.0,
 		"fire_interval": 0.55,
-		"texture": "res://assets/generated/towers/orange_cat_tower.png",
+		"texture": "res://assets/generated/towers/orange_cat_tower_sheet.png",
 		"accent": Color(1.0, 0.58, 0.23)
 	},
 	"tabby_slow_cat": {

@@ -32,8 +32,18 @@
   "towers": [
     {
       "id": "orange_cat",
-      "path": "res://assets/generated/towers/orange_cat_tower.png",
-      "prompt_summary": "Orange tabby cat in a wooden basket turret holding a fishbone cannon."
+      "path": "res://assets/generated/towers/orange_cat_tower_sheet.png",
+      "prompt_summary": "Orange tabby cat fishbone cannon tower sprite sheet with idle, aim, firing recoil, and upgraded celebration poses."
+    },
+    {
+      "id": "orange_cat_tower_animation_design_reference",
+      "path": "res://assets/generated/towers/orange_cat_tower_animation_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle design reference showing the orange cat tower as an animated focal object with pose callouts."
+    },
+    {
+      "id": "orange_cat_tower_sheet_source",
+      "path": "res://assets/generated/towers/orange_cat_tower_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the orange cat fishbone cannon tower sprite sheet."
     },
     {
       "id": "tabby_slow_cat",
