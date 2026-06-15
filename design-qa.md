@@ -271,4 +271,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_resource_feedback_tests.gd` to verify insufficient build and upgrade actions preserve coins/tower state and show the Image2 feedback asset.
 - Added `/Users/zhaok/cat/tests/capture_battle_resource_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_resource_shortage_feedback.png`.
 
+**Battle Base Damage Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/ui/base_damage_warning_design_reference.png` as the full-screen Image2 direction for cat-food base damage feedback.
+- Generated `/Users/zhaok/cat/assets/generated/ui/base_damage_warning_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/base_damage_warning_burst.png` for runtime use.
+- Enemies reaching the base now show `BaseDamageFeedback` near the protected cat-food jar, using the Image2 burst with dynamic damage text, pop-in, shake, upward drift, and fade feedback.
+- The base HP label refreshes immediately when damage lands and gets a pulse, while the existing base sprite shake/red flash remains active.
+- Added `/Users/zhaok/cat/tests/run_base_damage_feedback_tests.gd` to verify base HP loss and Image2 warning rendering.
+- Added `/Users/zhaok/cat/tests/capture_base_damage_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/base_damage_feedback.png`.
+
 final result: passed

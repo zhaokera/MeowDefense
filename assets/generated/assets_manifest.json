@@ -147,6 +147,21 @@
       "prompt_summary": "Image2 transparent not-enough-fish feedback burst used when build or upgrade actions cannot be afforded."
     },
     {
+      "id": "base_damage_warning_design_reference",
+      "path": "res://assets/generated/ui/base_damage_warning_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing the protected cat-food base taking damage."
+    },
+    {
+      "id": "base_damage_warning_burst_source",
+      "path": "res://assets/generated/ui/base_damage_warning_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the base damage warning feedback burst."
+    },
+    {
+      "id": "base_damage_warning_burst",
+      "path": "res://assets/generated/ui/base_damage_warning_burst.png",
+      "prompt_summary": "Image2 transparent base-damage warning burst used when enemies reach the protected cat-food base."
+    },
+    {
       "id": "battle_pause_menu_design_reference",
       "path": "res://assets/generated/ui/battle_pause_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen pause menu design reference used to restore the battle pause overlay."

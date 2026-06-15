@@ -31,6 +31,7 @@ const SettingsCloseButtonTexture := preload("res://assets/generated/ui/settings_
 const YarnTrapItemIconTexture := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap_field_effect.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
+const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -643,6 +644,48 @@ func _show_resource_shortage_feedback(message: String, world_anchor: Vector2) ->
 	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.34)
 
 
+func _show_base_damage_feedback(damage: int, world_anchor: Vector2) -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("BaseDamageFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+
+	var feedback: TextureRect = _hud_texture_rect("BaseDamageFeedback", BaseDamageWarningBurstTexture, Vector2.ZERO, Vector2(320, 320))
+	feedback.z_index = 82
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	var target_center: Vector2 = Vector2(clamp(world_anchor.x - 205.0, 820.0, 1040.0), clamp(world_anchor.y + 65.0, 300.0, 400.0))
+	feedback.position = target_center - feedback.size * 0.5
+	feedback.scale = Vector2(0.72, 0.72)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("-%d 猫粮罐" % max(1, damage))
+	label.name = "BaseDamageFeedbackLabel"
+	label.position = Vector2(45, 225)
+	label.size = Vector2(230, 48)
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_color", Color(0.46, 0.12, 0.04))
+	label.add_theme_constant_override("outline_size", 4)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	if _base_label != null:
+		_animate_control_scale(_base_label, 1.10, 0.08)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", 5.0, 0.06).set_delay(0.14).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", -5.0, 0.07).set_delay(0.20).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.08).set_delay(0.29).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 18.0, 0.36).set_delay(0.54).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.28).set_delay(1.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.38)
+
+
 func _pop_in_control(target: Control) -> void:
 	if target == null or not is_instance_valid(target):
 		return
@@ -824,8 +867,12 @@ func _on_enemy_defeated(enemy: Node2D) -> void:
 func _on_enemy_reached_goal(enemy: Node2D) -> void:
 	if enemies.has(enemy):
 		enemies.erase(enemy)
-	base_hp = max(0, base_hp - int(enemy.base_damage))
+	var damage: int = int(enemy.base_damage)
+	base_hp = max(0, base_hp - damage)
 	_base_hit_timer = 0.22
+	var base_anchor: Vector2 = _base_node.global_position if _base_node != null else level.path_points[level.path_points.size() - 1]
+	_show_base_damage_feedback(damage, base_anchor)
+	_update_hud()
 	enemy.queue_free()
 	if base_hp <= 0:
 		_finish(false)
