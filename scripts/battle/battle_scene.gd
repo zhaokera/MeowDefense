@@ -35,6 +35,7 @@ const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_d
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
 const EnemyHitFishSparkTexture := preload("res://assets/generated/effects/enemy_hit_fish_spark.png")
 const EnemyDefeatMousePuffTexture := preload("res://assets/generated/effects/enemy_defeat_mouse_puff.png")
+const EnemySpawnMouseDustTexture := preload("res://assets/generated/effects/enemy_spawn_mouse_dust.png")
 const BuildSuccessCatPawPuffTexture := preload("res://assets/generated/effects/build_success_cat_paw_puff.png")
 const TowerUpgradeCatStarburstTexture := preload("res://assets/generated/effects/tower_upgrade_cat_starburst.png")
 const TowerSellFishRefundBurstTexture := preload("res://assets/generated/effects/tower_sell_fish_refund_burst.png")
@@ -84,6 +85,7 @@ var _yarn_trap_effect_index: int = 0
 var _enemy_reward_feedback_index: int = 0
 var _enemy_hit_feedback_index: int = 0
 var _enemy_defeat_feedback_index: int = 0
+var _enemy_spawn_feedback_index: int = 0
 var _build_success_feedback_index: int = 0
 var _tower_upgrade_feedback_index: int = 0
 var _tower_sell_feedback_index: int = 0
@@ -114,6 +116,7 @@ func start_level(path: String) -> void:
 	_enemy_reward_feedback_index = 0
 	_enemy_hit_feedback_index = 0
 	_enemy_defeat_feedback_index = 0
+	_enemy_spawn_feedback_index = 0
 	_build_success_feedback_index = 0
 	_tower_upgrade_feedback_index = 0
 	_tower_sell_feedback_index = 0
@@ -430,6 +433,7 @@ func _spawn_enemy(enemy_id: String) -> void:
 	enemy.reached_goal.connect(_on_enemy_reached_goal)
 	enemies.append(enemy)
 	_enemy_layer.add_child(enemy)
+	_show_enemy_spawn_feedback(enemy.global_position)
 
 
 func _tick_towers(delta: float) -> void:
@@ -776,6 +780,35 @@ func _show_enemy_hit_feedback(world_anchor: Vector2) -> void:
 	tween.tween_property(effect, "position:y", effect.position.y - 16.0, 0.25).set_delay(0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(effect, "modulate:a", 0.0, 0.16).set_delay(0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.38)
+
+
+func _show_enemy_spawn_feedback(world_anchor: Vector2) -> void:
+	if _world == null:
+		return
+	_enemy_spawn_feedback_index += 1
+	var effect: Sprite2D = Sprite2D.new()
+	effect.name = "EnemySpawnFeedback%d" % _enemy_spawn_feedback_index
+	effect.texture = EnemySpawnMouseDustTexture
+	effect.centered = true
+	var viewport_size: Vector2 = get_viewport_rect().size
+	effect.position = Vector2(
+		clampf(world_anchor.x, 64.0, maxf(64.0, viewport_size.x - 64.0)),
+		clampf(world_anchor.y - 18.0, 76.0, maxf(76.0, viewport_size.y - 128.0))
+	)
+	effect.scale = Vector2(0.036, 0.036)
+	effect.rotation_degrees = -4.0 + float(_enemy_spawn_feedback_index % 3) * 4.0
+	effect.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	effect.z_index = 22
+	_world.add_child(effect)
+
+	var tween: Tween = effect.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(effect, "modulate:a", 0.94, 0.05).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "scale", Vector2(0.066, 0.066), 0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "rotation_degrees", effect.rotation_degrees + 8.0, 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "position:y", effect.position.y - 14.0, 0.32).set_delay(0.09).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "modulate:a", 0.0, 0.18).set_delay(0.34).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.56)
 
 
 func _show_enemy_defeat_feedback(world_anchor: Vector2) -> void:

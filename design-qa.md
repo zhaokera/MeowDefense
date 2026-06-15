@@ -303,6 +303,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_enemy_defeat_feedback_tests.gd` to verify enemy list removal, Image2 defeat feedback rendering, and no reward/defeat overlap.
 - Added `/Users/zhaok/cat/tests/capture_enemy_defeat_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_defeat_feedback.png`.
 
+**Battle Enemy Spawn Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/effects/enemy_spawn_feedback_design_reference.png` as the full-screen Image2 direction for a mouse enemy entering the path from a dirt burrow.
+- Generated `/Users/zhaok/cat/assets/generated/effects/enemy_spawn_mouse_dust_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/enemy_spawn_mouse_dust.png` for runtime use.
+- Newly spawned enemies now show `EnemySpawnFeedbackN` at their entry point using the Image2 burrow, cat-paw dust, stars, and footprint effect.
+- The spawn effect pops, rotates, drifts, and fades quickly so enemies feel like they arrive on the path instead of appearing abruptly.
+- Added `/Users/zhaok/cat/tests/run_enemy_spawn_feedback_tests.gd` to verify enemy creation and Image2 entrance feedback rendering.
+- Added `/Users/zhaok/cat/tests/capture_enemy_spawn_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_spawn_feedback.png`.
+
 **Battle Build Success Feedback**
 - Generated `/Users/zhaok/cat/assets/generated/effects/build_success_feedback_design_reference.png` as the full-screen Image2 direction for successful tower construction feedback.
 - Generated `/Users/zhaok/cat/assets/generated/effects/build_success_cat_paw_puff_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/build_success_cat_paw_puff.png` for runtime use.

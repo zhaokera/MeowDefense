@@ -102,6 +102,21 @@
       "prompt_summary": "Image2 transparent cat-paw dust puff used when an enemy is defeated."
     },
     {
+      "id": "enemy_spawn_feedback_design_reference",
+      "path": "res://assets/generated/effects/enemy_spawn_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing a mouse enemy entering from a dirt burrow at the path start."
+    },
+    {
+      "id": "enemy_spawn_mouse_dust_source",
+      "path": "res://assets/generated/effects/enemy_spawn_mouse_dust_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the mouse entrance dust effect."
+    },
+    {
+      "id": "enemy_spawn_mouse_dust",
+      "path": "res://assets/generated/effects/enemy_spawn_mouse_dust.png",
+      "prompt_summary": "Image2 transparent burrow and cat-paw dust effect used when an enemy spawns."
+    },
+    {
       "id": "build_success_feedback_design_reference",
       "path": "res://assets/generated/effects/build_success_feedback_design_reference.png",
       "prompt_summary": "Image2 full-screen battle feedback design reference showing a cat-paw puff when a tower is built."
