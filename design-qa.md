@@ -169,6 +169,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/capture_town_feature_overlays.gd` to regenerate backpack, achievements, and shop screenshots.
 - Latest screenshots: `/Users/zhaok/cat/artifacts/backpack_overlay.png`, `/Users/zhaok/cat/artifacts/achievements_overlay.png`, `/Users/zhaok/cat/artifacts/shop_overlay.png`.
 
+**Backpack Item Detail Overlay**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/backpack_item_detail_design_reference.png` as the Image2 full-screen item detail design.
+- Backpack item buttons now open `BackpackItemDetailOverlay` instead of only pulsing the page; the detail layer shows the selected item icon, owned count, explanatory copy, close control, and contextual action button.
+- Yarn trap details use `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png` and route `去战斗` to the level select screen.
+- Added `/Users/zhaok/cat/tests/run_backpack_item_detail_tests.gd` to verify Image2 detail rendering, selected item data, and action routing.
+- Added `/Users/zhaok/cat/tests/capture_backpack_item_detail.gd` to regenerate `/Users/zhaok/cat/artifacts/backpack_item_detail.png`.
+
 **Achievement Claim Rewards**
 - Generated `/Users/zhaok/cat/assets/generated/ui/achievement_claimed_stamp.png` as a transparent Image2 cat-paw claimed stamp for achievement rows.
 - Added claimable achievement rewards for first clear, 15-star collection, and full campaign completion; rewards grant fish and cat-paw badges, then persist in `claimed_achievements` and `paw_tokens`.

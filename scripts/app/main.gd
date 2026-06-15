@@ -22,6 +22,7 @@ const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_but
 const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
 const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_design_reference.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
+const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
@@ -545,9 +546,45 @@ func _show_backpack_overlay(parent: Node) -> void:
 	content.add_child(_label("BackpackStarsCounter", "%d" % _best_stars, Vector2(735, 31), Vector2(104, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	content.add_child(_label("BackpackEnergyCounter", "15/15", Vector2(910, 31), Vector2(92, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
-	_backpack_item(content, "BackpackFishItem", "小鱼干", "当前持有 %d" % _total_fish, Vector2(306, 424), Vector2(214, 156))
-	_backpack_item(content, "BackpackPawTokenItem", "猫爪徽章", "当前持有 %d" % _paw_tokens, Vector2(532, 424), Vector2(214, 156))
-	_backpack_item(content, "BackpackYarnTrapItem", "毛线陷阱", "当前持有 %d" % _yarn_traps, Vector2(762, 424), Vector2(214, 156))
+	_backpack_item(
+		content,
+		parent,
+		"BackpackFishItem",
+		"小鱼干",
+		"当前持有 %d" % _total_fish,
+		Vector2(306, 424),
+		Vector2(214, 156),
+		RESULT_REWARD_FISH_CHIP,
+		"关卡胜利、每日任务、成就和商店补给都会增加小鱼干。",
+		"去商店",
+		"shop"
+	)
+	_backpack_item(
+		content,
+		parent,
+		"BackpackPawTokenItem",
+		"猫爪徽章",
+		"当前持有 %d" % _paw_tokens,
+		Vector2(532, 424),
+		Vector2(214, 156),
+		SHOP_PAW_BUNDLE_ICON,
+		"完成成就或购买徽章包可以获得猫爪徽章。",
+		"看成就",
+		"achievements"
+	)
+	_backpack_item(
+		content,
+		parent,
+		"BackpackYarnTrapItem",
+		"毛线陷阱",
+		"当前持有 %d" % _yarn_traps,
+		Vector2(762, 424),
+		Vector2(214, 156),
+		YARN_TRAP_ITEM_ICON,
+		"战斗中使用毛线陷阱可以减速小鼠，适合守住弯道。",
+		"去战斗",
+		"levels"
+	)
 
 	var organize: Button = _transparent_text_button("OrganizeBackpackButton", "整理背包", Rect2(Vector2(466, 574), Vector2(348, 76)), 27)
 	organize.pressed.connect(func() -> void: _pulse_control(content))
@@ -654,12 +691,84 @@ func _image_overlay(parent: Node, overlay_name: String, background_name: String,
 	return content
 
 
-func _backpack_item(parent: Control, node_prefix: String, title: String, detail: String, position: Vector2, size: Vector2) -> void:
+func _backpack_item(
+	parent: Control,
+	host: Node,
+	node_prefix: String,
+	title: String,
+	detail: String,
+	position: Vector2,
+	size: Vector2,
+	icon_texture: Texture2D,
+	item_copy: String,
+	action_text: String,
+	action_name: String
+) -> void:
 	parent.add_child(_label("%sTitle" % node_prefix, title, position, Vector2(size.x, 34), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	parent.add_child(_label("%sDetail" % node_prefix, detail, position + Vector2(62, 70), Vector2(size.x - 76, 34), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
 	var button: Button = _hotspot_button("%sButton" % node_prefix, position - Vector2(4, 128), Vector2(size.x + 8, 286), title)
-	button.pressed.connect(func() -> void: _pulse_control(parent))
+	button.pressed.connect(func() -> void:
+		_show_backpack_item_detail(parent, host, title, detail, icon_texture, item_copy, action_text, action_name)
+	)
 	parent.add_child(button)
+
+
+func _show_backpack_item_detail(
+	parent: Control,
+	host: Node,
+	title: String,
+	count_text: String,
+	icon_texture: Texture2D,
+	item_copy: String,
+	action_text: String,
+	action_name: String
+) -> void:
+	_remove_named_child(parent, "BackpackItemDetailOverlay")
+	var detail: Control = Control.new()
+	detail.name = "BackpackItemDetailOverlay"
+	detail.size = VIEW_SIZE
+	detail.z_index = 10
+	parent.add_child(detail)
+
+	var design: TextureRect = _ui_texture_rect("BackpackItemDetailDesignBackground", BACKPACK_ITEM_DETAIL_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	detail.add_child(design)
+	detail.add_child(_label("BackpackItemDetailTitle", title, Vector2(398, 122), Vector2(486, 62), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var icon: TextureRect = _ui_texture_rect("BackpackItemDetailIcon", icon_texture, Vector2(322, 276), Vector2(204, 204))
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	detail.add_child(icon)
+	detail.add_child(_label("BackpackItemDetailCount", count_text, Vector2(592, 286), Vector2(356, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var copy: Label = _label("BackpackItemDetailCopy", item_copy, Vector2(588, 368), Vector2(374, 92), 21, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail.add_child(copy)
+
+	var action_button: Button = _transparent_text_button("BackpackItemDetailActionButton", action_text, Rect2(Vector2(464, 544), Vector2(352, 82)), 27)
+	action_button.pressed.connect(func() -> void:
+		_run_backpack_item_action(parent, host, action_name)
+	)
+	detail.add_child(action_button)
+	var close_button: Button = _hotspot_button("CloseBackpackItemDetailButton", Vector2(952, 132), Vector2(88, 88), "关闭")
+	close_button.pressed.connect(func() -> void: detail.queue_free())
+	detail.add_child(close_button)
+	_animate_overlay_entry(detail)
+	_pulse_control(icon)
+
+
+func _run_backpack_item_action(backpack_content: Control, host: Node, action_name: String) -> void:
+	var backpack_overlay: Node = backpack_content.get_parent()
+	match action_name:
+		"shop":
+			if backpack_overlay != null:
+				backpack_overlay.queue_free()
+			_show_shop_overlay(host)
+		"achievements":
+			if backpack_overlay != null:
+				backpack_overlay.queue_free()
+			_show_achievements_overlay(host)
+		"levels":
+			_show_level_select()
+		_:
+			_remove_named_child(backpack_content, "BackpackItemDetailOverlay")
 
 
 func _achievement_row(parent: Control, achievement: Dictionary) -> void:

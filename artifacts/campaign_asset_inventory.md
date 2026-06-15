@@ -125,6 +125,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: full-screen Image2 daily task overlay used directly by `DailyTaskDesignBackground`.
 - `backpack_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`
   Role: full-screen Image2 backpack overlay design used directly by `BackpackDesignBackground`.
+- `backpack_item_detail_design_reference`: `/Users/zhaok/cat/assets/generated/ui/backpack_item_detail_design_reference.png`
+  Role: full-screen Image2 item detail overlay used by `BackpackItemDetailDesignBackground`.
 - `achievements_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`
   Role: full-screen Image2 achievements overlay design used directly by `AchievementsDesignBackground`.
 - `achievement_claimed_stamp`: `/Users/zhaok/cat/assets/generated/ui/achievement_claimed_stamp.png`
@@ -183,6 +185,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
 - Daily task overlay screenshot: `/Users/zhaok/cat/artifacts/daily_task_overlay.png`
 - Backpack overlay screenshot: `/Users/zhaok/cat/artifacts/backpack_overlay.png`
+- Backpack item detail screenshot: `/Users/zhaok/cat/artifacts/backpack_item_detail.png`
 - Achievements overlay screenshot: `/Users/zhaok/cat/artifacts/achievements_overlay.png`
 - Claimed achievements screenshot: `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`
 - Shop overlay screenshot: `/Users/zhaok/cat/artifacts/shop_overlay.png`

@@ -277,6 +277,11 @@
       "prompt_summary": "Image2 full-screen backpack overlay design used directly as the inventory popup background."
     },
     {
+      "id": "backpack_item_detail_design_reference",
+      "path": "res://assets/generated/ui/backpack_item_detail_design_reference.png",
+      "prompt_summary": "Image2 full-screen backpack item detail overlay design with blank dynamic title, icon, copy, close, and action areas."
+    },
+    {
       "id": "achievements_overlay_design_reference",
       "path": "res://assets/generated/ui/achievements_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen achievements overlay design used directly as the trophy/progress popup background."
