@@ -34,6 +34,7 @@ const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/b
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
 const EnemyHitFishSparkTexture := preload("res://assets/generated/effects/enemy_hit_fish_spark.png")
+const EnemyDefeatMousePuffTexture := preload("res://assets/generated/effects/enemy_defeat_mouse_puff.png")
 const BuildSuccessCatPawPuffTexture := preload("res://assets/generated/effects/build_success_cat_paw_puff.png")
 const TowerUpgradeCatStarburstTexture := preload("res://assets/generated/effects/tower_upgrade_cat_starburst.png")
 const TowerSellFishRefundBurstTexture := preload("res://assets/generated/effects/tower_sell_fish_refund_burst.png")
@@ -82,6 +83,7 @@ var _yarn_trap_hud_icon: TextureRect
 var _yarn_trap_effect_index: int = 0
 var _enemy_reward_feedback_index: int = 0
 var _enemy_hit_feedback_index: int = 0
+var _enemy_defeat_feedback_index: int = 0
 var _build_success_feedback_index: int = 0
 var _tower_upgrade_feedback_index: int = 0
 var _tower_sell_feedback_index: int = 0
@@ -111,6 +113,7 @@ func start_level(path: String) -> void:
 	_yarn_trap_effect_index = 0
 	_enemy_reward_feedback_index = 0
 	_enemy_hit_feedback_index = 0
+	_enemy_defeat_feedback_index = 0
 	_build_success_feedback_index = 0
 	_tower_upgrade_feedback_index = 0
 	_tower_sell_feedback_index = 0
@@ -718,7 +721,8 @@ func _show_enemy_reward_feedback(reward: int, world_anchor: Vector2) -> void:
 	feedback.z_index = 84
 	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
 	feedback.pivot_offset = feedback.size * 0.5
-	var target_center: Vector2 = Vector2(clamp(world_anchor.x, 220.0, 990.0), clamp(world_anchor.y - 76.0, 165.0, 475.0))
+	var reward_side_offset: float = 150.0 if world_anchor.x < 760.0 else -150.0
+	var target_center: Vector2 = Vector2(clamp(world_anchor.x + reward_side_offset, 220.0, 990.0), clamp(world_anchor.y - 76.0, 165.0, 475.0))
 	feedback.position = target_center - feedback.size * 0.5
 	feedback.scale = Vector2(0.64, 0.64)
 	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
@@ -772,6 +776,31 @@ func _show_enemy_hit_feedback(world_anchor: Vector2) -> void:
 	tween.tween_property(effect, "position:y", effect.position.y - 16.0, 0.25).set_delay(0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(effect, "modulate:a", 0.0, 0.16).set_delay(0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.38)
+
+
+func _show_enemy_defeat_feedback(world_anchor: Vector2) -> void:
+	if _world == null:
+		return
+	_enemy_defeat_feedback_index += 1
+	var effect: Sprite2D = Sprite2D.new()
+	effect.name = "EnemyDefeatFeedback%d" % _enemy_defeat_feedback_index
+	effect.texture = EnemyDefeatMousePuffTexture
+	effect.centered = true
+	effect.position = world_anchor + Vector2(0, -16)
+	effect.scale = Vector2(0.046, 0.046)
+	effect.rotation_degrees = -6.0 + float(_enemy_defeat_feedback_index % 4) * 4.0
+	effect.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	effect.z_index = 24
+	_world.add_child(effect)
+
+	var tween: Tween = effect.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(effect, "modulate:a", 0.96, 0.05).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "scale", Vector2(0.086, 0.086), 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "rotation_degrees", effect.rotation_degrees + 9.0, 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "position:y", effect.position.y - 22.0, 0.38).set_delay(0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "modulate:a", 0.0, 0.22).set_delay(0.46).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.76)
 
 
 func _show_tower_fire_feedback(tower_anchor: Vector2, target_anchor: Vector2) -> void:
@@ -1064,6 +1093,7 @@ func _on_enemy_defeated(enemy: Node2D) -> void:
 	var reward_anchor: Vector2 = enemy.global_position
 	coins += reward
 	_update_hud()
+	_show_enemy_defeat_feedback(reward_anchor)
 	_show_enemy_reward_feedback(reward, reward_anchor)
 	enemy.queue_free()
 

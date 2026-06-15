@@ -295,6 +295,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_enemy_hit_feedback_tests.gd` to verify real tower damage and Image2 hit feedback rendering.
 - Added `/Users/zhaok/cat/tests/capture_enemy_hit_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_hit_feedback.png`.
 
+**Battle Enemy Defeat Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/effects/enemy_defeat_feedback_design_reference.png` as the full-screen Image2 direction for nonviolent enemy defeat feedback.
+- Generated `/Users/zhaok/cat/assets/generated/effects/enemy_defeat_mouse_puff_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/enemy_defeat_mouse_puff.png` for runtime use.
+- Defeated enemies now show `EnemyDefeatFeedbackN` at the defeated enemy position using the Image2 cat-paw dust puff, fishbone crumbs, stars, and mouse tail/ear silhouette.
+- The fish reward feedback now offsets to the side of the defeated enemy so the defeat puff remains readable instead of being covered by the reward card.
+- Added `/Users/zhaok/cat/tests/run_enemy_defeat_feedback_tests.gd` to verify enemy list removal, Image2 defeat feedback rendering, and no reward/defeat overlap.
+- Added `/Users/zhaok/cat/tests/capture_enemy_defeat_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_defeat_feedback.png`.
+
 **Battle Build Success Feedback**
 - Generated `/Users/zhaok/cat/assets/generated/effects/build_success_feedback_design_reference.png` as the full-screen Image2 direction for successful tower construction feedback.
 - Generated `/Users/zhaok/cat/assets/generated/effects/build_success_cat_paw_puff_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/build_success_cat_paw_puff.png` for runtime use.

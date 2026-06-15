@@ -87,6 +87,21 @@
       "prompt_summary": "Image2 transparent fishbone sparkle used when cat towers damage enemies."
     },
     {
+      "id": "enemy_defeat_feedback_design_reference",
+      "path": "res://assets/generated/effects/enemy_defeat_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing a mouse enemy popping into a cat-paw dust cloud."
+    },
+    {
+      "id": "enemy_defeat_mouse_puff_source",
+      "path": "res://assets/generated/effects/enemy_defeat_mouse_puff_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the nonviolent mouse defeat puff."
+    },
+    {
+      "id": "enemy_defeat_mouse_puff",
+      "path": "res://assets/generated/effects/enemy_defeat_mouse_puff.png",
+      "prompt_summary": "Image2 transparent cat-paw dust puff used when an enemy is defeated."
+    },
+    {
       "id": "build_success_feedback_design_reference",
       "path": "res://assets/generated/effects/build_success_feedback_design_reference.png",
       "prompt_summary": "Image2 full-screen battle feedback design reference showing a cat-paw puff when a tower is built."
