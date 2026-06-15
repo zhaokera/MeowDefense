@@ -32,6 +32,7 @@ const YarnTrapItemIconTexture := preload("res://assets/generated/ui/yarn_trap_it
 const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap_field_effect.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
+const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -74,6 +75,7 @@ var yarn_traps_available: int = 0
 var _yarn_trap_count_label: Label
 var _yarn_trap_hud_icon: TextureRect
 var _yarn_trap_effect_index: int = 0
+var _enemy_reward_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -97,6 +99,7 @@ func start_level(path: String) -> void:
 	_selected_tower_id = level.allowed_towers[0] if not level.allowed_towers.is_empty() else "orange_cat"
 	_battle_speed_multiplier = 1.0
 	_yarn_trap_effect_index = 0
+	_enemy_reward_feedback_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -686,6 +689,46 @@ func _show_base_damage_feedback(damage: int, world_anchor: Vector2) -> void:
 	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.38)
 
 
+func _show_enemy_reward_feedback(reward: int, world_anchor: Vector2) -> void:
+	if _hud == null or reward <= 0:
+		return
+	_enemy_reward_feedback_index += 1
+
+	var feedback: TextureRect = _hud_texture_rect("EnemyRewardFeedback%d" % _enemy_reward_feedback_index, EnemyRewardFishBurstTexture, Vector2.ZERO, Vector2(260, 260))
+	feedback.z_index = 84
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	var target_center: Vector2 = Vector2(clamp(world_anchor.x, 220.0, 990.0), clamp(world_anchor.y - 76.0, 165.0, 475.0))
+	feedback.position = target_center - feedback.size * 0.5
+	feedback.scale = Vector2(0.64, 0.64)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("+%d 小鱼干" % reward)
+	label.name = "EnemyRewardFeedbackLabel"
+	label.position = Vector2(34, 180)
+	label.size = Vector2(192, 46)
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_color", Color(0.36, 0.16, 0.05))
+	label.add_theme_constant_override("outline_size", 4)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	if _coins_label != null:
+		_animate_control_scale(_coins_label, 1.10, 0.08)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -3.0, 0.08).set_delay(0.13).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 3.0, 0.08).set_delay(0.22).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.08).set_delay(0.31).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 34.0, 0.52).set_delay(0.42).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.30).set_delay(1.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.42)
+
+
 func _pop_in_control(target: Control) -> void:
 	if target == null or not is_instance_valid(target):
 		return
@@ -860,7 +903,11 @@ func _tower_button_name(tower_id: String) -> String:
 func _on_enemy_defeated(enemy: Node2D) -> void:
 	if enemies.has(enemy):
 		enemies.erase(enemy)
-	coins += int(enemy.reward)
+	var reward: int = int(enemy.reward)
+	var reward_anchor: Vector2 = enemy.global_position
+	coins += reward
+	_update_hud()
+	_show_enemy_reward_feedback(reward, reward_anchor)
 	enemy.queue_free()
 
 

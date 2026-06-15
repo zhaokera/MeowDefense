@@ -162,6 +162,21 @@
       "prompt_summary": "Image2 transparent base-damage warning burst used when enemies reach the protected cat-food base."
     },
     {
+      "id": "enemy_reward_feedback_design_reference",
+      "path": "res://assets/generated/ui/enemy_reward_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing a fish reward burst after an enemy is defeated."
+    },
+    {
+      "id": "enemy_reward_fish_burst_source",
+      "path": "res://assets/generated/ui/enemy_reward_fish_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the enemy defeat fish reward feedback burst."
+    },
+    {
+      "id": "enemy_reward_fish_burst",
+      "path": "res://assets/generated/ui/enemy_reward_fish_burst.png",
+      "prompt_summary": "Image2 transparent fish reward burst used when defeated enemies grant fish snacks."
+    },
+    {
       "id": "battle_pause_menu_design_reference",
       "path": "res://assets/generated/ui/battle_pause_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen pause menu design reference used to restore the battle pause overlay."

@@ -279,4 +279,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_base_damage_feedback_tests.gd` to verify base HP loss and Image2 warning rendering.
 - Added `/Users/zhaok/cat/tests/capture_base_damage_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/base_damage_feedback.png`.
 
+**Battle Enemy Reward Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/ui/enemy_reward_feedback_design_reference.png` as the full-screen Image2 direction for enemy defeat reward feedback.
+- Generated `/Users/zhaok/cat/assets/generated/ui/enemy_reward_fish_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/enemy_reward_fish_burst.png` for runtime use.
+- Defeated enemies now show `EnemyRewardFeedbackN` near the battle path, using the Image2 fish burst with dynamic reward text, pop-in, wobble, upward drift, and fade feedback.
+- The fish counter refreshes immediately and gets a pulse when the enemy reward is granted.
+- Added `/Users/zhaok/cat/tests/run_enemy_reward_feedback_tests.gd` to verify fish reward accounting and Image2 reward rendering.
+- Added `/Users/zhaok/cat/tests/capture_enemy_reward_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_reward_feedback.png`.
+
 final result: passed
