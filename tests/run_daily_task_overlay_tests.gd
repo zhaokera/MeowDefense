@@ -1,6 +1,10 @@
 extends SceneTree
 
 const TEST_SAVE_PATH := "user://meow_defense_daily_task_test_save.json"
+const MANIFEST_PATH := "res://assets/generated/assets_manifest.json"
+const DAILY_TASK_CLAIM_REWARD_DESIGN_PATH := "res://assets/generated/ui/daily_task_claim_reward_design_reference.png"
+const DAILY_TASK_CLAIM_REWARD_BURST_PATH := "res://assets/generated/ui/daily_task_claim_reward_burst.png"
+const DAILY_TASK_CLAIM_REWARD_BURST_SOURCE_PATH := "res://assets/generated/ui/daily_task_claim_reward_burst_source.png"
 
 var _failures: Array[String] = []
 
@@ -46,6 +50,7 @@ func _run() -> void:
 		_assert_true(not claim_button.disabled, "ready daily task should be claimable")
 		claim_button.emit_signal("pressed")
 		await process_frame
+		await process_frame
 
 	_assert_true(int(instance.get("_total_fish")) == before_fish + 30, "claiming daily task should grant fish")
 	var claimed_label: Label = _assert_label(instance, "DailyTaskFirstClearClaimLabel", "claimed task should update its claim label")
@@ -53,6 +58,34 @@ func _run() -> void:
 		_assert_true(claimed_label.text == "已领取", "claimed daily task should show claimed state")
 	if claim_button != null:
 		_assert_true(claim_button.disabled, "claimed daily task should disable its claim button")
+	_assert_exists(instance, "DailyTaskClaimRewardOverlay", "claiming daily task should open a reward feedback overlay")
+	_assert_texture_node(
+		instance,
+		"DailyTaskClaimRewardDesignBackground",
+		DAILY_TASK_CLAIM_REWARD_DESIGN_PATH,
+		"daily task claim reward should render from its Image2 full-screen design"
+	)
+	_assert_texture_node(
+		instance,
+		"DailyTaskClaimRewardBurst",
+		DAILY_TASK_CLAIM_REWARD_BURST_PATH,
+		"daily task claim reward should include the Image2 reward burst asset"
+	)
+	var reward_title: Label = _assert_label(instance, "DailyTaskClaimRewardTitle", "daily task reward overlay should show the claimed task title")
+	if reward_title != null:
+		_assert_true(reward_title.text.contains("今日守卫"), "daily task reward title should name the claimed task")
+	var reward_amount: Label = _assert_label(instance, "DailyTaskClaimRewardAmount", "daily task reward overlay should show the reward amount")
+	if reward_amount != null:
+		_assert_true(reward_amount.text.contains("小鱼干 +30"), "daily task reward overlay should show the fish reward")
+	var reward_close: Button = _assert_button(instance, "CloseDailyTaskClaimRewardButton", "daily task reward overlay should be closable")
+	if reward_close != null:
+		reward_close.emit_signal("pressed")
+		await process_frame
+		_assert_missing(instance, "DailyTaskClaimRewardOverlay", "closing daily task reward overlay should remove it")
+
+	_assert_manifest_entry("daily_task_claim_reward_design_reference", DAILY_TASK_CLAIM_REWARD_DESIGN_PATH)
+	_assert_manifest_entry("daily_task_claim_reward_burst_source", DAILY_TASK_CLAIM_REWARD_BURST_SOURCE_PATH)
+	_assert_manifest_entry("daily_task_claim_reward_burst", DAILY_TASK_CLAIM_REWARD_BURST_PATH)
 
 	instance.queue_free()
 	await process_frame
@@ -84,6 +117,26 @@ func _assert_texture_node(root_node: Node, node_name: String, expected_path: Str
 	if texture_rect.texture != null:
 		_assert_true(texture_rect.texture.resource_path == expected_path, "%s should use %s" % [node_name, expected_path])
 	return texture_rect
+
+
+func _assert_manifest_entry(id: String, expected_path: String) -> void:
+	var manifest_file: FileAccess = FileAccess.open(MANIFEST_PATH, FileAccess.READ)
+	if manifest_file == null:
+		_failures.append("asset manifest should be readable")
+		return
+	var parsed: Variant = JSON.parse_string(manifest_file.get_as_text())
+	if not (parsed is Dictionary):
+		_failures.append("asset manifest should parse as a dictionary")
+		return
+	var ui_items: Array = (parsed as Dictionary).get("ui", []) as Array
+	for item: Variant in ui_items:
+		if not (item is Dictionary):
+			continue
+		var entry: Dictionary = item as Dictionary
+		if str(entry.get("id", "")) == id:
+			_assert_true(str(entry.get("path", "")) == expected_path, "%s should point to %s" % [id, expected_path])
+			return
+	_failures.append("asset manifest should include %s" % id)
 
 
 func _assert_button(root_node: Node, node_name: String, message: String) -> Button:

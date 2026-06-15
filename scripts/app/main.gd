@@ -22,6 +22,8 @@ const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
 const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
 const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
 const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_design_reference.png")
+const DAILY_TASK_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/daily_task_claim_reward_design_reference.png")
+const DAILY_TASK_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/daily_task_claim_reward_burst.png")
 const ENERGY_EMPTY_DESIGN := preload("res://assets/generated/ui/energy_empty_overlay_design_reference.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
@@ -662,6 +664,51 @@ func _claim_daily_task(task: Dictionary, parent: Control, claim_label: Label, cl
 	claim_label.text = "已领取"
 	claim_button.disabled = true
 	_pulse_control(parent)
+	_show_daily_task_claim_reward_overlay(parent, task)
+
+
+func _show_daily_task_claim_reward_overlay(parent: Control, task: Dictionary) -> void:
+	_remove_named_child(parent, "DailyTaskClaimRewardOverlay")
+	var reward: Control = Control.new()
+	reward.name = "DailyTaskClaimRewardOverlay"
+	reward.size = VIEW_SIZE
+	reward.z_index = 18
+	parent.add_child(reward)
+
+	var design: TextureRect = _ui_texture_rect("DailyTaskClaimRewardDesignBackground", DAILY_TASK_CLAIM_REWARD_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	reward.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("DailyTaskClaimRewardBurst", DAILY_TASK_CLAIM_REWARD_BURST, Vector2(366, 294), Vector2(174, 174))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.88)
+	burst.z_index = 1
+	reward.add_child(burst)
+
+	var title: String = str(task.get("title", "今日任务"))
+	var detail: String = str(task.get("detail", "任务奖励已领取"))
+	var reward_fish: int = max(0, int(task.get("reward_fish", 0)))
+	var title_label: Label = _label("DailyTaskClaimRewardTitle", "任务完成：%s" % title, Vector2(404, 98), Vector2(470, 58), 32, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title_label.z_index = 2
+	reward.add_child(title_label)
+	var copy: Label = _label("DailyTaskClaimRewardCopy", detail, Vector2(694, 306), Vector2(180, 44), 20, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	copy.z_index = 2
+	reward.add_child(copy)
+	var amount: Label = _label("DailyTaskClaimRewardAmount", "小鱼干 +%d" % reward_fish, Vector2(352, 466), Vector2(236, 44), 25, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	amount.z_index = 2
+	reward.add_child(amount)
+	var done_button: Button = _transparent_text_button("CloseDailyTaskClaimRewardButton", "收好奖励", Rect2(Vector2(522, 552), Vector2(486, 82)), 27)
+	done_button.z_index = 3
+	done_button.pressed.connect(func() -> void: reward.queue_free())
+	_attach_button_feedback(done_button, burst)
+	reward.add_child(done_button)
+	var dismiss_button: Button = _hotspot_button("DismissDailyTaskClaimRewardButton", Vector2(1014, 82), Vector2(92, 92), "关闭")
+	dismiss_button.z_index = 3
+	dismiss_button.pressed.connect(func() -> void: reward.queue_free())
+	reward.add_child(dismiss_button)
+	_animate_overlay_entry(reward)
+	_pulse_control(burst)
 
 
 func _sync_claimed_daily_tasks_for_today() -> void:

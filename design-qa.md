@@ -183,6 +183,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_task_reset_tests.gd` to verify same-day lockout, reload persistence, next-day reset, repeat rewards, and date-bucket save state.
 - Re-captured `/Users/zhaok/cat/artifacts/daily_task_overlay.png` after the persistence change.
 
+**Daily Task Claim Reward Feedback**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/daily_task_claim_reward_design_reference.png` as the full-screen Image2 claim reward design.
+- Generated `/Users/zhaok/cat/assets/generated/ui/daily_task_claim_reward_burst_source.png` and transparent `/Users/zhaok/cat/assets/generated/ui/daily_task_claim_reward_burst.png` for the animated reward burst.
+- Claiming a daily task now opens `DailyTaskClaimRewardOverlay` with the Image2 design, dynamic task title/detail, fish reward amount, transparent close/confirm hit areas, and pulse feedback on the reward burst.
+- Updated `/Users/zhaok/cat/tests/run_daily_task_overlay_tests.gd` to require the reward feedback overlay, design texture, burst texture, close behavior, manifest entries, and persisted fish reward.
+- Added `/Users/zhaok/cat/tests/capture_daily_task_claim_reward.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_task_claim_reward.png`.
+- Verification: targeted daily-task/reward/shop overlay checks passed, and full Godot regression passed with `FULL_REGRESSION_PASS_CLEAN 45 tests`.
+
 **Energy Flow And Empty State**
 - Generated `/Users/zhaok/cat/assets/generated/ui/energy_empty_overlay_design_reference.png` as a full-screen Image2 out-of-energy feedback design.
 - Converted the static `15/15` energy display into persistent `_energy`, `_max_energy`, and `_energy_refilled_on` state.
