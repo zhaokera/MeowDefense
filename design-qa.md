@@ -383,4 +383,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_rat_tank_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, heavy walking-frame cycling, hit/defeat frame switches, and manifest source entries.
 - Added `/Users/zhaok/cat/tests/capture_rat_tank_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/rat_tank_animation.png`.
 
+**Hamster Runner Enemy Animation Sheet**
+- Generated `/Users/zhaok/cat/assets/generated/enemies/hamster_runner_animation_design_reference.png` as the full-screen Image2 direction for the tiny fast hamster runner sprinting through cat tower fire.
+- Generated `/Users/zhaok/cat/assets/generated/enemies/hamster_runner_sheet_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/enemies/hamster_runner_sheet.png` for runtime use.
+- The `hamster_runner` enemy now has the same Image2 source-chain documentation as the other enemy classes while continuing to use a 2x2 sprite sheet for sprint, sprint alternate, hit, and defeated poses.
+- The existing distance-based enemy walking frame cycling moves the hamster runner between sprint frames, while hit and defeated reactions use frames 1 and 3.
+- Added `/Users/zhaok/cat/tests/run_hamster_runner_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, sprint-frame cycling, hit/defeat frame switches, and manifest source entries.
+- Added `/Users/zhaok/cat/tests/capture_hamster_runner_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/hamster_runner_animation.png`.
+- Verified `/Users/zhaok/cat/artifacts/hamster_runner_animation.png` visually against the Image2 reference, then passed the targeted hamster/tank/fast-enemy/playthrough/unit checks and the full `tests/run_*.gd` regression suite with 44 clean Godot tests.
+
 final result: passed
