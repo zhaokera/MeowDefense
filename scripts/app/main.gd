@@ -68,6 +68,8 @@ const BLUE := Color(0.34, 0.67, 0.86)
 const CORAL := Color(0.94, 0.30, 0.22)
 const SAVE_PATH := "user://meow_defense_save.json"
 const DEFAULT_MAX_ENERGY := 15
+const ENERGY_REFILL_COST := 10
+const ENERGY_REFILL_AMOUNT := 5
 
 var _current: Node
 var _best_stars: int = 0
@@ -766,7 +768,9 @@ func _show_shop_overlay(parent: Node) -> void:
 	var fish_counter: Label = _label("ShopFishCounter", "%d" % _total_fish, Vector2(584, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	content.add_child(fish_counter)
 	content.add_child(_label("ShopStarsCounter", "%d" % _best_stars, Vector2(804, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	content.add_child(_label("ShopEnergyCounter", _energy_text(), Vector2(966, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var energy_counter: Label = _label("ShopEnergyCounter", _energy_text(), Vector2(966, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	content.add_child(energy_counter)
+	_add_shop_energy_refill(content, fish_counter, energy_counter)
 
 	content.add_child(_label("ShopFishPackTitle", "小鱼干补给", Vector2(270, 294), Vector2(214, 36), 21, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var claim_status: Label = _label("ShopClaimStatus", "已领取" if _shop_starter_claimed else "免费领取", Vector2(324, 482), Vector2(136, 36), 20, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
@@ -795,6 +799,41 @@ func _show_shop_overlay(parent: Node) -> void:
 	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
+
+
+func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counter: Label) -> void:
+	var status: Label = _label("ShopEnergyRefillStatus", _energy_refill_status_text(), Vector2(900, 70), Vector2(210, 28), 16, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	parent.add_child(status)
+	var buy_button: Button = _hotspot_button("BuyShopEnergyRefillButton", Vector2(1042, 20), Vector2(72, 62), "补充体力")
+	buy_button.disabled = not _can_buy_energy_refill()
+	buy_button.pressed.connect(func() -> void:
+		if not _can_buy_energy_refill():
+			return
+		_total_fish -= ENERGY_REFILL_COST
+		_energy = min(_max_energy, _energy + ENERGY_REFILL_AMOUNT)
+		_energy_refilled_on = _today_key()
+		_save_progress()
+		fish_counter.text = "%d" % _total_fish
+		energy_counter.text = _energy_text()
+		status.text = _energy_refill_status_text()
+		buy_button.disabled = not _can_buy_energy_refill()
+		_pulse_control(energy_counter)
+	)
+	parent.add_child(buy_button)
+
+
+func _can_buy_energy_refill() -> bool:
+	_sync_energy_for_today()
+	return _energy < _max_energy and _total_fish >= ENERGY_REFILL_COST
+
+
+func _energy_refill_status_text() -> String:
+	_sync_energy_for_today()
+	if _energy >= _max_energy:
+		return "体力已满 %s" % _energy_text()
+	if _total_fish < ENERGY_REFILL_COST:
+		return "体力%s  需%d鱼干" % [_energy_text(), ENERGY_REFILL_COST]
+	return "体力%s  +%d/%d鱼干" % [_energy_text(), min(ENERGY_REFILL_AMOUNT, _max_energy - _energy), ENERGY_REFILL_COST]
 
 
 func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, title: String, stat_one: String, stat_two: String, copy: String, position: Vector2, size: Vector2) -> void:

@@ -23,7 +23,7 @@
 - 成就页可按进度领取小鱼干和猫爪徽章，背包会显示徽章数量
 - 背包物品可点击打开 Image2 详情卡，并可从毛线陷阱详情直接前往关卡
 - 背包整理会弹出 Image2 奖励反馈，并一次性发放小鱼干
-- 商店可购买猫爪徽章包和毛线陷阱包，背包会显示持有数量
+- 商店可购买体力补给、猫爪徽章包和毛线陷阱包，背包会显示持有数量
 - 战斗中可使用背包里的毛线陷阱减速小鼠，并带有 Image2 毛线缠绕特效
 - 关卡解锁、最佳星级、小鱼干、体力、猫爪徽章、毛线陷阱和奖励领取状态会持久化保存
 
@@ -69,6 +69,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_achievement_claim_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_shop_yarn_trap_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_shop_paw_bundle_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_shop_energy_refill_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_battle_yarn_trap_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_battle_yarn_inventory_flow_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_build_input_tests.gd
@@ -139,5 +140,7 @@ Godot --path /path/to/MeowDefense
 ![Shop overlay](artifacts/shop_overlay.png)
 
 ![Shop paw bundle purchase](artifacts/shop_paw_bundle_purchase.png)
+
+![Shop energy refill purchase](artifacts/shop_energy_refill_purchase.png)
 
 ![Shop yarn trap purchase](artifacts/shop_yarn_trap_purchase.png)

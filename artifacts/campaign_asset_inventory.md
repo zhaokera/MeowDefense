@@ -199,6 +199,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Claimed achievements screenshot: `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`
 - Shop overlay screenshot: `/Users/zhaok/cat/artifacts/shop_overlay.png`
 - Paw bundle shop purchase screenshot: `/Users/zhaok/cat/artifacts/shop_paw_bundle_purchase.png`
+- Energy refill shop purchase screenshot: `/Users/zhaok/cat/artifacts/shop_energy_refill_purchase.png`
 - Yarn trap shop purchase screenshot: `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png`
 - Backpack yarn trap screenshot: `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`
 - Battle yarn trap screenshot: `/Users/zhaok/cat/artifacts/battle_yarn_trap.png`

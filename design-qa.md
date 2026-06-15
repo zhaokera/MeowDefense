@@ -235,6 +235,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_paw_bundle_tests.gd` to verify purchase, cost, badge count, persistence, and backpack display.
 - Added `/Users/zhaok/cat/tests/capture_shop_paw_bundle.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_paw_bundle_purchase.png`.
 
+**Shop Energy Refill Purchase**
+- Added `BuyShopEnergyRefillButton` as a transparent hit area over the Image2 shop energy `+` control.
+- Buying energy refill spends 10 fish, restores up to 5 energy, refreshes the shop fish and energy counters, persists through saves, and allows level entry immediately.
+- Kept the Image2 shop design as the visual base; only dynamic status text and transparent interaction were added around the existing energy resource strip.
+- Added `/Users/zhaok/cat/tests/run_shop_energy_refill_tests.gd` to verify affordability, purchase cost, energy restore, persistence, and post-refill battle entry.
+- Added `/Users/zhaok/cat/tests/capture_shop_energy_refill.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_energy_refill_purchase.png`.
+
 **Battle Yarn Trap Consumable**
 - Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_field_effect.png` as a transparent Image2 battlefield yarn snare effect.
 - Battle HUD now exposes `YarnTrapHudIcon`, `YarnTrapCountLabel`, and `UseYarnTrapButton` using the Image2 item icon plus transparent interaction layer.
