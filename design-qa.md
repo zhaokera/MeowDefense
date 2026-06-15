@@ -319,4 +319,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_sell_feedback_tests.gd` to verify real sell behavior, refund accounting, and Image2 sell feedback rendering.
 - Added `/Users/zhaok/cat/tests/capture_tower_sell_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_sell_feedback.png`.
 
+**Battle Tower Fire Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/effects/tower_fire_feedback_design_reference.png` as the full-screen Image2 direction for cat tower firing feedback.
+- Generated `/Users/zhaok/cat/assets/generated/effects/tower_fire_fishbone_muzzle_flash_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/tower_fire_fishbone_muzzle_flash.png` for runtime use.
+- Tower `fired` signals now show `TowerFireFeedbackN` near the tower muzzle, using the Image2 fishbone projectile flash rotated toward the target.
+- The fire feedback pops, travels forward slightly, and fades quickly so cat towers feel less like static images while preserving the existing hit spark at the enemy.
+- Added `/Users/zhaok/cat/tests/run_tower_fire_feedback_tests.gd` to verify real tower attack behavior and Image2 firing feedback rendering.
+- Added `/Users/zhaok/cat/tests/capture_tower_fire_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_fire_feedback.png`.
+
 final result: passed

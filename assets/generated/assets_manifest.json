@@ -130,6 +130,21 @@
       "id": "tower_sell_fish_refund_burst",
       "path": "res://assets/generated/effects/tower_sell_fish_refund_burst.png",
       "prompt_summary": "Image2 transparent fish-cookie and cat-paw refund burst used when a player sells a tower."
+    },
+    {
+      "id": "tower_fire_feedback_design_reference",
+      "path": "res://assets/generated/effects/tower_fire_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing an orange cat fishbone cannon firing at an enemy."
+    },
+    {
+      "id": "tower_fire_fishbone_muzzle_flash_source",
+      "path": "res://assets/generated/effects/tower_fire_fishbone_muzzle_flash_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the fishbone cannon muzzle flash."
+    },
+    {
+      "id": "tower_fire_fishbone_muzzle_flash",
+      "path": "res://assets/generated/effects/tower_fire_fishbone_muzzle_flash.png",
+      "prompt_summary": "Image2 transparent fishbone muzzle flash used when a cat tower fires."
     }
   ],
   "ui": [

@@ -37,6 +37,7 @@ const EnemyHitFishSparkTexture := preload("res://assets/generated/effects/enemy_
 const BuildSuccessCatPawPuffTexture := preload("res://assets/generated/effects/build_success_cat_paw_puff.png")
 const TowerUpgradeCatStarburstTexture := preload("res://assets/generated/effects/tower_upgrade_cat_starburst.png")
 const TowerSellFishRefundBurstTexture := preload("res://assets/generated/effects/tower_sell_fish_refund_burst.png")
+const TowerFireFishboneMuzzleFlashTexture := preload("res://assets/generated/effects/tower_fire_fishbone_muzzle_flash.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -84,6 +85,7 @@ var _enemy_hit_feedback_index: int = 0
 var _build_success_feedback_index: int = 0
 var _tower_upgrade_feedback_index: int = 0
 var _tower_sell_feedback_index: int = 0
+var _tower_fire_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -112,6 +114,7 @@ func start_level(path: String) -> void:
 	_build_success_feedback_index = 0
 	_tower_upgrade_feedback_index = 0
 	_tower_sell_feedback_index = 0
+	_tower_fire_feedback_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -771,6 +774,35 @@ func _show_enemy_hit_feedback(world_anchor: Vector2) -> void:
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.38)
 
 
+func _show_tower_fire_feedback(tower_anchor: Vector2, target_anchor: Vector2) -> void:
+	if _world == null:
+		return
+	_tower_fire_feedback_index += 1
+	var direction: Vector2 = target_anchor - tower_anchor
+	if direction.length() <= 0.001:
+		direction = Vector2.RIGHT
+	direction = direction.normalized()
+
+	var effect: Sprite2D = Sprite2D.new()
+	effect.name = "TowerFireFeedback%d" % _tower_fire_feedback_index
+	effect.texture = TowerFireFishboneMuzzleFlashTexture
+	effect.centered = true
+	effect.position = tower_anchor + Vector2(0, -28) + direction * 48.0
+	effect.rotation = direction.angle()
+	effect.scale = Vector2(0.038, 0.038)
+	effect.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	effect.z_index = 25
+	_world.add_child(effect)
+
+	var tween: Tween = effect.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(effect, "modulate:a", 1.0, 0.04).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "scale", Vector2(0.068, 0.068), 0.10).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "position", effect.position + direction * 22.0 + Vector2(0, -4), 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "modulate:a", 0.0, 0.16).set_delay(0.13).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.34)
+
+
 func _show_build_success_feedback(world_anchor: Vector2) -> void:
 	if _world == null:
 		return
@@ -1017,9 +1049,11 @@ func _tower_button_name(tower_id: String) -> String:
 	return "SelectTower%sButton" % tower_id.capitalize().replace("_", "")
 
 
-func _on_tower_fired(_tower: Node2D, target: Node2D) -> void:
+func _on_tower_fired(tower: Node2D, target: Node2D) -> void:
 	if target == null or not is_instance_valid(target):
 		return
+	if tower != null and is_instance_valid(tower):
+		_show_tower_fire_feedback(tower.global_position, target.global_position)
 	_show_enemy_hit_feedback(target.global_position)
 
 
