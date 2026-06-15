@@ -86,6 +86,7 @@ var _shop_starter_claimed: bool = false
 var _paw_tokens: int = 0
 var _claimed_achievements: Dictionary = {}
 var _claimed_daily_tasks: Dictionary = {}
+var _claimed_daily_tasks_by_date: Dictionary = {}
 var _yarn_traps: int = 0
 var _backpack_organized: bool = false
 
@@ -532,6 +533,7 @@ func _date_key_to_day_index(date_key: String) -> int:
 
 
 func _show_daily_task_overlay(parent: Node) -> void:
+	_sync_claimed_daily_tasks_for_today()
 	var content: Control = _image_overlay(parent, "DailyTaskOverlay", "DailyTaskDesignBackground", DAILY_TASK_OVERLAY_DESIGN)
 	content.add_child(_label("DailyTaskTitle", "今日任务", Vector2(444, 100), Vector2(392, 58), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	for task: Dictionary in DAILY_TASKS:
@@ -583,6 +585,7 @@ func _daily_task_progress(task_id: String) -> int:
 
 
 func _is_daily_task_claimed(task_id: String) -> bool:
+	_sync_claimed_daily_tasks_for_today()
 	return bool(_claimed_daily_tasks.get(task_id, false))
 
 
@@ -593,12 +596,41 @@ func _claim_daily_task(task: Dictionary, parent: Control, claim_label: Label, cl
 	var target: int = max(1, int(task.get("target", 1)))
 	if _daily_task_progress(task_id) < target:
 		return
+	var today: String = _today_key()
+	var today_claims: Dictionary = _daily_task_claim_bucket(today)
+	today_claims[task_id] = true
+	_claimed_daily_tasks_by_date[today] = today_claims
 	_claimed_daily_tasks[task_id] = true
 	_total_fish += max(0, int(task.get("reward_fish", 0)))
 	_save_progress()
 	claim_label.text = "已领取"
 	claim_button.disabled = true
 	_pulse_control(parent)
+
+
+func _sync_claimed_daily_tasks_for_today() -> void:
+	_claimed_daily_tasks.clear()
+	var today_claims: Dictionary = _daily_task_claim_bucket(_today_key())
+	for task: Dictionary in DAILY_TASKS:
+		var task_id: String = str(task.get("id", ""))
+		if not task_id.is_empty() and bool(today_claims.get(task_id, false)):
+			_claimed_daily_tasks[task_id] = true
+
+
+func _daily_task_claim_bucket(date_key: String) -> Dictionary:
+	var raw_claims: Variant = _claimed_daily_tasks_by_date.get(date_key, {})
+	return _normalized_daily_task_claims(raw_claims)
+
+
+func _normalized_daily_task_claims(raw_claims: Variant) -> Dictionary:
+	var normalized: Dictionary = {}
+	if raw_claims is Dictionary:
+		var claims: Dictionary = raw_claims as Dictionary
+		for task: Dictionary in DAILY_TASKS:
+			var task_id: String = str(task.get("id", ""))
+			if not task_id.is_empty() and bool(claims.get(task_id, false)):
+				normalized[task_id] = true
+	return normalized
 
 
 func _show_backpack_overlay(parent: Node) -> void:
@@ -1079,6 +1111,7 @@ func _add_level_lock_badge(parent: Control, level_id: int, rect: Rect2) -> void:
 
 
 func _save_progress() -> void:
+	_sync_claimed_daily_tasks_for_today()
 	var data: Dictionary = {
 		"best_stars_by_level": _best_stars_by_level,
 		"total_fish": _total_fish,
@@ -1090,6 +1123,7 @@ func _save_progress() -> void:
 		"paw_tokens": _paw_tokens,
 		"claimed_achievements": _claimed_achievements,
 		"claimed_daily_tasks": _claimed_daily_tasks,
+		"claimed_daily_tasks_by_date": _claimed_daily_tasks_by_date,
 		"yarn_traps": _yarn_traps,
 		"backpack_organized": _backpack_organized,
 		"music_enabled": _music_enabled,
@@ -1148,14 +1182,24 @@ func _load_progress() -> void:
 			var achievement_id: String = str(achievement.get("id", ""))
 			if bool(claimed.get(achievement_id, false)):
 				_claimed_achievements[achievement_id] = true
-	_claimed_daily_tasks.clear()
-	var raw_daily_tasks: Variant = data.get("claimed_daily_tasks", {})
-	if raw_daily_tasks is Dictionary:
-		var claimed_daily_tasks: Dictionary = raw_daily_tasks as Dictionary
-		for task: Dictionary in DAILY_TASKS:
-			var task_id: String = str(task.get("id", ""))
-			if bool(claimed_daily_tasks.get(task_id, false)):
-				_claimed_daily_tasks[task_id] = true
+	_claimed_daily_tasks_by_date.clear()
+	var loaded_daily_task_dates: bool = false
+	var raw_daily_tasks_by_date: Variant = data.get("claimed_daily_tasks_by_date", {})
+	if raw_daily_tasks_by_date is Dictionary:
+		var daily_tasks_by_date: Dictionary = raw_daily_tasks_by_date as Dictionary
+		for raw_date_key: Variant in daily_tasks_by_date.keys():
+			var date_key: String = str(raw_date_key)
+			if _date_key_to_day_index(date_key) < 0:
+				continue
+			var bucket: Dictionary = _normalized_daily_task_claims(daily_tasks_by_date[raw_date_key])
+			if not bucket.is_empty():
+				_claimed_daily_tasks_by_date[date_key] = bucket
+				loaded_daily_task_dates = true
+	if not loaded_daily_task_dates:
+		var migrated_bucket: Dictionary = _normalized_daily_task_claims(data.get("claimed_daily_tasks", {}))
+		if not migrated_bucket.is_empty():
+			_claimed_daily_tasks_by_date[_today_key()] = migrated_bucket
+	_sync_claimed_daily_tasks_for_today()
 	_recalculate_best_stars()
 
 

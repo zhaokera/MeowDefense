@@ -18,7 +18,7 @@
 - 战斗 HUD 支持下一波敌人预告和 1x/2x 加速切换
 - 胜利结果页带有 Image2 星星和鱼干奖励脉冲动效，失败页不会播放胜利奖励反馈
 - 首页每日奖励按真实日期重置，支持连续领取天数和同日防重复领取
-- 首页今日任务现在是独立 Image2 弹窗，可按通关、星级和毛线陷阱进度领取小鱼干奖励
+- 首页今日任务现在是独立 Image2 弹窗，可按通关、星级和毛线陷阱进度领取小鱼干奖励，并按真实日期重置
 - 成就页可按进度领取小鱼干和猫爪徽章，背包会显示徽章数量
 - 背包物品可点击打开 Image2 详情卡，并可从毛线陷阱详情直接前往关卡
 - 背包整理会弹出 Image2 奖励反馈，并一次性发放小鱼干
@@ -60,6 +60,7 @@ Godot --path /path/to/MeowDefense
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_reward_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_reward_reset_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_task_overlay_tests.gd
+/Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_daily_task_reset_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_town_feature_overlay_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_backpack_item_detail_tests.gd
 /Users/zhaok/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/zhaok/cat --script tests/run_backpack_organize_reward_tests.gd

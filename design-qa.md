@@ -176,6 +176,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_task_overlay_tests.gd` to require the Image2 design, reject code-drawn task panels, verify reward grants, and verify persistence after reload.
 - Added `/Users/zhaok/cat/tests/capture_daily_task_overlay.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_task_overlay.png`.
 
+**Daily Task Date Reset**
+- Upgraded daily task claims from permanent one-time flags into date-bucketed claims saved in `claimed_daily_tasks_by_date`.
+- Kept `claimed_daily_tasks` as the current-day compatibility snapshot so older save files migrate into today's task state.
+- Same-day task claims stay disabled after reload, while the next date resets completed tasks to claimable again.
+- Added `/Users/zhaok/cat/tests/run_daily_task_reset_tests.gd` to verify same-day lockout, reload persistence, next-day reset, repeat rewards, and date-bucket save state.
+- Re-captured `/Users/zhaok/cat/artifacts/daily_task_overlay.png` after the persistence change.
+
 **Image2 Town Feature Overlay Restoration**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/backpack_overlay_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`.
 - Replaced the main-menu bottom `背包`, `成就`, and `商店` proxy behavior with distinct Image2 full-screen overlays plus transparent close/action hit areas.
