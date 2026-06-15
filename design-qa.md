@@ -375,4 +375,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_mouse_fast_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, and walking-frame cycling.
 - Added `/Users/zhaok/cat/tests/capture_mouse_fast_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/mouse_fast_animation.png`.
 
+**Rat Tank Enemy Animation Sheet**
+- Generated `/Users/zhaok/cat/assets/generated/enemies/rat_tank_animation_design_reference.png` as the full-screen Image2 direction for the chunky tank rat marching under cat tower fire.
+- Generated `/Users/zhaok/cat/assets/generated/enemies/rat_tank_sheet_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/enemies/rat_tank_sheet.png` for runtime use.
+- The `rat_tank` enemy now has the same Image2 source-chain documentation as the lighter mouse enemies while continuing to use a 2x2 sprite sheet for heavy walk, hit, heavy walk alternate, and defeated poses.
+- The existing distance-based enemy walking frame cycling moves the tank rat between heavy walk frames, while hit and defeated reactions use frames 1 and 3.
+- Added `/Users/zhaok/cat/tests/run_rat_tank_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, heavy walking-frame cycling, hit/defeat frame switches, and manifest source entries.
+- Added `/Users/zhaok/cat/tests/capture_rat_tank_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/rat_tank_animation.png`.
+
 final result: passed

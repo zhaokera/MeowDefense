@@ -98,6 +98,16 @@
       "prompt_summary": "Chunky tank rat sprite sheet with walking, hit, march, and defeated poses."
     },
     {
+      "id": "rat_tank_animation_design_reference",
+      "path": "res://assets/generated/enemies/rat_tank_animation_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle design reference showing the chunky tank rat enemy marching under cat tower fire."
+    },
+    {
+      "id": "rat_tank_sheet_source",
+      "path": "res://assets/generated/enemies/rat_tank_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the tank rat enemy sprite sheet."
+    },
+    {
       "id": "hamster_runner",
       "path": "res://assets/generated/enemies/hamster_runner_sheet.png",
       "prompt_summary": "Tiny fast hamster runner sprite sheet with sprint, turn, hit, and tumble poses."
