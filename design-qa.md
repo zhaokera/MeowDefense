@@ -287,4 +287,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_enemy_reward_feedback_tests.gd` to verify fish reward accounting and Image2 reward rendering.
 - Added `/Users/zhaok/cat/tests/capture_enemy_reward_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_reward_feedback.png`.
 
+**Battle Enemy Hit Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/effects/enemy_hit_feedback_design_reference.png` as the full-screen Image2 direction for tower hit feedback.
+- Generated `/Users/zhaok/cat/assets/generated/effects/enemy_hit_fish_spark_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/enemy_hit_fish_spark.png` for runtime use.
+- Built towers now connect their `fired` signal into the battle scene and show `EnemyHitFeedbackN` at the target position using the Image2 fishbone sparkle.
+- The hit effect pops, rotates, drifts, and fades quickly so tower attacks feel less stiff without covering build controls.
+- Added `/Users/zhaok/cat/tests/run_enemy_hit_feedback_tests.gd` to verify real tower damage and Image2 hit feedback rendering.
+- Added `/Users/zhaok/cat/tests/capture_enemy_hit_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_hit_feedback.png`.
+
 final result: passed

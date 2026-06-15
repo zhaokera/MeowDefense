@@ -70,6 +70,23 @@
       "prompt_summary": "Cat food jar filled with fish snacks and kibble, used as the protected base."
     }
   ],
+  "effects": [
+    {
+      "id": "enemy_hit_feedback_design_reference",
+      "path": "res://assets/generated/effects/enemy_hit_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing a fishbone tower hit sparkle on an enemy."
+    },
+    {
+      "id": "enemy_hit_fish_spark_source",
+      "path": "res://assets/generated/effects/enemy_hit_fish_spark_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the enemy hit fishbone sparkle effect."
+    },
+    {
+      "id": "enemy_hit_fish_spark",
+      "path": "res://assets/generated/effects/enemy_hit_fish_spark.png",
+      "prompt_summary": "Image2 transparent fishbone sparkle used when cat towers damage enemies."
+    }
+  ],
   "ui": [
     {
       "id": "main_menu_design_reference",

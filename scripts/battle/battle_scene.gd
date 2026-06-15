@@ -33,6 +33,7 @@ const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
+const EnemyHitFishSparkTexture := preload("res://assets/generated/effects/enemy_hit_fish_spark.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -76,6 +77,7 @@ var _yarn_trap_count_label: Label
 var _yarn_trap_hud_icon: TextureRect
 var _yarn_trap_effect_index: int = 0
 var _enemy_reward_feedback_index: int = 0
+var _enemy_hit_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -100,6 +102,7 @@ func start_level(path: String) -> void:
 	_battle_speed_multiplier = 1.0
 	_yarn_trap_effect_index = 0
 	_enemy_reward_feedback_index = 0
+	_enemy_hit_feedback_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -440,6 +443,7 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	var tower: Node2D = TowerScript.new()
 	tower.configure(tower_id, stats)
 	tower.position = slot.position
+	tower.fired.connect(_on_tower_fired)
 	towers.append(tower)
 	_tower_by_slot[slot] = tower
 	_tower_layer.add_child(tower)
@@ -729,6 +733,31 @@ func _show_enemy_reward_feedback(reward: int, world_anchor: Vector2) -> void:
 	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.42)
 
 
+func _show_enemy_hit_feedback(world_anchor: Vector2) -> void:
+	if _world == null:
+		return
+	_enemy_hit_feedback_index += 1
+	var effect: Sprite2D = Sprite2D.new()
+	effect.name = "EnemyHitFeedback%d" % _enemy_hit_feedback_index
+	effect.texture = EnemyHitFishSparkTexture
+	effect.centered = true
+	effect.position = world_anchor + Vector2(4, -18)
+	effect.scale = Vector2(0.058, 0.058)
+	effect.rotation_degrees = -10.0 + float(_enemy_hit_feedback_index % 5) * 5.0
+	effect.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	effect.z_index = 24
+	_world.add_child(effect)
+
+	var tween: Tween = effect.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(effect, "modulate:a", 1.0, 0.05).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "scale", Vector2(0.092, 0.092), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "rotation_degrees", effect.rotation_degrees + 12.0, 0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "position:y", effect.position.y - 16.0, 0.25).set_delay(0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "modulate:a", 0.0, 0.16).set_delay(0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.38)
+
+
 func _pop_in_control(target: Control) -> void:
 	if target == null or not is_instance_valid(target):
 		return
@@ -898,6 +927,12 @@ func _tower_button_name(tower_id: String) -> String:
 	if tower_id == "tabby_slow_cat":
 		return "SelectTowerTabbySlowCatButton"
 	return "SelectTower%sButton" % tower_id.capitalize().replace("_", "")
+
+
+func _on_tower_fired(_tower: Node2D, target: Node2D) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	_show_enemy_hit_feedback(target.global_position)
 
 
 func _on_enemy_defeated(enemy: Node2D) -> void:
