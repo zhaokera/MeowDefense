@@ -290,6 +290,15 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_progression_persistence_tests.gd` to verify fresh locks, save creation, reload restore, and next-level unlock behavior without touching the real player save.
 - Added `/Users/zhaok/cat/tests/capture_level_select_locked.gd` to regenerate `/Users/zhaok/cat/artifacts/level_select_locked.png`.
 
+**Locked Level Feedback**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/locked_level_feedback_design_reference.png` as the full-screen Image2 design reference for tapping a locked level.
+- Generated `/Users/zhaok/cat/assets/generated/ui/locked_level_feedback_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/locked_level_feedback_burst.png` for the animated lock/key burst.
+- Locked level cards now keep disabled `StartLevelNButton` controls plus Image2 lock badges, and add `LockedLevelNInfoButton` transparent hit areas so tapping a locked card opens guidance instead of doing nothing.
+- `LockedLevelFeedbackOverlay` uses the Image2 design background, dynamic title/requirement/copy labels, close hit area, pulse feedback, and `PlayPreviousLevelButton` to send the player to the prerequisite level.
+- Added `/Users/zhaok/cat/tests/run_locked_level_feedback_tests.gd` to verify the disabled locked start path, feedback hit area, Image2 assets, manifest entries, close behavior, and previous-level routing.
+- Added `/Users/zhaok/cat/tests/capture_locked_level_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/locked_level_feedback.png`.
+- Verified `/Users/zhaok/cat/artifacts/locked_level_feedback.png` visually, passed the targeted locked-level/menu/progression/energy/result checks, parsed the asset manifest cleanly, and passed the full `tests/run_*.gd` regression suite with 46 clean Godot tests.
+
 **Battle Wave Preview And Speed Control**
 - Generated `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_chip.png` and `/Users/zhaok/cat/assets/generated/ui/battle_speed_button.png` as transparent Image2 HUD assets.
 - Added `WavePreviewFrame` and `WavePreviewLabel` to show the next/current wave enemy, count, and countdown without drawing a code panel.

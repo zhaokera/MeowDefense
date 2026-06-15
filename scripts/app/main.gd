@@ -5,6 +5,8 @@ const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
+const LOCKED_LEVEL_FEEDBACK_DESIGN := preload("res://assets/generated/ui/locked_level_feedback_design_reference.png")
+const LOCKED_LEVEL_FEEDBACK_BURST := preload("res://assets/generated/ui/locked_level_feedback_burst.png")
 const RESULT_SCREEN_DESIGN := preload("res://assets/generated/ui/result_screen_design_reference.png")
 const RESULT_SCREEN_DEFEAT_DESIGN := preload("res://assets/generated/ui/result_screen_defeat_design_reference.png")
 const SETTINGS_OVERLAY_PANEL := preload("res://assets/generated/ui/settings_overlay_panel.png")
@@ -201,10 +203,14 @@ func _show_level_select() -> void:
 		button.disabled = not unlocked
 		if unlocked:
 			button.pressed.connect(func() -> void: _start_level(level_info))
+			screen.add_child(button)
 		else:
 			button.tooltip_text = "通关前一关解锁"
 			_add_level_lock_badge(screen, level_id, rect)
-		screen.add_child(button)
+			screen.add_child(button)
+			var locked_info_button: Button = _hotspot_button("LockedLevel%dInfoButton" % level_id, rect.position, rect.size, "查看解锁条件")
+			locked_info_button.pressed.connect(func() -> void: _show_locked_level_feedback(screen, level_info))
+			screen.add_child(locked_info_button)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(330, 580), Vector2(118, 120), "主城")
 	bottom_home.pressed.connect(_show_main_menu)
@@ -227,7 +233,10 @@ func _start_level_one() -> void:
 func _start_level(level_info: Dictionary) -> void:
 	var requested_level_id: int = int(level_info.get("id", 1))
 	if not _is_level_unlocked(requested_level_id):
-		_show_level_select()
+		if _current == null or not is_instance_valid(_current) or _current.name != "LevelSelectScreen":
+			_show_level_select()
+		if _current != null:
+			_show_locked_level_feedback(_current, level_info)
 		return
 	_sync_energy_for_today()
 	if _energy <= 0:
@@ -250,6 +259,55 @@ func _start_level(level_info: Dictionary) -> void:
 	_current = battle
 	add_child(battle)
 	battle.start_level(_current_level_path)
+
+
+func _show_locked_level_feedback(parent: Node, level_info: Dictionary) -> void:
+	_remove_named_child(parent, "LockedLevelFeedbackOverlay")
+	var level_id: int = int(level_info.get("id", 1))
+	var previous_level_id: int = max(1, level_id - 1)
+	var previous_level: Dictionary = _level_info_by_id(previous_level_id)
+	var overlay: Control = Control.new()
+	overlay.name = "LockedLevelFeedbackOverlay"
+	overlay.size = VIEW_SIZE
+	overlay.z_index = 20
+	parent.add_child(overlay)
+
+	var design: TextureRect = _ui_texture_rect("LockedLevelFeedbackDesignBackground", LOCKED_LEVEL_FEEDBACK_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	overlay.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("LockedLevelFeedbackBurst", LOCKED_LEVEL_FEEDBACK_BURST, Vector2(360, 270), Vector2(190, 190))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.90)
+	burst.z_index = 1
+	overlay.add_child(burst)
+
+	var locked_name: String = str(level_info.get("name", "新关卡"))
+	var previous_name: String = str(previous_level.get("name", "前一关"))
+	var title: Label = _label("LockedLevelFeedbackTitle", "第 %d 关暂未解锁" % level_id, Vector2(432, 116), Vector2(416, 58), 32, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title.z_index = 2
+	overlay.add_child(title)
+	var requirement: Label = _label("LockedLevelFeedbackRequirement", "先通关第 %d 关：%s" % [previous_level_id, previous_name], Vector2(676, 336), Vector2(346, 58), 23, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	requirement.z_index = 2
+	overlay.add_child(requirement)
+	var copy: Label = _label("LockedLevelFeedbackCopy", "%s 会在前一关胜利后开放" % locked_name, Vector2(316, 508), Vector2(310, 42), 18, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	copy.z_index = 2
+	overlay.add_child(copy)
+	var action: Button = _transparent_text_button("PlayPreviousLevelButton", "挑战第 %d 关" % previous_level_id, Rect2(Vector2(462, 574), Vector2(356, 78)), 27)
+	action.z_index = 3
+	action.pressed.connect(func() -> void:
+		overlay.queue_free()
+		_start_level(previous_level)
+	)
+	_attach_button_feedback(action, burst)
+	overlay.add_child(action)
+	var close_button: Button = _hotspot_button("CloseLockedLevelFeedbackButton", Vector2(988, 84), Vector2(92, 92), "关闭")
+	close_button.z_index = 3
+	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	overlay.add_child(close_button)
+	_animate_overlay_entry(overlay)
+	_pulse_control(burst)
 
 
 func _on_battle_yarn_traps_changed(count: int) -> void:

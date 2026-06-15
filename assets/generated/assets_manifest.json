@@ -254,6 +254,21 @@
       "prompt_summary": "Image2 transparent cat-paw lock badge used to show locked level cards on the level-select map."
     },
     {
+      "id": "locked_level_feedback_design_reference",
+      "path": "res://assets/generated/ui/locked_level_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen locked level feedback overlay design with blank runtime title, requirement, and action areas."
+    },
+    {
+      "id": "locked_level_feedback_burst_source",
+      "path": "res://assets/generated/ui/locked_level_feedback_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the locked level lock-key-route burst."
+    },
+    {
+      "id": "locked_level_feedback_burst",
+      "path": "res://assets/generated/ui/locked_level_feedback_burst.png",
+      "prompt_summary": "Transparent Image2 locked level lock-key-route burst layered over the feedback overlay."
+    },
+    {
       "id": "battle_hud_design_reference",
       "path": "res://assets/generated/ui/battle_hud_design_reference.png",
       "prompt_summary": "Image2 full-screen battle HUD design reference used to guide the playable battle interface restoration."
