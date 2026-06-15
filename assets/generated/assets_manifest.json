@@ -69,8 +69,18 @@
     },
     {
       "id": "mouse_fast",
-      "path": "res://assets/generated/enemies/mouse_fast.png",
-      "prompt_summary": "Fast small mouse/hamster-style enemy with stolen fish snack."
+      "path": "res://assets/generated/enemies/mouse_fast_sheet.png",
+      "prompt_summary": "Fast yellow hamster runner with red scarf and fish snack, as a sprite sheet with sprint, hit, sprint alternate, and tumble poses."
+    },
+    {
+      "id": "mouse_fast_animation_design_reference",
+      "path": "res://assets/generated/enemies/mouse_fast_animation_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle design reference showing the fast mouse/hamster enemy with visible sprinting pose beats."
+    },
+    {
+      "id": "mouse_fast_sheet_source",
+      "path": "res://assets/generated/enemies/mouse_fast_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the fast mouse/hamster runner sprite sheet."
     },
     {
       "id": "rat_tank",

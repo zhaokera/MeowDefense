@@ -48,7 +48,7 @@ const ENEMIES: Dictionary = {
 		"speed": 118.0,
 		"reward": 9,
 		"damage": 1,
-		"texture": "res://assets/generated/enemies/mouse_fast.png",
+		"texture": "res://assets/generated/enemies/mouse_fast_sheet.png",
 		"accent": Color(0.84, 0.65, 0.28)
 	},
 	"rat_tank": {

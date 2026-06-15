@@ -359,4 +359,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_mouse_basic_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, and walking-frame cycling.
 - Added `/Users/zhaok/cat/tests/capture_mouse_basic_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/mouse_basic_animation.png`.
 
+**Fast Mouse Enemy Animation Sheet**
+- Generated `/Users/zhaok/cat/assets/generated/enemies/mouse_fast_animation_design_reference.png` as the full-screen Image2 direction for the fast red-scarf mouse/hamster enemy feeling animated in battle.
+- Generated `/Users/zhaok/cat/assets/generated/enemies/mouse_fast_sheet_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/enemies/mouse_fast_sheet.png` for runtime use.
+- The `mouse_fast` enemy now uses the 2x2 Image2 sprite sheet instead of the old single static enemy image.
+- The existing distance-based walking frame cycling now makes the fast enemy switch sprint frames while moving, while hit and defeated poses use frames 1 and 3.
+- Added `/Users/zhaok/cat/tests/run_mouse_fast_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, and walking-frame cycling.
+- Added `/Users/zhaok/cat/tests/capture_mouse_fast_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/mouse_fast_animation.png`.
+
 final result: passed
