@@ -519,6 +519,21 @@
       "prompt_summary": "Image2 transparent cat-paw claimed stamp used by completed achievement rows."
     },
     {
+      "id": "achievement_claim_reward_design_reference",
+      "path": "res://assets/generated/ui/achievement_claim_reward_design_reference.png",
+      "prompt_summary": "Image2 full-screen achievement reward overlay design used after claiming an achievement."
+    },
+    {
+      "id": "achievement_claim_reward_burst_source",
+      "path": "res://assets/generated/ui/achievement_claim_reward_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the achievement reward burst."
+    },
+    {
+      "id": "achievement_claim_reward_burst",
+      "path": "res://assets/generated/ui/achievement_claim_reward_burst.png",
+      "prompt_summary": "Transparent Image2 achievement reward burst layered over the reward overlay with pop and pulse motion."
+    },
+    {
       "id": "yarn_trap_item_icon",
       "path": "res://assets/generated/ui/yarn_trap_item_icon.png",
       "prompt_summary": "Image2 transparent yarn trap item icon used by the shop purchase state and inventory flow."

@@ -1,6 +1,10 @@
 extends SceneTree
 
 const TEST_SAVE_PATH := "user://meow_defense_achievement_claim_test_save.json"
+const MANIFEST_PATH := "res://assets/generated/assets_manifest.json"
+const ACHIEVEMENT_CLAIM_REWARD_DESIGN_PATH := "res://assets/generated/ui/achievement_claim_reward_design_reference.png"
+const ACHIEVEMENT_CLAIM_REWARD_BURST_PATH := "res://assets/generated/ui/achievement_claim_reward_burst.png"
+const ACHIEVEMENT_CLAIM_REWARD_BURST_SOURCE_PATH := "res://assets/generated/ui/achievement_claim_reward_burst_source.png"
 
 var _failures: Array[String] = []
 
@@ -41,10 +45,30 @@ func _run() -> void:
 		_assert_true(not claim_button.disabled, "completed unclaimed achievement claim button should be enabled")
 		claim_button.emit_signal("pressed")
 		await process_frame
+		await process_frame
 
 	_assert_true(_int_property(instance, "_total_fish") == 10, "first-clear achievement should grant 10 fish")
 	_assert_true(_int_property(instance, "_paw_tokens") == 1, "first-clear achievement should grant 1 paw token")
 	_assert_true(_claimed(instance, "first_clear"), "first-clear achievement should be marked claimed")
+	_assert_exists(instance, "AchievementClaimRewardOverlay", "claiming an achievement should open a reward feedback overlay")
+	_assert_design_texture(
+		instance,
+		"AchievementClaimRewardDesignBackground",
+		ACHIEVEMENT_CLAIM_REWARD_DESIGN_PATH,
+		"achievement reward overlay should render from its Image2 full-screen design"
+	)
+	_assert_design_texture(
+		instance,
+		"AchievementClaimRewardBurst",
+		ACHIEVEMENT_CLAIM_REWARD_BURST_PATH,
+		"achievement reward overlay should include the Image2 reward burst asset"
+	)
+	var reward_title: Label = _assert_label(instance, "AchievementClaimRewardTitle", "achievement reward overlay should show the claimed achievement title")
+	if reward_title != null:
+		_assert_true(reward_title.text.contains("首次守卫"), "achievement reward title should name the claimed achievement")
+	var reward_amount: Label = _assert_label(instance, "AchievementClaimRewardAmount", "achievement reward overlay should show the reward amount")
+	if reward_amount != null:
+		_assert_true(reward_amount.text.contains("小鱼干 +10") and reward_amount.text.contains("徽章 +1"), "achievement reward overlay should show both fish and paw rewards")
 	_assert_design_texture(
 		instance,
 		"AchievementFirstClearClaimedStamp",
@@ -55,6 +79,15 @@ func _run() -> void:
 		_assert_true(claim_button.disabled, "claimed achievement button should become disabled")
 	if claim_label != null:
 		_assert_true(claim_label.text == "已领取", "claimed achievement label should update")
+	var reward_close: Button = _assert_button(instance, "CloseAchievementClaimRewardButton", "achievement reward overlay should be closable")
+	if reward_close != null:
+		reward_close.emit_signal("pressed")
+		await process_frame
+		_assert_missing(instance, "AchievementClaimRewardOverlay", "closing achievement reward overlay should remove it")
+
+	_assert_manifest_entry("achievement_claim_reward_design_reference", ACHIEVEMENT_CLAIM_REWARD_DESIGN_PATH)
+	_assert_manifest_entry("achievement_claim_reward_burst_source", ACHIEVEMENT_CLAIM_REWARD_BURST_SOURCE_PATH)
+	_assert_manifest_entry("achievement_claim_reward_burst", ACHIEVEMENT_CLAIM_REWARD_BURST_PATH)
 
 	instance.queue_free()
 	await process_frame
@@ -141,6 +174,31 @@ func _assert_exists(root_node: Node, node_name: String, message: String) -> Node
 	if node == null:
 		_failures.append(message)
 	return node
+
+
+func _assert_missing(root_node: Node, node_name: String, message: String) -> void:
+	if _find_by_name(root_node, node_name) != null:
+		_failures.append(message)
+
+
+func _assert_manifest_entry(id: String, expected_path: String) -> void:
+	var manifest_file: FileAccess = FileAccess.open(MANIFEST_PATH, FileAccess.READ)
+	if manifest_file == null:
+		_failures.append("asset manifest should be readable")
+		return
+	var parsed: Variant = JSON.parse_string(manifest_file.get_as_text())
+	if not (parsed is Dictionary):
+		_failures.append("asset manifest should parse as a dictionary")
+		return
+	var ui_items: Array = (parsed as Dictionary).get("ui", []) as Array
+	for item: Variant in ui_items:
+		if not (item is Dictionary):
+			continue
+		var entry: Dictionary = item as Dictionary
+		if str(entry.get("id", "")) == id:
+			_assert_true(str(entry.get("path", "")) == expected_path, "%s should point to %s" % [id, expected_path])
+			return
+	_failures.append("asset manifest should include %s" % id)
 
 
 func _assert_true(condition: bool, message: String) -> void:

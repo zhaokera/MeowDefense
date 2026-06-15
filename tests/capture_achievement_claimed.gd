@@ -31,10 +31,19 @@ func _capture() -> void:
 		quit(1)
 		return
 	claim_button.emit_signal("pressed")
-	await process_frame
-	await process_frame
+	for i: int in range(16):
+		await process_frame
 
-	var image: Image = root.get_texture().get_image()
+	var viewport_texture: ViewportTexture = root.get_texture()
+	if viewport_texture == null:
+		push_error("failed to read viewport texture")
+		quit(1)
+		return
+	var image: Image = viewport_texture.get_image()
+	if image == null:
+		push_error("failed to read viewport image")
+		quit(1)
+		return
 	var error: Error = image.save_png(OUT_PATH)
 	if error != OK:
 		push_error("failed to save achievement screenshot: %s" % error)

@@ -221,6 +221,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_achievement_claim_tests.gd` to verify Image2 achievement visuals, reward grants, persistence, and backpack badge count.
 - Added `/Users/zhaok/cat/tests/capture_achievement_claimed.gd` to regenerate `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`.
 
+**Achievement Claim Reward Feedback Overlay**
+- Generated `/Users/zhaok/cat/assets/generated/ui/achievement_claim_reward_design_reference.png` as the full-screen Image2 reward moment shown after claiming an achievement.
+- Generated `/Users/zhaok/cat/assets/generated/ui/achievement_claim_reward_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/achievement_claim_reward_burst.png` for runtime use.
+- Claiming an achievement now opens `AchievementClaimRewardOverlay` with the Image2 design background, dynamic achievement/reward labels, the transparent reward burst, a close hit area, and button/burst pulse feedback.
+- Updated `/Users/zhaok/cat/tests/run_achievement_claim_tests.gd` to verify the reward feedback overlay, Image2 asset paths, manifest entries, reward labels, close behavior, reward accounting, persistence, and backpack badge count.
+- Updated `/Users/zhaok/cat/tests/capture_achievement_claimed.gd` to wait for animation frames and regenerate `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`, which now captures the reward feedback overlay.
+- Verified the new reward screenshot visually, passed the targeted achievement/town/backpack/reward checks, and passed the full `tests/run_*.gd` regression suite with 44 clean Godot tests.
+
 **Shop Yarn Trap Purchase**
 - Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png` as a transparent Image2 yarn trap item icon for the shop inventory flow.
 - Converted the shop's yarn trap product from a locked placeholder into a purchasable 25-fish item that increments `_yarn_traps`, updates the fish counter, persists through saves, and appears in the backpack count.

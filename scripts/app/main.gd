@@ -28,6 +28,8 @@ const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack
 const BACKPACK_ORGANIZE_REWARD_DESIGN := preload("res://assets/generated/ui/backpack_organize_reward_design_reference.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
+const ACHIEVEMENT_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/achievement_claim_reward_design_reference.png")
+const ACHIEVEMENT_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/achievement_claim_reward_burst.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_design_reference.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
@@ -1105,6 +1107,50 @@ func _claim_achievement(achievement: Dictionary, parent: Control, claim_label: L
 	claim_button.disabled = true
 	_add_achievement_claimed_stamp(parent, str(achievement.get("node", "Achievement")), achievement.get("position", Vector2.ZERO) as Vector2)
 	_pulse_control(parent)
+	_show_achievement_claim_reward_overlay(parent, achievement)
+
+
+func _show_achievement_claim_reward_overlay(parent: Control, achievement: Dictionary) -> void:
+	_remove_named_child(parent, "AchievementClaimRewardOverlay")
+	var reward: Control = Control.new()
+	reward.name = "AchievementClaimRewardOverlay"
+	reward.size = VIEW_SIZE
+	reward.z_index = 18
+	parent.add_child(reward)
+
+	var design: TextureRect = _ui_texture_rect("AchievementClaimRewardDesignBackground", ACHIEVEMENT_CLAIM_REWARD_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	reward.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("AchievementClaimRewardBurst", ACHIEVEMENT_CLAIM_REWARD_BURST, Vector2(388, 412), Vector2(126, 126))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.95)
+	burst.z_index = 1
+	reward.add_child(burst)
+
+	var title: String = str(achievement.get("title", "成就"))
+	var reward_fish: int = max(0, int(achievement.get("reward_fish", 0)))
+	var reward_paws: int = max(0, int(achievement.get("reward_paws", 0)))
+	var title_label: Label = _label("AchievementClaimRewardTitle", "成就达成：%s" % title, Vector2(410, 302), Vector2(460, 52), 31, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title_label.z_index = 2
+	reward.add_child(title_label)
+	var copy: Label = _label("AchievementClaimRewardCopy", str(achievement.get("detail", "奖励已领取")), Vector2(420, 366), Vector2(440, 42), 21, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.z_index = 2
+	reward.add_child(copy)
+	var amount: Label = _label("AchievementClaimRewardAmount", "小鱼干 +%d    徽章 +%d" % [reward_fish, reward_paws], Vector2(510, 450), Vector2(350, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	amount.z_index = 2
+	reward.add_child(amount)
+	var done_button: Button = _transparent_text_button("CloseAchievementClaimRewardButton", "收好奖励", Rect2(Vector2(470, 594), Vector2(340, 78)), 26)
+	done_button.z_index = 3
+	done_button.pressed.connect(func() -> void: reward.queue_free())
+	_attach_button_feedback(done_button, burst)
+	reward.add_child(done_button)
+	var dismiss_button: Button = _hotspot_button("DismissAchievementClaimRewardButton", Vector2(888, 138), Vector2(96, 96), "关闭")
+	dismiss_button.z_index = 3
+	dismiss_button.pressed.connect(func() -> void: reward.queue_free())
+	reward.add_child(dismiss_button)
+	_animate_overlay_entry(reward)
+	_pulse_control(burst)
 
 
 func _add_achievement_claimed_stamp(parent: Control, row_name: String, position: Vector2) -> void:
