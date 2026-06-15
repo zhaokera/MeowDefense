@@ -22,6 +22,7 @@ const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_but
 const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
+const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_design_reference.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
@@ -36,6 +37,11 @@ const LEVELS: Array[Dictionary] = [
 	{"id": 3, "name": "月光粮仓", "path": "res://data/levels/level_003.json", "thumb": "res://assets/generated/ui/level_003_thumb.png"},
 	{"id": 4, "name": "溪边栈桥", "path": "res://data/levels/level_004.json", "thumb": "res://assets/generated/ui/level_004_thumb.png"},
 	{"id": 5, "name": "终点守卫战", "path": "res://data/levels/level_005.json", "thumb": "res://assets/generated/ui/level_005_thumb.png"}
+]
+const ACHIEVEMENTS: Array[Dictionary] = [
+	{"id": "first_clear", "node": "AchievementFirstClear", "title": "首次守卫", "detail": "通关任意关卡", "target": 1, "reward_fish": 10, "reward_paws": 1, "position": Vector2(410, 250)},
+	{"id": "star_collector", "node": "AchievementStars", "title": "星级收藏", "detail": "累计获得 15 颗星", "target": 15, "reward_fish": 30, "reward_paws": 2, "position": Vector2(410, 367)},
+	{"id": "campaign_clear", "node": "AchievementCampaign", "title": "连续推进", "detail": "完成 5 个关卡", "target": 5, "reward_fish": 50, "reward_paws": 3, "position": Vector2(410, 484)}
 ]
 
 const VIEW_SIZE := Vector2(1280, 720)
@@ -61,6 +67,8 @@ var _effects_enabled: bool = true
 var _volume: float = 82.0
 var _daily_reward_claimed: bool = false
 var _shop_starter_claimed: bool = false
+var _paw_tokens: int = 0
+var _claimed_achievements: Dictionary = {}
 
 
 func _ready() -> void:
@@ -397,7 +405,7 @@ func _show_backpack_overlay(parent: Node) -> void:
 	content.add_child(_label("BackpackEnergyCounter", "15/15", Vector2(910, 31), Vector2(92, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	_backpack_item(content, "BackpackFishItem", "小鱼干", "当前持有 %d" % _total_fish, Vector2(306, 424), Vector2(214, 156))
-	_backpack_item(content, "BackpackPawTokenItem", "猫爪徽章", "完成成就获得", Vector2(532, 424), Vector2(214, 156))
+	_backpack_item(content, "BackpackPawTokenItem", "猫爪徽章", "当前持有 %d" % _paw_tokens, Vector2(532, 424), Vector2(214, 156))
 	_backpack_item(content, "BackpackYarnTrapItem", "毛线陷阱", "商店补给待开放", Vector2(762, 424), Vector2(214, 156))
 
 	var organize: Button = _transparent_text_button("OrganizeBackpackButton", "整理背包", Rect2(Vector2(466, 574), Vector2(348, 76)), 27)
@@ -412,10 +420,8 @@ func _show_backpack_overlay(parent: Node) -> void:
 func _show_achievements_overlay(parent: Node) -> void:
 	var content: Control = _image_overlay(parent, "AchievementsOverlay", "AchievementsDesignBackground", ACHIEVEMENTS_OVERLAY_DESIGN)
 	content.add_child(_label("AchievementsTitle", "成就", Vector2(438, 132), Vector2(404, 62), 39, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	var completed_levels: int = _completed_level_count()
-	_achievement_row(content, "AchievementFirstClear", "首次守卫", "通关任意关卡", "%d/1" % min(completed_levels, 1), Vector2(410, 250))
-	_achievement_row(content, "AchievementStars", "星级收藏", "累计获得 15 颗星", "%d/15" % _best_stars, Vector2(410, 367))
-	_achievement_row(content, "AchievementCampaign", "连续推进", "完成 5 个关卡", "%d/5" % completed_levels, Vector2(410, 484))
+	for achievement: Dictionary in ACHIEVEMENTS:
+		_achievement_row(content, achievement)
 	var action: Button = _transparent_text_button("AchievementsActionButton", "继续挑战", Rect2(Vector2(468, 575), Vector2(344, 78)), 27)
 	action.pressed.connect(_show_level_select)
 	content.add_child(action)
@@ -515,13 +521,85 @@ func _backpack_item(parent: Control, node_prefix: String, title: String, detail:
 	parent.add_child(button)
 
 
-func _achievement_row(parent: Control, row_name: String, title: String, detail: String, progress: String, position: Vector2) -> void:
+func _achievement_row(parent: Control, achievement: Dictionary) -> void:
+	var achievement_id: String = str(achievement.get("id", ""))
+	var row_name: String = str(achievement.get("node", "Achievement"))
+	var title: String = str(achievement.get("title", "成就"))
+	var detail: String = str(achievement.get("detail", "完成目标"))
+	var target: int = max(1, int(achievement.get("target", 1)))
+	var reward_fish: int = max(0, int(achievement.get("reward_fish", 0)))
+	var reward_paws: int = max(0, int(achievement.get("reward_paws", 0)))
+	var position: Vector2 = achievement.get("position", Vector2.ZERO) as Vector2
+	var progress_value: int = min(target, _achievement_progress(achievement_id))
+	var is_ready: bool = progress_value >= target
+	var is_claimed: bool = _is_achievement_claimed(achievement_id)
+	var claim_text: String = "已领取" if is_claimed else ("领取 +%d" % reward_fish if is_ready else "未完成")
+
 	parent.add_child(_label("%sTitle" % row_name, title, position, Vector2(260, 34), 22, INK, HORIZONTAL_ALIGNMENT_LEFT))
 	parent.add_child(_label("%sDetail" % row_name, detail, position + Vector2(0, 34), Vector2(300, 30), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
-	parent.add_child(_label("%sProgress" % row_name, progress, position + Vector2(404, 20), Vector2(142, 36), 22, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	var row_button: Button = _hotspot_button("%sButton" % row_name, position - Vector2(118, 18), Vector2(700, 94), title)
+	parent.add_child(_label("%sProgress" % row_name, "%d/%d" % [progress_value, target], position + Vector2(404, 20), Vector2(142, 36), 22, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	parent.add_child(_label("%sReward" % row_name, "奖励：鱼干%d  徽章%d" % [reward_fish, reward_paws], position + Vector2(0, 58), Vector2(330, 26), 14, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
+	if is_claimed:
+		_add_achievement_claimed_stamp(parent, row_name, position)
+	var claim_label: Label = _label("%sClaimLabel" % row_name, claim_text, position + Vector2(494, 48), Vector2(122, 32), 18, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	claim_label.z_index = 3
+	parent.add_child(claim_label)
+	var claim_button: Button = _hotspot_button("%sClaimButton" % row_name, position + Vector2(466, 18), Vector2(174, 66), claim_text)
+	claim_button.z_index = 4
+	claim_button.disabled = not is_ready or is_claimed
+	claim_button.pressed.connect(func() -> void:
+		_claim_achievement(achievement, parent, claim_label, claim_button)
+	)
+	parent.add_child(claim_button)
+	var row_button: Button = _hotspot_button("%sButton" % row_name, position - Vector2(118, 18), Vector2(562, 94), title)
 	row_button.pressed.connect(func() -> void: _pulse_control(parent))
 	parent.add_child(row_button)
+
+
+func _achievement_progress(achievement_id: String) -> int:
+	match achievement_id:
+		"first_clear":
+			return min(_completed_level_count(), 1)
+		"star_collector":
+			return min(_best_stars, 15)
+		"campaign_clear":
+			return min(_completed_level_count(), 5)
+	return 0
+
+
+func _is_achievement_claimed(achievement_id: String) -> bool:
+	return bool(_claimed_achievements.get(achievement_id, false))
+
+
+func _claim_achievement(achievement: Dictionary, parent: Control, claim_label: Label, claim_button: Button) -> void:
+	var achievement_id: String = str(achievement.get("id", ""))
+	if achievement_id.is_empty() or _is_achievement_claimed(achievement_id):
+		return
+	var target: int = max(1, int(achievement.get("target", 1)))
+	if _achievement_progress(achievement_id) < target:
+		return
+	_claimed_achievements[achievement_id] = true
+	_total_fish += max(0, int(achievement.get("reward_fish", 0)))
+	_paw_tokens += max(0, int(achievement.get("reward_paws", 0)))
+	_save_progress()
+	claim_label.text = "已领取"
+	claim_button.disabled = true
+	_add_achievement_claimed_stamp(parent, str(achievement.get("node", "Achievement")), achievement.get("position", Vector2.ZERO) as Vector2)
+	_pulse_control(parent)
+
+
+func _add_achievement_claimed_stamp(parent: Control, row_name: String, position: Vector2) -> void:
+	if parent.find_child("%sClaimedStamp" % row_name, true, false) != null:
+		return
+	var stamp: TextureRect = _ui_texture_rect("%sClaimedStamp" % row_name, ACHIEVEMENT_CLAIMED_STAMP, position + Vector2(486, 22), Vector2(136, 76))
+	stamp.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	stamp.modulate = Color(1.0, 1.0, 1.0, 0.92)
+	stamp.z_index = 2
+	parent.add_child(stamp)
+	stamp.pivot_offset = stamp.size * 0.5
+	stamp.scale = Vector2(0.76, 0.76)
+	var tween: Tween = create_tween()
+	tween.tween_property(stamp, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _shop_locked_product(parent: Control, node_prefix: String, title: String, detail: String, position: Vector2, size: Vector2) -> void:
@@ -557,6 +635,8 @@ func _save_progress() -> void:
 		"unlocked_level": _unlocked_level,
 		"daily_reward_claimed": _daily_reward_claimed,
 		"shop_starter_claimed": _shop_starter_claimed,
+		"paw_tokens": _paw_tokens,
+		"claimed_achievements": _claimed_achievements,
 		"music_enabled": _music_enabled,
 		"effects_enabled": _effects_enabled,
 		"volume": _volume
@@ -583,6 +663,7 @@ func _load_progress() -> void:
 	_unlocked_level = max(1, min(LEVELS.size(), int(data.get("unlocked_level", 1))))
 	_daily_reward_claimed = bool(data.get("daily_reward_claimed", false))
 	_shop_starter_claimed = bool(data.get("shop_starter_claimed", false))
+	_paw_tokens = max(0, int(data.get("paw_tokens", 0)))
 	_music_enabled = bool(data.get("music_enabled", _music_enabled))
 	_effects_enabled = bool(data.get("effects_enabled", _effects_enabled))
 	_volume = max(0.0, min(100.0, float(data.get("volume", _volume))))
@@ -597,6 +678,14 @@ func _load_progress() -> void:
 				_best_stars_by_level[level_id] = max(0, min(3, int(stars_by_level[raw_level_id])))
 				if _level_stars(level_id) > 0:
 					_unlocked_level = max(_unlocked_level, min(LEVELS.size(), level_id + 1))
+	_claimed_achievements.clear()
+	var raw_claimed: Variant = data.get("claimed_achievements", {})
+	if raw_claimed is Dictionary:
+		var claimed: Dictionary = raw_claimed as Dictionary
+		for achievement: Dictionary in ACHIEVEMENTS:
+			var achievement_id: String = str(achievement.get("id", ""))
+			if bool(claimed.get(achievement_id, false)):
+				_claimed_achievements[achievement_id] = true
 	_recalculate_best_stars()
 
 

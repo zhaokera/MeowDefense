@@ -125,6 +125,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: full-screen Image2 backpack overlay design used directly by `BackpackDesignBackground`.
 - `achievements_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/achievements_overlay_design_reference.png`
   Role: full-screen Image2 achievements overlay design used directly by `AchievementsDesignBackground`.
+- `achievement_claimed_stamp`: `/Users/zhaok/cat/assets/generated/ui/achievement_claimed_stamp.png`
+  Role: transparent Image2 claimed stamp used by completed achievement rows after reward collection.
 - `shop_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`
   Role: full-screen Image2 shop overlay design used directly by `ShopDesignBackground`.
 - `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
@@ -175,5 +177,6 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
 - Backpack overlay screenshot: `/Users/zhaok/cat/artifacts/backpack_overlay.png`
 - Achievements overlay screenshot: `/Users/zhaok/cat/artifacts/achievements_overlay.png`
+- Claimed achievements screenshot: `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`
 - Shop overlay screenshot: `/Users/zhaok/cat/artifacts/shop_overlay.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

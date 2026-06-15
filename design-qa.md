@@ -160,6 +160,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/capture_town_feature_overlays.gd` to regenerate backpack, achievements, and shop screenshots.
 - Latest screenshots: `/Users/zhaok/cat/artifacts/backpack_overlay.png`, `/Users/zhaok/cat/artifacts/achievements_overlay.png`, `/Users/zhaok/cat/artifacts/shop_overlay.png`.
 
+**Achievement Claim Rewards**
+- Generated `/Users/zhaok/cat/assets/generated/ui/achievement_claimed_stamp.png` as a transparent Image2 cat-paw claimed stamp for achievement rows.
+- Added claimable achievement rewards for first clear, 15-star collection, and full campaign completion; rewards grant fish and cat-paw badges, then persist in `claimed_achievements` and `paw_tokens`.
+- Backpack now reflects the current cat-paw badge count from achievement rewards.
+- Added `/Users/zhaok/cat/tests/run_achievement_claim_tests.gd` to verify Image2 achievement visuals, reward grants, persistence, and backpack badge count.
+- Added `/Users/zhaok/cat/tests/capture_achievement_claimed.gd` to regenerate `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`.
+
 **Progression Persistence And Level Locking**
 - Generated `/Users/zhaok/cat/assets/generated/ui/level_lock_badge.png` as a transparent Image2 cat-paw lock badge for locked level cards.
 - Added persistent progress at `user://meow_defense_save.json` for best stars by level, total fish, unlocked level, reward claims, and basic settings.

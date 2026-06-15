@@ -277,6 +277,11 @@
       "prompt_summary": "Image2 full-screen achievements overlay design used directly as the trophy/progress popup background."
     },
     {
+      "id": "achievement_claimed_stamp",
+      "path": "res://assets/generated/ui/achievement_claimed_stamp.png",
+      "prompt_summary": "Image2 transparent cat-paw claimed stamp used by completed achievement rows."
+    },
+    {
       "id": "shop_overlay_design_reference",
       "path": "res://assets/generated/ui/shop_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."
