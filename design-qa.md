@@ -303,4 +303,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_build_success_feedback_tests.gd` to verify real build creation and Image2 build feedback rendering.
 - Added `/Users/zhaok/cat/tests/capture_build_success_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/build_success_feedback.png`.
 
+**Battle Tower Upgrade Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/effects/tower_upgrade_feedback_design_reference.png` as the full-screen Image2 direction for successful tower upgrade feedback.
+- Generated `/Users/zhaok/cat/assets/generated/effects/tower_upgrade_cat_starburst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/tower_upgrade_cat_starburst.png` for runtime use.
+- Successful upgrades now show `TowerUpgradeFeedbackN` at the upgraded tower using the Image2 golden cat-paw starburst, upward light beams, fishbones, and sparkles.
+- The upgrade feedback pops, rotates, rises, and fades quickly while the tower action panel remains readable.
+- Added `/Users/zhaok/cat/tests/run_tower_upgrade_feedback_tests.gd` to verify real upgrade behavior and Image2 upgrade feedback rendering.
+- Added `/Users/zhaok/cat/tests/capture_tower_upgrade_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_upgrade_feedback.png`.
+
 final result: passed

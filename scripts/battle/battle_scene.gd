@@ -35,6 +35,7 @@ const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_d
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
 const EnemyHitFishSparkTexture := preload("res://assets/generated/effects/enemy_hit_fish_spark.png")
 const BuildSuccessCatPawPuffTexture := preload("res://assets/generated/effects/build_success_cat_paw_puff.png")
+const TowerUpgradeCatStarburstTexture := preload("res://assets/generated/effects/tower_upgrade_cat_starburst.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -80,6 +81,7 @@ var _yarn_trap_effect_index: int = 0
 var _enemy_reward_feedback_index: int = 0
 var _enemy_hit_feedback_index: int = 0
 var _build_success_feedback_index: int = 0
+var _tower_upgrade_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -106,6 +108,7 @@ func start_level(path: String) -> void:
 	_enemy_reward_feedback_index = 0
 	_enemy_hit_feedback_index = 0
 	_build_success_feedback_index = 0
+	_tower_upgrade_feedback_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -584,6 +587,7 @@ func _upgrade_tower_from_overlay(tower: Node2D, feedback_target: Control) -> voi
 		return
 	coins -= upgrade_cost
 	tower.call("upgrade")
+	_show_tower_upgrade_feedback(tower.global_position)
 	_tip_label.text = "%s 升到 %d 级！" % [str(tower.get("display_name")), int(tower.get("level"))]
 	_animate_control_scale(feedback_target, 1.05, 0.08)
 	_update_hud()
@@ -785,6 +789,31 @@ func _show_build_success_feedback(world_anchor: Vector2) -> void:
 	tween.tween_property(effect, "position:y", effect.position.y - 18.0, 0.36).set_delay(0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(effect, "modulate:a", 0.0, 0.22).set_delay(0.46).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.72)
+
+
+func _show_tower_upgrade_feedback(world_anchor: Vector2) -> void:
+	if _world == null:
+		return
+	_tower_upgrade_feedback_index += 1
+	var effect: Sprite2D = Sprite2D.new()
+	effect.name = "TowerUpgradeFeedback%d" % _tower_upgrade_feedback_index
+	effect.texture = TowerUpgradeCatStarburstTexture
+	effect.centered = true
+	effect.position = world_anchor + Vector2(0, -42)
+	effect.scale = Vector2(0.060, 0.060)
+	effect.rotation_degrees = -8.0
+	effect.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	effect.z_index = 26
+	_world.add_child(effect)
+
+	var tween: Tween = effect.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(effect, "modulate:a", 0.95, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "scale", Vector2(0.108, 0.108), 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "rotation_degrees", 8.0, 0.34).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "position:y", effect.position.y - 28.0, 0.42).set_delay(0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(effect, "modulate:a", 0.0, 0.24).set_delay(0.58).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.88)
 
 
 func _pop_in_control(target: Control) -> void:
