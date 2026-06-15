@@ -234,7 +234,7 @@
     {
       "id": "album_paw_badge",
       "path": "res://assets/generated/ui/album_paw_badge.png",
-      "prompt_summary": "Cropped Image2 paw badge retained for future album unlock and rarity states."
+      "prompt_summary": "Cropped Image2 paw badge used by the shop paw bundle and retained for album unlock and rarity states."
     },
     {
       "id": "reward_overlay_design_reference",

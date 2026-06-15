@@ -24,6 +24,7 @@ const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
+const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_design_reference.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
@@ -599,7 +600,7 @@ func _show_shop_overlay(parent: Node) -> void:
 	)
 	content.add_child(claim_button)
 
-	_shop_locked_product(content, "ShopPawBundle", "猫爪徽章包", "完成更多关卡后开放", Vector2(507, 294), Vector2(214, 316))
+	_shop_paw_bundle_product(content, fish_counter, Vector2(507, 294), Vector2(214, 316))
 	_shop_yarn_trap_product(content, fish_counter, Vector2(744, 294), Vector2(214, 316))
 
 	var close_button: Button = _hotspot_button("CloseShopButton", Vector2(960, 112), Vector2(128, 116), "关闭")
@@ -748,6 +749,33 @@ func _shop_locked_product(parent: Control, node_prefix: String, title: String, d
 	var button: Button = _transparent_text_button("%sButton" % node_prefix, "未开放", Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
 	button.disabled = true
 	parent.add_child(button)
+
+
+func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Vector2, size: Vector2) -> void:
+	var price := 45
+	var token_count := 2
+	var icon: TextureRect = _ui_texture_rect("ShopPawBundleIcon", SHOP_PAW_BUNDLE_ICON, position + Vector2(145, 150), Vector2(46, 46))
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	parent.add_child(icon)
+	parent.add_child(_label("ShopPawBundleTitle", "猫爪徽章包", position, Vector2(size.x, 36), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var status: Label = _label("ShopPawBundleStatus", "%d鱼干  持有%d" % [price, _paw_tokens], position + Vector2(58, 188), Vector2(size.x - 70, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	parent.add_child(status)
+	var buy_text: String = "购买 %d" % price if _total_fish >= price else "鱼干不足"
+	var buy_button: Button = _transparent_text_button("BuyShopPawBundleButton", buy_text, Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
+	buy_button.disabled = _total_fish < price
+	buy_button.pressed.connect(func() -> void:
+		if _total_fish < price:
+			return
+		_total_fish -= price
+		_paw_tokens += token_count
+		_save_progress()
+		fish_counter.text = "%d" % _total_fish
+		status.text = "已购买  持有%d" % _paw_tokens
+		buy_button.text = "再买 %d" % price if _total_fish >= price else "鱼干不足"
+		buy_button.disabled = _total_fish < price
+		_pulse_control(icon)
+	)
+	parent.add_child(buy_button)
 
 
 func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vector2, size: Vector2) -> void:

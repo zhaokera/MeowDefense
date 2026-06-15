@@ -183,6 +183,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_yarn_trap_tests.gd` to verify purchase, cost, inventory count, persistence, and backpack display.
 - Added `/Users/zhaok/cat/tests/capture_shop_yarn_trap.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png` and `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`.
 
+**Shop Paw Bundle Purchase**
+- Reused `/Users/zhaok/cat/assets/generated/ui/album_paw_badge.png` as the Image2 item badge for the shop paw bundle.
+- Converted the shop's paw bundle product from a locked placeholder into a purchasable 45-fish item that grants 2 `_paw_tokens`, updates the fish counter, persists through saves, and appears in the backpack badge count.
+- Kept the shop and backpack full-screen Image2 designs as the visual base, adding only dynamic labels, the small Image2 item badge, and transparent hit areas.
+- Added `/Users/zhaok/cat/tests/run_shop_paw_bundle_tests.gd` to verify purchase, cost, badge count, persistence, and backpack display.
+- Added `/Users/zhaok/cat/tests/capture_shop_paw_bundle.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_paw_bundle_purchase.png`.
+
 **Battle Yarn Trap Consumable**
 - Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_field_effect.png` as a transparent Image2 battlefield yarn snare effect.
 - Battle HUD now exposes `YarnTrapHudIcon`, `YarnTrapCountLabel`, and `UseYarnTrapButton` using the Image2 item icon plus transparent interaction layer.

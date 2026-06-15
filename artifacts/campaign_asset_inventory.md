@@ -108,7 +108,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - `album_close_button`: `/Users/zhaok/cat/assets/generated/ui/album_close_button.png`
   Role: transparent close button frame used by `AlbumCloseFrame`.
 - `album_paw_badge`: `/Users/zhaok/cat/assets/generated/ui/album_paw_badge.png`
-  Role: paw badge retained for future album unlock and rarity states.
+  Role: Image2 paw badge used by the shop paw bundle and retained for album unlock and rarity states.
 - `reward_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/reward_overlay_design_reference.png`
   Role: full-screen Image2 daily reward overlay design reference for the reward popup.
 - `reward_overlay_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/reward_overlay_asset_sheet_source.png`
@@ -186,6 +186,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Achievements overlay screenshot: `/Users/zhaok/cat/artifacts/achievements_overlay.png`
 - Claimed achievements screenshot: `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`
 - Shop overlay screenshot: `/Users/zhaok/cat/artifacts/shop_overlay.png`
+- Paw bundle shop purchase screenshot: `/Users/zhaok/cat/artifacts/shop_paw_bundle_purchase.png`
 - Yarn trap shop purchase screenshot: `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png`
 - Backpack yarn trap screenshot: `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`
 - Battle yarn trap screenshot: `/Users/zhaok/cat/artifacts/battle_yarn_trap.png`
