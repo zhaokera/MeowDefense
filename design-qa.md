@@ -351,6 +351,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_orange_cat_tower_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, and firing frame switch.
 - Added `/Users/zhaok/cat/tests/capture_orange_cat_tower_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/orange_cat_tower_animation.png`.
 
+**Tabby Slow Cat Tower Animation Sheet**
+- Generated `/Users/zhaok/cat/assets/generated/towers/tabby_slow_cat_animation_design_reference.png` as the full-screen Image2 direction for the tabby yarn tower firing a slow projectile in battle.
+- Generated `/Users/zhaok/cat/assets/generated/towers/tabby_slow_cat_sheet_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/towers/tabby_slow_cat_sheet.png` for runtime use.
+- The `tabby_slow_cat` tower now has the same Image2 source-chain documentation as the orange cat tower while continuing to use a 2x2 sprite sheet for idle, aim, recoil, and celebration poses.
+- Firing switches the tabby tower to the recoil frame and applies the slow timer/multiplier to enemies in range.
+- Added `/Users/zhaok/cat/tests/run_tabby_slow_tower_animation_tests.gd` to verify the Image2 sheet path, sprite-sheet regions, firing frame switch, slow application, and manifest source entries.
+- Added `/Users/zhaok/cat/tests/capture_tabby_slow_tower_animation.gd` to regenerate `/Users/zhaok/cat/artifacts/tabby_slow_tower_animation.png`.
+
 **Basic Mouse Enemy Animation Sheet**
 - Generated `/Users/zhaok/cat/assets/generated/enemies/mouse_basic_animation_design_reference.png` as the full-screen Image2 direction for the first common mouse enemy feeling animated in battle.
 - Generated `/Users/zhaok/cat/assets/generated/enemies/mouse_basic_sheet_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/enemies/mouse_basic_sheet.png` for runtime use.

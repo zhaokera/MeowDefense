@@ -49,6 +49,16 @@
       "id": "tabby_slow_cat",
       "path": "res://assets/generated/towers/tabby_slow_cat_sheet.png",
       "prompt_summary": "Beige tabby cat yarn tower sprite sheet with idle, aim, firing recoil, and upgrade poses."
+    },
+    {
+      "id": "tabby_slow_cat_animation_design_reference",
+      "path": "res://assets/generated/towers/tabby_slow_cat_animation_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle design reference showing the tabby slow cat yarn tower firing a slowing yarn projectile."
+    },
+    {
+      "id": "tabby_slow_cat_sheet_source",
+      "path": "res://assets/generated/towers/tabby_slow_cat_sheet_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the tabby slow cat yarn tower sprite sheet."
     }
   ],
   "enemies": [
