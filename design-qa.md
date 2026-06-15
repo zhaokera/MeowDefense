@@ -295,4 +295,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_enemy_hit_feedback_tests.gd` to verify real tower damage and Image2 hit feedback rendering.
 - Added `/Users/zhaok/cat/tests/capture_enemy_hit_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_hit_feedback.png`.
 
+**Battle Build Success Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/effects/build_success_feedback_design_reference.png` as the full-screen Image2 direction for successful tower construction feedback.
+- Generated `/Users/zhaok/cat/assets/generated/effects/build_success_cat_paw_puff_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/effects/build_success_cat_paw_puff.png` for runtime use.
+- Successful builds now show `BuildSuccessFeedbackN` at the build slot using the Image2 cat-paw puff, fish snacks, and star sparkles.
+- The build feedback pops, rotates, drifts, and fades quickly so placing a tower has an immediate tactile response without blocking controls.
+- Added `/Users/zhaok/cat/tests/run_build_success_feedback_tests.gd` to verify real build creation and Image2 build feedback rendering.
+- Added `/Users/zhaok/cat/tests/capture_build_success_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/build_success_feedback.png`.
+
 final result: passed

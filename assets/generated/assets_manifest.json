@@ -85,6 +85,21 @@
       "id": "enemy_hit_fish_spark",
       "path": "res://assets/generated/effects/enemy_hit_fish_spark.png",
       "prompt_summary": "Image2 transparent fishbone sparkle used when cat towers damage enemies."
+    },
+    {
+      "id": "build_success_feedback_design_reference",
+      "path": "res://assets/generated/effects/build_success_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing a cat-paw puff when a tower is built."
+    },
+    {
+      "id": "build_success_cat_paw_puff_source",
+      "path": "res://assets/generated/effects/build_success_cat_paw_puff_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the successful tower construction cat-paw puff."
+    },
+    {
+      "id": "build_success_cat_paw_puff",
+      "path": "res://assets/generated/effects/build_success_cat_paw_puff.png",
+      "prompt_summary": "Image2 transparent cat-paw puff used when a player successfully builds a tower."
     }
   ],
   "ui": [
