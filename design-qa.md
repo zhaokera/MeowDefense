@@ -264,4 +264,11 @@ final result: passed
 - Added `SpeedControlFrame`, `SpeedToggleButton`, and `SpeedMultiplierLabel` so players can toggle battle simulation between 1x and 2x with press feedback.
 - Added `/Users/zhaok/cat/tests/run_battle_speed_wave_tests.gd` to verify Image2 asset use, 1x/2x state, doubled process-time simulation, and live wave preview updates.
 
+**Battle Resource Shortage Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_resource_shortage_design_reference.png` as the full-screen Image2 direction for insufficient-fish battle feedback.
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_resource_shortage_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/battle_resource_shortage_burst.png` for runtime use.
+- Build and upgrade failures now show `BattleResourceFeedback`, using the Image2 burst with dynamic Chinese shortage text, pop-in, shake, and fade feedback instead of relying only on the bottom tip label.
+- Added `/Users/zhaok/cat/tests/run_battle_resource_feedback_tests.gd` to verify insufficient build and upgrade actions preserve coins/tower state and show the Image2 feedback asset.
+- Added `/Users/zhaok/cat/tests/capture_battle_resource_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_resource_shortage_feedback.png`.
+
 final result: passed

@@ -132,6 +132,21 @@
       "prompt_summary": "Image2 transparent tower management panel used for upgrade, sell, and close actions during battle."
     },
     {
+      "id": "battle_resource_shortage_design_reference",
+      "path": "res://assets/generated/ui/battle_resource_shortage_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback design reference showing the not-enough-fish burst over the battle HUD."
+    },
+    {
+      "id": "battle_resource_shortage_burst_source",
+      "path": "res://assets/generated/ui/battle_resource_shortage_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the battle resource shortage feedback burst."
+    },
+    {
+      "id": "battle_resource_shortage_burst",
+      "path": "res://assets/generated/ui/battle_resource_shortage_burst.png",
+      "prompt_summary": "Image2 transparent not-enough-fish feedback burst used when build or upgrade actions cannot be afforded."
+    },
+    {
       "id": "battle_pause_menu_design_reference",
       "path": "res://assets/generated/ui/battle_pause_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen pause menu design reference used to restore the battle pause overlay."

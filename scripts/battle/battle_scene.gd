@@ -30,6 +30,7 @@ const SettingsSliderKnobTexture := preload("res://assets/generated/ui/settings_s
 const SettingsCloseButtonTexture := preload("res://assets/generated/ui/settings_close_button.png")
 const YarnTrapItemIconTexture := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap_field_effect.png")
+const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -427,6 +428,7 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	var cost: int = int(stats.get("cost", 60))
 	if coins < cost:
 		_tip_label.text = "小鱼干不够，先挡住下一波小老鼠。"
+		_show_resource_shortage_feedback("小鱼干不够  还差 %d" % max(1, cost - coins), slot.position)
 		return
 	coins -= cost
 	slot.set_occupied(true)
@@ -565,6 +567,7 @@ func _upgrade_tower_from_overlay(tower: Node2D, feedback_target: Control) -> voi
 	var upgrade_cost: int = int(tower.get("upgrade_cost"))
 	if coins < upgrade_cost:
 		_tip_label.text = "小鱼干不够，先守住下一波。"
+		_show_resource_shortage_feedback("升级还差 %d 小鱼干" % max(1, upgrade_cost - coins), tower.global_position)
 		_animate_control_scale(feedback_target, 0.98, 0.06)
 		return
 	coins -= upgrade_cost
@@ -600,6 +603,44 @@ func _tower_sell_refund(tower: Node2D) -> int:
 
 func _tower_action_stats_text(tower: Node2D) -> String:
 	return "等级 %d    伤害 %.1f    范围 %d" % [int(tower.get("level")), float(tower.get("damage")), int(float(tower.get("attack_range")))]
+
+
+func _show_resource_shortage_feedback(message: String, world_anchor: Vector2) -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("BattleResourceFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+
+	var feedback: TextureRect = _hud_texture_rect("BattleResourceFeedback", BattleResourceShortageBurstTexture, Vector2.ZERO, Vector2(390, 390))
+	feedback.z_index = 80
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	var target_center: Vector2 = Vector2(clamp(world_anchor.x, 470.0, 810.0), 430.0)
+	feedback.position = target_center - feedback.size * 0.5
+	feedback.scale = Vector2(0.72, 0.72)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label(message)
+	label.name = "BattleResourceFeedbackLabel"
+	label.position = Vector2(48, 252)
+	label.size = Vector2(294, 54)
+	label.add_theme_font_size_override("font_size", 23)
+	label.add_theme_color_override("font_color", Color(0.39, 0.17, 0.05))
+	label.add_theme_constant_override("outline_size", 4)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -4.0, 0.06).set_delay(0.14).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 4.0, 0.07).set_delay(0.20).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.08).set_delay(0.28).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.28).set_delay(1.05).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.34)
 
 
 func _pop_in_control(target: Control) -> void:
