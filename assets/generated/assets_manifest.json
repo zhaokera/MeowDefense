@@ -339,12 +339,12 @@
     {
       "id": "result_star_badge",
       "path": "res://assets/generated/ui/result_star_badge.png",
-      "prompt_summary": "Cropped Image2 star badge retained for future animated reward fly-in effects."
+      "prompt_summary": "Cropped Image2 star badge used by the victory result reward celebration animation."
     },
     {
       "id": "result_fish_chip",
       "path": "res://assets/generated/ui/result_fish_chip.png",
-      "prompt_summary": "Cropped Image2 fish reward chip retained for future animated reward count-up effects."
+      "prompt_summary": "Cropped Image2 fish reward chip used by the victory result reward pulse animation."
     },
     {
       "id": "level_001_thumb",

@@ -28,6 +28,8 @@ const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_i
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
 const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
+const RESULT_STAR_BADGE := preload("res://assets/generated/ui/result_star_badge.png")
+const RESULT_REWARD_FISH_CHIP := preload("res://assets/generated/ui/result_fish_chip.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -234,6 +236,8 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	screen.add_child(_label("ResultTitle", title_text, Vector2(486, 152), Vector2(316, 58), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	screen.add_child(_label("ResultFishReward", "+%d" % fish_reward, Vector2(496, 452), Vector2(108, 48), 28, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	screen.add_child(_label("ResultBestRecord", _star_text(_level_stars(_current_level_id)), Vector2(736, 452), Vector2(128, 48), 26, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	if won:
+		_add_result_reward_celebration(screen, earned_stars, fish_reward)
 
 	var retry_button: Button = _result_action_button(screen, "RetryButton", "ResultRetryFrame", RESULT_BUTTON_ORANGE, "再来一次", Vector2(272, 562), Vector2(242, 92), 25)
 	retry_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(_current_level_id)))
@@ -326,6 +330,55 @@ func _add_result_resource_strip(parent: Control) -> void:
 	parent.add_child(_label("FishCounter", "%d" % _total_fish, Vector2(850, 38), Vector2(92, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	parent.add_child(_label("BestStarsCounter", "%d" % _best_stars, Vector2(1036, 38), Vector2(70, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	parent.add_child(_label("ProgressCounter", "%d" % _current_level_id, Vector2(1202, 38), Vector2(54, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
+
+
+func _add_result_reward_celebration(parent: Control, earned_stars: int, fish_reward: int) -> void:
+	var layer: Control = Control.new()
+	layer.name = "ResultRewardCelebrationLayer"
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.z_index = 8
+	parent.add_child(layer)
+
+	var star_count: int = max(1, min(3, earned_stars))
+	for index: int in range(star_count):
+		var star_position := Vector2(510 + index * 74, 272 - abs(index - 1) * 12)
+		var star: TextureRect = _ui_texture_rect("ResultRewardStar%d" % (index + 1), RESULT_STAR_BADGE, star_position, Vector2(76, 76))
+		star.pivot_offset = star.size * 0.5
+		star.scale = Vector2(0.62, 0.62)
+		star.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		layer.add_child(star)
+		_animate_result_reward_piece(star, 0.08 + index * 0.08, Vector2(1.0, 1.0))
+
+	var fish_chip: TextureRect = _ui_texture_rect("ResultRewardFishChip", RESULT_REWARD_FISH_CHIP, Vector2(814, 96), Vector2(92, 92))
+	fish_chip.pivot_offset = fish_chip.size * 0.5
+	fish_chip.scale = Vector2(0.72, 0.72)
+	fish_chip.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	layer.add_child(fish_chip)
+	_animate_result_reward_piece(fish_chip, 0.24, Vector2(0.88, 0.88))
+
+	var count_label: Label = _label("ResultRewardCountUpLabel", "+%d" % fish_reward, Vector2(892, 120), Vector2(112, 40), 24, INK, HORIZONTAL_ALIGNMENT_LEFT)
+	count_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.90))
+	count_label.add_theme_constant_override("outline_size", 3)
+	count_label.pivot_offset = count_label.size * 0.5
+	count_label.scale = Vector2(0.86, 0.86)
+	count_label.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	layer.add_child(count_label)
+	_animate_result_reward_piece(count_label, 0.30, Vector2.ONE)
+	_pulse_result_reward_label(count_label)
+
+
+func _animate_result_reward_piece(target: Control, delay: float, final_scale: Vector2) -> void:
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(target, "scale", final_scale, 0.20).set_delay(delay).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(target, "modulate:a", 1.0, 0.12).set_delay(delay).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _pulse_result_reward_label(label: Label) -> void:
+	var tween: Tween = create_tween()
+	tween.tween_property(label, "scale", Vector2(1.08, 1.08), 0.12).set_delay(0.52).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _result_action_button(parent: Control, button_name: String, frame_name: String, texture: Texture2D, text: String, position: Vector2, size: Vector2, font_size: int) -> Button:

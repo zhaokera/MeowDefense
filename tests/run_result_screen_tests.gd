@@ -54,6 +54,22 @@ func _run() -> void:
 	_assert_exists(instance, "FishCounter", "result screen should show dynamic fish counter")
 	_assert_exists(instance, "BestStarsCounter", "result screen should show dynamic best stars")
 	_assert_exists(instance, "ProgressCounter", "result screen should show dynamic level progress")
+	_assert_exists(instance, "ResultRewardCelebrationLayer", "winning result should add a reward celebration animation layer")
+	_assert_texture_node(
+		instance,
+		"ResultRewardStar1",
+		"res://assets/generated/ui/result_star_badge.png",
+		"reward celebration should use the Image2 star badge asset"
+	)
+	_assert_texture_node(
+		instance,
+		"ResultRewardFishChip",
+		"res://assets/generated/ui/result_fish_chip.png",
+		"reward celebration should use the Image2 fish chip asset"
+	)
+	var count_label: Label = _assert_label(instance, "ResultRewardCountUpLabel", "reward celebration should include an earned reward label")
+	if count_label != null:
+		_assert_true(count_label.text.contains("+105"), "reward label should show the earned fish reward")
 
 	_assert_button(instance, "RetryButton", "result screen should expose retry")
 	var levels_button: Button = _assert_button(instance, "ResultLevelsButton", "result screen should expose level map")
@@ -88,6 +104,16 @@ func _assert_button(root_node: Node, node_name: String, message: String) -> Butt
 	if node is Button:
 		return node as Button
 	_failures.append("%s should be a Button" % node_name)
+	return null
+
+
+func _assert_label(root_node: Node, node_name: String, message: String) -> Label:
+	var node: Node = _assert_exists(root_node, node_name, message)
+	if node == null:
+		return null
+	if node is Label:
+		return node as Label
+	_failures.append("%s should be a Label" % node_name)
 	return null
 
 

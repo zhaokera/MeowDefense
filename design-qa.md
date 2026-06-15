@@ -125,6 +125,7 @@ final result: passed
 - Generated `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png` and cropped transparent result button, panel, resource, star, and fish reward assets.
 - Replaced the old code-drawn `ResultPanel`, `ResourceStrip`, and right-side result button layout with the full-screen Image2 result design plus bottom Image2 action frames and transparent hit areas.
 - Kept retry, level-map, next-level, fish reward, best stars, and progress behavior intact while adding button press feedback through the shared Image2 feedback helper.
+- Added `ResultRewardCelebrationLayer` for wins, using Image2 `result_star_badge.png` and `result_fish_chip.png` as reward pulse/fly-in pieces without changing the full-screen result design background.
 - Added `/Users/zhaok/cat/tests/run_result_screen_tests.gd` to require the Image2 result design/buttons and reject the old result panel/resource strip.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`.
 
@@ -132,6 +133,7 @@ final result: passed
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/result_screen_defeat_design_reference.png` as the full-page failed-level result design reference.
 - Failed result now uses `RESULT_SCREEN_DEFEAT_DESIGN` while victory continues using `RESULT_SCREEN_DESIGN`.
 - Defeat next-level slot uses the Image2 background's locked button visual plus a disabled transparent hit area, avoiding a victory `ResultNextFrame` overlay.
+- Defeat result explicitly skips `ResultRewardCelebrationLayer`, so reward pulse/fly-in feedback remains victory-only.
 - Added `/Users/zhaok/cat/tests/run_result_defeat_screen_tests.gd` to require the defeat design, disabled next-level action, and no progress reward on failure.
 - Added `/Users/zhaok/cat/tests/capture_result_defeat_screen.gd` to regenerate the failed-level screenshot.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/result_defeat_screen.png`.

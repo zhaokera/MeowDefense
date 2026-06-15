@@ -39,6 +39,7 @@ func _run() -> void:
 	if next_button != null:
 		_assert_true(next_button.disabled, "defeat should not allow advancing to the next locked level")
 	_assert_missing(instance, "ResultNextFrame", "defeat result should not overlay the victory next-level button frame")
+	_assert_missing(instance, "ResultRewardCelebrationLayer", "defeat result should not show victory reward celebration")
 	_assert_true(int(instance.get("_unlocked_level")) == 1, "defeat should not unlock the next level")
 	_assert_true(int(instance.get("_total_fish")) == 0, "defeat with zero reward should not grant fish")
 	_assert_true(int(instance.call("_level_stars", 1)) == 0, "defeat should not record stars")

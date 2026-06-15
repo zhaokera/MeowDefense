@@ -17,8 +17,8 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	instance.call("_show_result", true, 3, 105)
-	await process_frame
-	await process_frame
+	for i: int in range(45):
+		await process_frame
 	var viewport_texture: ViewportTexture = root.get_texture()
 	if viewport_texture == null:
 		push_error("failed to read viewport texture")

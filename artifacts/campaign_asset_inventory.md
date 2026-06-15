@@ -150,9 +150,9 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - `result_button_green`: `/Users/zhaok/cat/assets/generated/ui/result_button_green.png`
   Role: transparent next-level button frame used by `ResultNextFrame`.
 - `result_star_badge`: `/Users/zhaok/cat/assets/generated/ui/result_star_badge.png`
-  Role: star badge retained for future animated reward fly-in effects.
+  Role: Image2 star badge used by the victory result reward celebration animation.
 - `result_fish_chip`: `/Users/zhaok/cat/assets/generated/ui/result_fish_chip.png`
-  Role: fish reward chip retained for future animated reward count-up effects.
+  Role: Image2 fish reward chip used by the victory result reward pulse animation.
 - `level_001_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_001_thumb.png`
 - `level_002_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_002_thumb.png`
 - `level_003_thumb`: `/Users/zhaok/cat/assets/generated/ui/level_003_thumb.png`
