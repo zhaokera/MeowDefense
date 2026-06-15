@@ -169,6 +169,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_reward_reset_tests.gd` to verify same-day lockout, reload persistence, next-day reset, and consecutive streak growth.
 - Added `/Users/zhaok/cat/tests/capture_daily_reward_streak.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_reward_streak.png`.
 
+**Daily Reward Claim Success Feedback**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/daily_reward_claim_success_design_reference.png` as the full-screen Image2 daily reward success design.
+- Generated `/Users/zhaok/cat/assets/generated/ui/daily_reward_claim_success_burst_source.png` and transparent `/Users/zhaok/cat/assets/generated/ui/daily_reward_claim_success_burst.png` for the animated success burst.
+- Claiming the daily reward now closes the claim popup and opens `DailyRewardClaimSuccessOverlay` with the Image2 design, dynamic fish reward amount, streak count, close/confirm hit areas, and pulse feedback.
+- Updated `/Users/zhaok/cat/tests/run_reward_overlay_tests.gd` to require the success feedback overlay, design texture, burst texture, close behavior, manifest entries, fish reward, and streak label.
+- Added `/Users/zhaok/cat/tests/capture_daily_reward_claim_success.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_reward_claim_success.png`.
+- Verification: targeted daily reward/reward-chain checks passed, manifest JSON parsed cleanly, and full Godot regression passed with `FULL_REGRESSION_PASS_CLEAN 45 tests`.
+
 **Image2 Daily Task Overlay**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/daily_task_overlay_design_reference.png` as the full-screen daily task design reference.
 - Replaced the old main-menu daily task shortcut-to-levels behavior with `DailyTaskOverlay`, using `DailyTaskDesignBackground`, dynamic task labels, transparent claim/close hit areas, and shared pop-in/click feedback.

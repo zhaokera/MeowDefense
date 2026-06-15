@@ -484,6 +484,21 @@
       "prompt_summary": "Cropped Image2 fish reward amount chip with transparent background."
     },
     {
+      "id": "daily_reward_claim_success_design_reference",
+      "path": "res://assets/generated/ui/daily_reward_claim_success_design_reference.png",
+      "prompt_summary": "Image2 full-screen daily reward claim success overlay design with blank runtime amount, streak, and button areas."
+    },
+    {
+      "id": "daily_reward_claim_success_burst_source",
+      "path": "res://assets/generated/ui/daily_reward_claim_success_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the daily reward claim success burst."
+    },
+    {
+      "id": "daily_reward_claim_success_burst",
+      "path": "res://assets/generated/ui/daily_reward_claim_success_burst.png",
+      "prompt_summary": "Transparent Image2 daily reward claim success burst layered over the claim success feedback overlay."
+    },
+    {
       "id": "daily_task_overlay_design_reference",
       "path": "res://assets/generated/ui/daily_task_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen daily task overlay design with three task rows, claim buttons, close control, and blank runtime text areas."

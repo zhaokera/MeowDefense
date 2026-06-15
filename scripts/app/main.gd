@@ -21,6 +21,8 @@ const REWARD_OVERLAY_PANEL := preload("res://assets/generated/ui/reward_overlay_
 const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
 const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
 const REWARD_FISH_CHIP := preload("res://assets/generated/ui/reward_fish_chip.png")
+const DAILY_REWARD_CLAIM_SUCCESS_DESIGN := preload("res://assets/generated/ui/daily_reward_claim_success_design_reference.png")
+const DAILY_REWARD_CLAIM_SUCCESS_BURST := preload("res://assets/generated/ui/daily_reward_claim_success_burst.png")
 const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_design_reference.png")
 const DAILY_TASK_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/daily_task_claim_reward_design_reference.png")
 const DAILY_TASK_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/daily_task_claim_reward_burst.png")
@@ -465,6 +467,7 @@ func _show_album_overlay(parent: Node) -> void:
 
 func _show_reward_overlay(parent: Node) -> void:
 	_remove_named_child(parent, "RewardOverlay")
+	_remove_named_child(parent, "DailyRewardClaimSuccessOverlay")
 	var overlay: Control = _overlay("RewardOverlay")
 	parent.add_child(overlay)
 	var claimed_today: bool = _is_daily_reward_claimed_today()
@@ -499,6 +502,7 @@ func _show_reward_overlay(parent: Node) -> void:
 	claim.pressed.connect(func() -> void:
 		if _claim_daily_reward():
 			_pulse_control(chest)
+			_show_daily_reward_claim_success_overlay(parent)
 		overlay.queue_free()
 	)
 	content.add_child(claim)
@@ -521,6 +525,49 @@ func _claim_daily_reward() -> bool:
 	_total_fish += 20
 	_save_progress()
 	return true
+
+
+func _show_daily_reward_claim_success_overlay(parent: Node) -> void:
+	_remove_named_child(parent, "DailyRewardClaimSuccessOverlay")
+	var reward: Control = Control.new()
+	reward.name = "DailyRewardClaimSuccessOverlay"
+	reward.size = VIEW_SIZE
+	reward.z_index = 18
+	parent.add_child(reward)
+
+	var design: TextureRect = _ui_texture_rect("DailyRewardClaimSuccessDesignBackground", DAILY_REWARD_CLAIM_SUCCESS_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	reward.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("DailyRewardClaimSuccessBurst", DAILY_REWARD_CLAIM_SUCCESS_BURST, Vector2(356, 282), Vector2(196, 196))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.88)
+	burst.z_index = 1
+	reward.add_child(burst)
+
+	var title_label: Label = _label("DailyRewardClaimSuccessTitle", "每日奖励已领取", Vector2(404, 102), Vector2(472, 58), 32, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title_label.z_index = 2
+	reward.add_child(title_label)
+	var amount: Label = _label("DailyRewardClaimSuccessAmount", "小鱼干 +20", Vector2(340, 498), Vector2(300, 46), 26, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	amount.z_index = 2
+	reward.add_child(amount)
+	var streak: Label = _label("DailyRewardClaimSuccessStreak", "连续 %d 天" % max(1, _daily_reward_streak), Vector2(704, 366), Vector2(276, 48), 25, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	streak.z_index = 2
+	reward.add_child(streak)
+	var copy: Label = _label("DailyRewardClaimSuccessCopy", "明天再来继续加成", Vector2(704, 424), Vector2(276, 44), 20, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.z_index = 2
+	reward.add_child(copy)
+	var done_button: Button = _transparent_text_button("CloseDailyRewardClaimSuccessButton", "收好奖励", Rect2(Vector2(420, 574), Vector2(440, 78)), 27)
+	done_button.z_index = 3
+	done_button.pressed.connect(func() -> void: reward.queue_free())
+	_attach_button_feedback(done_button, burst)
+	reward.add_child(done_button)
+	var dismiss_button: Button = _hotspot_button("DismissDailyRewardClaimSuccessButton", Vector2(994, 78), Vector2(92, 92), "关闭")
+	dismiss_button.z_index = 3
+	dismiss_button.pressed.connect(func() -> void: reward.queue_free())
+	reward.add_child(dismiss_button)
+	_animate_overlay_entry(reward)
+	_pulse_control(burst)
 
 
 func _is_daily_reward_claimed_today() -> bool:
@@ -955,7 +1002,7 @@ func _show_album_entry_detail(parent: Control, texture: Texture2D, title: String
 
 
 func _image_overlay(parent: Node, overlay_name: String, background_name: String, texture: Texture2D) -> Control:
-	for existing_name: String in ["BackpackOverlay", "AchievementsOverlay", "ShopOverlay", "RewardOverlay", "DailyTaskOverlay", "AlbumOverlay", "SettingsOverlay", "EnergyEmptyOverlay"]:
+	for existing_name: String in ["BackpackOverlay", "AchievementsOverlay", "ShopOverlay", "RewardOverlay", "DailyRewardClaimSuccessOverlay", "DailyTaskOverlay", "AlbumOverlay", "SettingsOverlay", "EnergyEmptyOverlay"]:
 		_remove_named_child(parent, existing_name)
 	var overlay: Control = Control.new()
 	overlay.name = overlay_name
