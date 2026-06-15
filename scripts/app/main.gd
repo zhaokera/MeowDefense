@@ -6,6 +6,7 @@ const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_re
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
 const RESULT_SCREEN_DESIGN := preload("res://assets/generated/ui/result_screen_design_reference.png")
+const RESULT_SCREEN_DEFEAT_DESIGN := preload("res://assets/generated/ui/result_screen_defeat_design_reference.png")
 const SETTINGS_OVERLAY_PANEL := preload("res://assets/generated/ui/settings_overlay_panel.png")
 const SETTINGS_TOGGLE_ON := preload("res://assets/generated/ui/settings_toggle_on.png")
 const SETTINGS_TOGGLE_OFF := preload("res://assets/generated/ui/settings_toggle_off.png")
@@ -205,7 +206,8 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	_save_progress()
 	_clear_current()
 
-	var screen: Control = _image_design_screen("ResultScreen", RESULT_SCREEN_DESIGN, "ResultDesignBackground")
+	var result_design: Texture2D = RESULT_SCREEN_DESIGN if won else RESULT_SCREEN_DEFEAT_DESIGN
+	var screen: Control = _image_design_screen("ResultScreen", result_design, "ResultDesignBackground")
 	_current = screen
 	add_child(screen)
 	_add_result_resource_strip(screen)
@@ -221,14 +223,22 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	var levels_button: Button = _result_action_button(screen, "ResultLevelsButton", "ResultLevelsFrame", RESULT_BUTTON_BLUE, "关卡地图", Vector2(512, 560), Vector2(258, 96), 25)
 	levels_button.pressed.connect(_show_level_select)
 
-	var next_button: Button = _result_action_button(screen, "NextLevelButton", "ResultNextFrame", RESULT_BUTTON_GREEN, "下一关", Vector2(774, 560), Vector2(258, 98), 25)
 	var next_level_id: int = _current_level_id + 1
-	if _current_level_id >= LEVELS.size() or not _is_level_unlocked(next_level_id):
+	var next_disabled: bool = _current_level_id >= LEVELS.size() or not _is_level_unlocked(next_level_id)
+	var next_button: Button
+	if not won:
+		screen.add_child(_label("NextLevelButtonLabel", "未解锁", Vector2(862, 560), Vector2(154, 98), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
+		next_button = _hotspot_button("NextLevelButton", Vector2(774, 560), Vector2(258, 98), "未解锁")
+		next_button.disabled = true
+		screen.add_child(next_button)
+	elif next_disabled:
+		next_button = _result_action_button(screen, "NextLevelButton", "ResultNextFrame", RESULT_BUTTON_GREEN, "下一关", Vector2(774, 560), Vector2(258, 98), 25)
 		next_button.disabled = true
 		var next_label: Label = screen.find_child("NextLevelButtonLabel", true, false) as Label
 		if next_label != null:
 			next_label.text = "已通关" if _current_level_id >= LEVELS.size() else "未解锁"
 	else:
+		next_button = _result_action_button(screen, "NextLevelButton", "ResultNextFrame", RESULT_BUTTON_GREEN, "下一关", Vector2(774, 560), Vector2(258, 98), 25)
 		next_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(next_level_id)))
 
 

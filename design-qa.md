@@ -128,6 +128,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_screen_tests.gd` to require the Image2 result design/buttons and reject the old result panel/resource strip.
 - Latest screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`.
 
+**Image2 Defeat Result Screen**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/result_screen_defeat_design_reference.png` as the full-page failed-level result design reference.
+- Failed result now uses `RESULT_SCREEN_DEFEAT_DESIGN` while victory continues using `RESULT_SCREEN_DESIGN`.
+- Defeat next-level slot uses the Image2 background's locked button visual plus a disabled transparent hit area, avoiding a victory `ResultNextFrame` overlay.
+- Added `/Users/zhaok/cat/tests/run_result_defeat_screen_tests.gd` to require the defeat design, disabled next-level action, and no progress reward on failure.
+- Added `/Users/zhaok/cat/tests/capture_result_defeat_screen.gd` to regenerate the failed-level screenshot.
+- Latest screenshot: `/Users/zhaok/cat/artifacts/result_defeat_screen.png`.
+
 **Image2 Album Overlay Restoration**
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/album_overlay_design_reference.png` as the full-page guide/encyclopedia design reference.
 - Generated `/Users/zhaok/cat/assets/generated/ui/album_overlay_asset_sheet_source.png` and cropped transparent album panel, card frame, close button, and paw badge assets.

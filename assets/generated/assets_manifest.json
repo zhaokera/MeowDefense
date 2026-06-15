@@ -287,6 +287,11 @@
       "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."
     },
     {
+      "id": "result_screen_defeat_design_reference",
+      "path": "res://assets/generated/ui/result_screen_defeat_design_reference.png",
+      "prompt_summary": "Image2 full-screen defeat result design used directly as the high-fidelity failed-level result screen."
+    },
+    {
       "id": "result_screen_asset_sheet_source",
       "path": "res://assets/generated/ui/result_screen_asset_sheet_source.png",
       "prompt_summary": "Image2 chroma-key result screen asset sheet used to derive button, strip, star, and reward textures."

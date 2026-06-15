@@ -129,6 +129,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: full-screen Image2 shop overlay design used directly by `ShopDesignBackground`.
 - `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
   Role: full-screen Image2 victory result design used directly as the post-level result screen background.
+- `result_screen_defeat_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_defeat_design_reference.png`
+  Role: full-screen Image2 defeat result design used directly as the failed-level result screen background.
 - `result_screen_asset_sheet_source`: `/Users/zhaok/cat/assets/generated/ui/result_screen_asset_sheet_source.png`
   Role: Image2 chroma-key source sheet used to derive result screen runtime textures.
 - `result_panel_victory`: `/Users/zhaok/cat/assets/generated/ui/result_panel_victory.png`
@@ -168,6 +170,7 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Settings overlay screenshot: `/Users/zhaok/cat/artifacts/settings_overlay.png`
 - Battle pause settings screenshot: `/Users/zhaok/cat/artifacts/pause_settings.png`
 - Result screen screenshot: `/Users/zhaok/cat/artifacts/result_screen.png`
+- Defeat result screen screenshot: `/Users/zhaok/cat/artifacts/result_defeat_screen.png`
 - Album overlay screenshot: `/Users/zhaok/cat/artifacts/album_overlay.png`
 - Reward overlay screenshot: `/Users/zhaok/cat/artifacts/reward_overlay.png`
 - Backpack overlay screenshot: `/Users/zhaok/cat/artifacts/backpack_overlay.png`
