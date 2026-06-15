@@ -167,6 +167,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_achievement_claim_tests.gd` to verify Image2 achievement visuals, reward grants, persistence, and backpack badge count.
 - Added `/Users/zhaok/cat/tests/capture_achievement_claimed.gd` to regenerate `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`.
 
+**Shop Yarn Trap Purchase**
+- Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png` as a transparent Image2 yarn trap item icon for the shop inventory flow.
+- Converted the shop's yarn trap product from a locked placeholder into a purchasable 25-fish item that increments `_yarn_traps`, updates the fish counter, persists through saves, and appears in the backpack count.
+- Kept the shop and backpack full-screen Image2 designs as the visual base, adding only dynamic labels, the small Image2 item badge, and transparent hit areas.
+- Added `/Users/zhaok/cat/tests/run_shop_yarn_trap_tests.gd` to verify purchase, cost, inventory count, persistence, and backpack display.
+- Added `/Users/zhaok/cat/tests/capture_shop_yarn_trap.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png` and `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`.
+
 **Progression Persistence And Level Locking**
 - Generated `/Users/zhaok/cat/assets/generated/ui/level_lock_badge.png` as a transparent Image2 cat-paw lock badge for locked level cards.
 - Added persistent progress at `user://meow_defense_save.json` for best stars by level, total fish, unlocked level, reward claims, and basic settings.

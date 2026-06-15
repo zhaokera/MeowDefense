@@ -127,6 +127,8 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
   Role: full-screen Image2 achievements overlay design used directly by `AchievementsDesignBackground`.
 - `achievement_claimed_stamp`: `/Users/zhaok/cat/assets/generated/ui/achievement_claimed_stamp.png`
   Role: transparent Image2 claimed stamp used by completed achievement rows after reward collection.
+- `yarn_trap_item_icon`: `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png`
+  Role: transparent Image2 item icon used by the purchasable yarn trap shop product and inventory flow.
 - `shop_overlay_design_reference`: `/Users/zhaok/cat/assets/generated/ui/shop_overlay_design_reference.png`
   Role: full-screen Image2 shop overlay design used directly by `ShopDesignBackground`.
 - `result_screen_design_reference`: `/Users/zhaok/cat/assets/generated/ui/result_screen_design_reference.png`
@@ -179,4 +181,6 @@ Final project assets are copied into categorized folders under `/Users/zhaok/cat
 - Achievements overlay screenshot: `/Users/zhaok/cat/artifacts/achievements_overlay.png`
 - Claimed achievements screenshot: `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`
 - Shop overlay screenshot: `/Users/zhaok/cat/artifacts/shop_overlay.png`
+- Yarn trap shop purchase screenshot: `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png`
+- Backpack yarn trap screenshot: `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`
 - Structured manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`

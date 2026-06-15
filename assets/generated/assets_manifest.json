@@ -282,6 +282,11 @@
       "prompt_summary": "Image2 transparent cat-paw claimed stamp used by completed achievement rows."
     },
     {
+      "id": "yarn_trap_item_icon",
+      "path": "res://assets/generated/ui/yarn_trap_item_icon.png",
+      "prompt_summary": "Image2 transparent yarn trap item icon used by the shop purchase state and inventory flow."
+    },
+    {
       "id": "shop_overlay_design_reference",
       "path": "res://assets/generated/ui/shop_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."

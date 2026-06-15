@@ -24,6 +24,7 @@ const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_ove
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_design_reference.png")
+const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
 const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
@@ -69,6 +70,7 @@ var _daily_reward_claimed: bool = false
 var _shop_starter_claimed: bool = false
 var _paw_tokens: int = 0
 var _claimed_achievements: Dictionary = {}
+var _yarn_traps: int = 0
 
 
 func _ready() -> void:
@@ -406,7 +408,7 @@ func _show_backpack_overlay(parent: Node) -> void:
 
 	_backpack_item(content, "BackpackFishItem", "小鱼干", "当前持有 %d" % _total_fish, Vector2(306, 424), Vector2(214, 156))
 	_backpack_item(content, "BackpackPawTokenItem", "猫爪徽章", "当前持有 %d" % _paw_tokens, Vector2(532, 424), Vector2(214, 156))
-	_backpack_item(content, "BackpackYarnTrapItem", "毛线陷阱", "商店补给待开放", Vector2(762, 424), Vector2(214, 156))
+	_backpack_item(content, "BackpackYarnTrapItem", "毛线陷阱", "当前持有 %d" % _yarn_traps, Vector2(762, 424), Vector2(214, 156))
 
 	var organize: Button = _transparent_text_button("OrganizeBackpackButton", "整理背包", Rect2(Vector2(466, 574), Vector2(348, 76)), 27)
 	organize.pressed.connect(func() -> void: _pulse_control(content))
@@ -460,7 +462,7 @@ func _show_shop_overlay(parent: Node) -> void:
 	content.add_child(claim_button)
 
 	_shop_locked_product(content, "ShopPawBundle", "猫爪徽章包", "完成更多关卡后开放", Vector2(507, 294), Vector2(214, 316))
-	_shop_locked_product(content, "ShopYarnTrapKit", "毛线陷阱包", "后续版本补给", Vector2(744, 294), Vector2(214, 316))
+	_shop_yarn_trap_product(content, fish_counter, Vector2(744, 294), Vector2(214, 316))
 
 	var close_button: Button = _hotspot_button("CloseShopButton", Vector2(960, 112), Vector2(128, 116), "关闭")
 	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
@@ -610,6 +612,33 @@ func _shop_locked_product(parent: Control, node_prefix: String, title: String, d
 	parent.add_child(button)
 
 
+func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vector2, size: Vector2) -> void:
+	var price := 25
+	var icon: TextureRect = _ui_texture_rect("ShopYarnTrapIcon", YARN_TRAP_ITEM_ICON, position + Vector2(146, 150), Vector2(44, 44))
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	parent.add_child(icon)
+	parent.add_child(_label("ShopYarnTrapKitTitle", "毛线陷阱包", position, Vector2(size.x, 36), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	var status_text: String = "25鱼干  持有%d" % _yarn_traps
+	var status: Label = _label("ShopYarnTrapKitStatus", status_text, position + Vector2(62, 188), Vector2(size.x - 76, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	parent.add_child(status)
+	var buy_text: String = "购买 25" if _total_fish >= price else "鱼干不足"
+	var buy_button: Button = _transparent_text_button("BuyShopYarnTrapKitButton", buy_text, Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
+	buy_button.disabled = _total_fish < price
+	buy_button.pressed.connect(func() -> void:
+		if _total_fish < price:
+			return
+		_total_fish -= price
+		_yarn_traps += 1
+		_save_progress()
+		fish_counter.text = "%d" % _total_fish
+		status.text = "已购买  持有%d" % _yarn_traps
+		buy_button.text = "再买 25" if _total_fish >= price else "鱼干不足"
+		buy_button.disabled = _total_fish < price
+		_pulse_control(icon)
+	)
+	parent.add_child(buy_button)
+
+
 func _is_level_unlocked(level_id: int) -> bool:
 	return level_id >= 1 and level_id <= max(1, min(LEVELS.size(), _unlocked_level))
 
@@ -637,6 +666,7 @@ func _save_progress() -> void:
 		"shop_starter_claimed": _shop_starter_claimed,
 		"paw_tokens": _paw_tokens,
 		"claimed_achievements": _claimed_achievements,
+		"yarn_traps": _yarn_traps,
 		"music_enabled": _music_enabled,
 		"effects_enabled": _effects_enabled,
 		"volume": _volume
@@ -664,6 +694,7 @@ func _load_progress() -> void:
 	_daily_reward_claimed = bool(data.get("daily_reward_claimed", false))
 	_shop_starter_claimed = bool(data.get("shop_starter_claimed", false))
 	_paw_tokens = max(0, int(data.get("paw_tokens", 0)))
+	_yarn_traps = max(0, int(data.get("yarn_traps", 0)))
 	_music_enabled = bool(data.get("music_enabled", _music_enabled))
 	_effects_enabled = bool(data.get("effects_enabled", _effects_enabled))
 	_volume = max(0.0, min(100.0, float(data.get("volume", _volume))))
