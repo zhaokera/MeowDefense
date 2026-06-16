@@ -245,6 +245,15 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/capture_achievement_claimed.gd` to wait for animation frames and regenerate `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`, which now captures the reward feedback overlay.
 - Verified the new reward screenshot visually, passed the targeted achievement/town/backpack/reward checks, and passed the full `tests/run_*.gd` regression suite with 44 clean Godot tests.
 
+**Achievement Progress Guidance Overlay**
+- Generated `/Users/zhaok/cat/assets/generated/ui/achievement_progress_guidance_design_reference.png` as the full-screen Image2 guidance design for unfinished achievement rows.
+- Generated `/Users/zhaok/cat/assets/generated/ui/achievement_progress_guidance_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/achievement_progress_guidance_burst.png` for runtime pulse feedback.
+- Clicking an unfinished achievement row now opens `AchievementProgressGuidanceOverlay` with the Image2 design background, dynamic title/requirement/reward/copy labels, a closable hit area, a pulsing progress burst, and `GoLevelsFromAchievementProgressButton` to route back to level select.
+- Added `/Users/zhaok/cat/tests/run_achievement_progress_guidance_tests.gd` to verify asset paths, manifest entries, no accidental rewards or claims, close behavior, and level-select routing.
+- Added `/Users/zhaok/cat/tests/capture_achievement_progress_guidance.gd` to regenerate `/Users/zhaok/cat/artifacts/achievement_progress_guidance.png`, which was visually checked for text placement and non-overlap.
+- Passed `/Users/zhaok/cat/tests/run_achievement_progress_guidance_tests.gd`, `/Users/zhaok/cat/tests/run_achievement_claim_tests.gd`, `/Users/zhaok/cat/tests/run_town_feature_overlay_tests.gd`, `/Users/zhaok/cat/tests/run_menu_tests.gd`, and `python3 -m json.tool /Users/zhaok/cat/assets/generated/assets_manifest.json`.
+- Passed the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with 49 clean Godot tests.
+
 **Shop Buyable Product Design**
 - Generated `/Users/zhaok/cat/assets/generated/ui/shop_overlay_buyable_design_reference.png` as the updated full-screen Image2 shop design where the paw bundle and yarn trap kit are visible buyable products instead of locked placeholders.
 - The new shop design keeps resource counters and button labels blank so Godot can render live fish/star/energy counts, affordability, and purchase state without fighting baked text.

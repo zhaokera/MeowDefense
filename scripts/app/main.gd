@@ -36,6 +36,8 @@ const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievem
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
 const ACHIEVEMENT_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/achievement_claim_reward_design_reference.png")
 const ACHIEVEMENT_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/achievement_claim_reward_burst.png")
+const ACHIEVEMENT_PROGRESS_DESIGN := preload("res://assets/generated/ui/achievement_progress_guidance_design_reference.png")
+const ACHIEVEMENT_PROGRESS_BURST := preload("res://assets/generated/ui/achievement_progress_guidance_burst.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_buyable_design_reference.png")
 const SHOP_PURCHASE_FEEDBACK_DESIGN := preload("res://assets/generated/ui/shop_purchase_feedback_design_reference.png")
@@ -1232,7 +1234,12 @@ func _achievement_row(parent: Control, achievement: Dictionary) -> void:
 	)
 	parent.add_child(claim_button)
 	var row_button: Button = _hotspot_button("%sButton" % row_name, position - Vector2(118, 18), Vector2(562, 94), title)
-	row_button.pressed.connect(func() -> void: _pulse_control(parent))
+	row_button.pressed.connect(func() -> void:
+		if not is_ready and not is_claimed:
+			_show_achievement_progress_guidance(parent, achievement, progress_value, target)
+		else:
+			_pulse_control(parent)
+	)
 	parent.add_child(row_button)
 
 
@@ -1309,6 +1316,57 @@ func _show_achievement_claim_reward_overlay(parent: Control, achievement: Dictio
 	dismiss_button.pressed.connect(func() -> void: reward.queue_free())
 	reward.add_child(dismiss_button)
 	_animate_overlay_entry(reward)
+	_pulse_control(burst)
+
+
+func _show_achievement_progress_guidance(parent: Control, achievement: Dictionary, progress_value: int, target: int) -> void:
+	_remove_named_child(parent, "AchievementProgressGuidanceOverlay")
+	var guidance: Control = Control.new()
+	guidance.name = "AchievementProgressGuidanceOverlay"
+	guidance.size = VIEW_SIZE
+	guidance.z_index = 18
+	parent.add_child(guidance)
+
+	var design: TextureRect = _ui_texture_rect("AchievementProgressGuidanceDesignBackground", ACHIEVEMENT_PROGRESS_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	guidance.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("AchievementProgressGuidanceBurst", ACHIEVEMENT_PROGRESS_BURST, Vector2(964, 298), Vector2(96, 96))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.90)
+	burst.z_index = 1
+	guidance.add_child(burst)
+
+	var title: String = str(achievement.get("title", "成就"))
+	var detail: String = str(achievement.get("detail", "完成目标"))
+	var reward_fish: int = max(0, int(achievement.get("reward_fish", 0)))
+	var reward_paws: int = max(0, int(achievement.get("reward_paws", 0)))
+	var title_label: Label = _label("AchievementProgressGuidanceTitle", title, Vector2(430, 78), Vector2(420, 54), 32, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title_label.z_index = 2
+	guidance.add_child(title_label)
+	var requirement: Label = _label("AchievementProgressGuidanceRequirement", "目标：%s  %d/%d" % [detail, progress_value, target], Vector2(758, 226), Vector2(300, 44), 21, INK, HORIZONTAL_ALIGNMENT_LEFT)
+	requirement.z_index = 2
+	requirement.clip_text = true
+	guidance.add_child(requirement)
+	var reward_text: Label = _label("AchievementProgressGuidanceReward", "达成奖励：鱼干%d  徽章%d" % [reward_fish, reward_paws], Vector2(758, 306), Vector2(300, 40), 19, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT)
+	reward_text.z_index = 2
+	reward_text.clip_text = true
+	guidance.add_child(reward_text)
+	var copy: Label = _label("AchievementProgressGuidanceCopy", "继续挑战关卡，就能推进这个成就。", Vector2(320, 476), Vector2(640, 54), 22, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	copy.z_index = 2
+	guidance.add_child(copy)
+
+	var go_button: Button = _transparent_text_button("GoLevelsFromAchievementProgressButton", "去关卡", Rect2(Vector2(488, 590), Vector2(304, 76)), 27)
+	go_button.z_index = 3
+	go_button.pressed.connect(_show_level_select)
+	_attach_button_feedback(go_button, burst)
+	guidance.add_child(go_button)
+	var close_button: Button = _hotspot_button("CloseAchievementProgressGuidanceButton", Vector2(1076, 90), Vector2(96, 96), "关闭")
+	close_button.z_index = 3
+	close_button.pressed.connect(func() -> void: guidance.queue_free())
+	guidance.add_child(close_button)
+	_animate_overlay_entry(guidance)
 	_pulse_control(burst)
 
 

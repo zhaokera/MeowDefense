@@ -579,6 +579,21 @@
       "prompt_summary": "Transparent Image2 achievement reward burst layered over the reward overlay with pop and pulse motion."
     },
     {
+      "id": "achievement_progress_guidance_design_reference",
+      "path": "res://assets/generated/ui/achievement_progress_guidance_design_reference.png",
+      "prompt_summary": "Image2 full-screen unfinished achievement progress guidance overlay with blank runtime title, requirement, copy, close, and action areas."
+    },
+    {
+      "id": "achievement_progress_guidance_burst_source",
+      "path": "res://assets/generated/ui/achievement_progress_guidance_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the unfinished achievement progress guidance burst."
+    },
+    {
+      "id": "achievement_progress_guidance_burst",
+      "path": "res://assets/generated/ui/achievement_progress_guidance_burst.png",
+      "prompt_summary": "Transparent Image2 trophy-map burst layered over unfinished achievement guidance with pulse and button feedback."
+    },
+    {
       "id": "yarn_trap_item_icon",
       "path": "res://assets/generated/ui/yarn_trap_item_icon.png",
       "prompt_summary": "Image2 transparent yarn trap item icon used by the shop purchase state and inventory flow."
