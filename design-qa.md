@@ -298,6 +298,15 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/capture_shop_purchase_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_purchase_feedback.png`.
 - Verified `/Users/zhaok/cat/artifacts/shop_purchase_feedback.png` visually, passed the targeted shop/backpack/inventory checks, and passed the full `tests/run_*.gd` regression suite with 45 clean Godot tests.
 
+**Shop Product State Assets**
+- Generated `/Users/zhaok/cat/assets/generated/ui/shop_product_state_design_reference.png` as the full-screen Image2 direction for buyable and insufficient-fish product states.
+- Generated `/Users/zhaok/cat/assets/generated/ui/shop_product_buy_button_plate_source.png`, `/Users/zhaok/cat/assets/generated/ui/shop_product_insufficient_fish_stamp_source.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_energy_refill_button_plate_source.png`, then removed chroma-key backgrounds into transparent runtime PNGs.
+- Paw bundle and yarn trap cards now show `Shop*BuyButtonFrame` Image2 green-gold button plates when affordable and `Shop*InsufficientStamp` Image2 red paw stamps when fish is insufficient; energy refill uses the same state pattern with its own lightning-plus plate.
+- Runtime labels still provide live price, count, and "鱼干不足" text; transparent hit areas keep the existing purchase, shortage routing, and reward behavior.
+- Added `/Users/zhaok/cat/tests/run_shop_product_state_asset_tests.gd` to verify the Image2 state assets, manifest entries, dynamic text overlays, disabled state, and shortage feedback routing.
+- Added `/Users/zhaok/cat/tests/capture_shop_product_states.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_product_state_affordable.png` and `/Users/zhaok/cat/artifacts/shop_product_state_insufficient.png`.
+- Verified both shop product state screenshots visually, passed the targeted shop checks, and passed the full `tests/run_*.gd` regression suite with 52 clean Godot tests.
+
 **Battle Yarn Trap Consumable**
 - Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_field_effect.png` as a transparent Image2 battlefield yarn snare effect.
 - Battle HUD now exposes `YarnTrapHudIcon`, `YarnTrapCountLabel`, and `UseYarnTrapButton` using the Image2 item icon plus transparent interaction layer.

@@ -689,6 +689,41 @@
       "prompt_summary": "Transparent Image2 empty fish-pouch burst used by shop insufficient-fish feedback."
     },
     {
+      "id": "shop_product_state_design_reference",
+      "path": "res://assets/generated/ui/shop_product_state_design_reference.png",
+      "prompt_summary": "Image2 full-screen shop design reference showing product buyable and insufficient-fish state treatments."
+    },
+    {
+      "id": "shop_product_buy_button_plate_source",
+      "path": "res://assets/generated/ui/shop_product_buy_button_plate_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the reusable shop product buy-button plate."
+    },
+    {
+      "id": "shop_product_buy_button_plate",
+      "path": "res://assets/generated/ui/shop_product_buy_button_plate.png",
+      "prompt_summary": "Transparent Image2 green-gold shop product buy-button plate used behind dynamic purchase labels."
+    },
+    {
+      "id": "shop_product_insufficient_fish_stamp_source",
+      "path": "res://assets/generated/ui/shop_product_insufficient_fish_stamp_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the reusable shop insufficient-fish product stamp."
+    },
+    {
+      "id": "shop_product_insufficient_fish_stamp",
+      "path": "res://assets/generated/ui/shop_product_insufficient_fish_stamp.png",
+      "prompt_summary": "Transparent Image2 red paw and empty-pouch stamp used on unaffordable shop products."
+    },
+    {
+      "id": "shop_energy_refill_button_plate_source",
+      "path": "res://assets/generated/ui/shop_energy_refill_button_plate_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the reusable shop energy refill plus button."
+    },
+    {
+      "id": "shop_energy_refill_button_plate",
+      "path": "res://assets/generated/ui/shop_energy_refill_button_plate.png",
+      "prompt_summary": "Transparent Image2 lightning-plus button plate used behind the shop energy refill hit area."
+    },
+    {
       "id": "result_screen_design_reference",
       "path": "res://assets/generated/ui/result_screen_design_reference.png",
       "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."

@@ -44,6 +44,9 @@ const SHOP_PURCHASE_FEEDBACK_DESIGN := preload("res://assets/generated/ui/shop_p
 const SHOP_PURCHASE_REWARD_BURST := preload("res://assets/generated/ui/shop_purchase_reward_burst.png")
 const SHOP_INSUFFICIENT_FISH_DESIGN := preload("res://assets/generated/ui/shop_insufficient_fish_design_reference.png")
 const SHOP_INSUFFICIENT_FISH_BURST := preload("res://assets/generated/ui/shop_insufficient_fish_burst.png")
+const SHOP_PRODUCT_BUY_BUTTON_PLATE := preload("res://assets/generated/ui/shop_product_buy_button_plate.png")
+const SHOP_PRODUCT_INSUFFICIENT_STAMP := preload("res://assets/generated/ui/shop_product_insufficient_fish_stamp.png")
+const SHOP_ENERGY_REFILL_BUTTON_PLATE := preload("res://assets/generated/ui/shop_energy_refill_button_plate.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
@@ -963,6 +966,7 @@ func _show_shop_overlay(parent: Node) -> void:
 func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counter: Label) -> void:
 	var status: Label = _label("ShopEnergyRefillStatus", _energy_refill_status_text(), Vector2(900, 70), Vector2(210, 28), 16, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	parent.add_child(status)
+	var state_target: Control = _add_shop_energy_refill_state_asset(parent, _can_buy_energy_refill(), _energy < _max_energy and _total_fish < ENERGY_REFILL_COST)
 	var buy_button: Button = _hotspot_button("BuyShopEnergyRefillButton", Vector2(1042, 20), Vector2(72, 62), "补充体力")
 	buy_button.disabled = not _can_buy_energy_refill()
 	buy_button.pressed.connect(func() -> void:
@@ -980,6 +984,8 @@ func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counte
 		_pulse_control(energy_counter)
 		_show_shop_purchase_reward_overlay(parent, "体力补充", "体力 +%d" % restored_energy)
 	)
+	if state_target != null:
+		_attach_button_feedback(buy_button, state_target)
 	parent.add_child(buy_button)
 	if _energy < _max_energy and _total_fish < ENERGY_REFILL_COST:
 		_add_shop_shortage_button(parent, "ShopEnergyRefillShortageButton", Rect2(buy_button.position, buy_button.size), "体力补充", ENERGY_REFILL_COST, buy_button)
@@ -1437,6 +1443,7 @@ func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Ve
 	var token_count := 2
 	var status: Label = _label("ShopPawBundleStatus", "%d鱼干  持有%d" % [price, _paw_tokens], position + Vector2(58, 188), Vector2(size.x - 70, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	parent.add_child(status)
+	var state_target: Control = _add_shop_product_state_asset(parent, "ShopPawBundle", Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), _total_fish >= price, position + Vector2(108, 54))
 	var buy_text: String = "购买 %d" % price if _total_fish >= price else "鱼干不足"
 	var buy_button: Button = _transparent_text_button("BuyShopPawBundleButton", buy_text, Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), 22)
 	buy_button.disabled = _total_fish < price
@@ -1453,6 +1460,8 @@ func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Ve
 		_pulse_control(parent)
 		_show_shop_purchase_reward_overlay(parent, "猫爪徽章包", "徽章 +%d" % token_count)
 	)
+	if state_target != null:
+		_attach_button_feedback(buy_button, state_target)
 	parent.add_child(buy_button)
 	if _total_fish < price:
 		_add_shop_shortage_button(parent, "ShopPawBundleShortageButton", Rect2(buy_button.position, buy_button.size), "猫爪徽章包", price, buy_button)
@@ -1463,6 +1472,7 @@ func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vec
 	var status_text: String = "25鱼干  持有%d" % _yarn_traps
 	var status: Label = _label("ShopYarnTrapKitStatus", status_text, position + Vector2(62, 188), Vector2(size.x - 76, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	parent.add_child(status)
+	var state_target: Control = _add_shop_product_state_asset(parent, "ShopYarnTrapKit", Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), _total_fish >= price, position + Vector2(108, 54))
 	var buy_text: String = "购买 25" if _total_fish >= price else "鱼干不足"
 	var buy_button: Button = _transparent_text_button("BuyShopYarnTrapKitButton", buy_text, Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), 22)
 	buy_button.disabled = _total_fish < price
@@ -1479,9 +1489,46 @@ func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vec
 		_pulse_control(parent)
 		_show_shop_purchase_reward_overlay(parent, "毛线陷阱", "毛线陷阱 +1")
 	)
+	if state_target != null:
+		_attach_button_feedback(buy_button, state_target)
 	parent.add_child(buy_button)
 	if _total_fish < price:
 		_add_shop_shortage_button(parent, "ShopYarnTrapKitShortageButton", Rect2(buy_button.position, buy_button.size), "毛线陷阱包", price, buy_button)
+
+
+func _add_shop_product_state_asset(parent: Control, node_prefix: String, button_rect: Rect2, affordable: bool, stamp_center: Vector2) -> Control:
+	if affordable:
+		var frame: TextureRect = _ui_texture_rect("%sBuyButtonFrame" % node_prefix, SHOP_PRODUCT_BUY_BUTTON_PLATE, button_rect.position, button_rect.size)
+		frame.stretch_mode = TextureRect.STRETCH_SCALE
+		frame.z_index = 2
+		parent.add_child(frame)
+		return frame
+	var stamp_size := Vector2(94, 94)
+	var stamp: TextureRect = _ui_texture_rect("%sInsufficientStamp" % node_prefix, SHOP_PRODUCT_INSUFFICIENT_STAMP, stamp_center - stamp_size * 0.5, stamp_size)
+	stamp.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	stamp.rotation_degrees = -7.0
+	stamp.modulate = Color(1.0, 1.0, 1.0, 0.92)
+	stamp.z_index = 3
+	parent.add_child(stamp)
+	return stamp
+
+
+func _add_shop_energy_refill_state_asset(parent: Control, affordable: bool, insufficient: bool) -> Control:
+	if affordable:
+		var frame: TextureRect = _ui_texture_rect("ShopEnergyRefillButtonFrame", SHOP_ENERGY_REFILL_BUTTON_PLATE, Vector2(1036, 13), Vector2(84, 84))
+		frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		frame.z_index = 2
+		parent.add_child(frame)
+		return frame
+	if insufficient:
+		var stamp: TextureRect = _ui_texture_rect("ShopEnergyRefillInsufficientStamp", SHOP_PRODUCT_INSUFFICIENT_STAMP, Vector2(1034, 70), Vector2(72, 72))
+		stamp.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		stamp.rotation_degrees = -8.0
+		stamp.modulate = Color(1.0, 1.0, 1.0, 0.90)
+		stamp.z_index = 3
+		parent.add_child(stamp)
+		return stamp
+	return null
 
 
 func _add_shop_shortage_button(parent: Control, button_name: String, rect: Rect2, product_title: String, required_fish: int, feedback_target: Control) -> void:
