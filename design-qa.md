@@ -203,8 +203,10 @@ final result: passed
 - Generated and archived `/Users/zhaok/cat/assets/generated/ui/daily_task_state_design_reference.png` as the Image2 state reference for ready-to-claim, unfinished-progress, and claimed task rows.
 - Generated chroma-key sources and transparent final assets for `/Users/zhaok/cat/assets/generated/ui/daily_task_claim_button_plate.png`, `/Users/zhaok/cat/assets/generated/ui/daily_task_claimed_stamp.png`, and `/Users/zhaok/cat/assets/generated/ui/daily_task_progress_chip.png`.
 - Daily task rows now layer Image2 state art under dynamic Godot labels and transparent hit areas, with button feedback targeting the visible state asset.
+- Generated `/Users/zhaok/cat/assets/generated/ui/daily_task_overlay_state_slots_design_reference.png` as a replacement full-screen background with blank right-side state slots, preventing runtime claim/progress/claimed assets from stacking over baked-in green buttons.
 - Added `/Users/zhaok/cat/tests/run_daily_task_state_asset_tests.gd` to verify the ready button plate, unfinished progress chip, claimed stamp, dynamic claimed label, disabled claimed state, and manifest entries.
 - Added `/Users/zhaok/cat/tests/capture_daily_task_state_assets.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_task_state_ready.png` and `/Users/zhaok/cat/artifacts/daily_task_state_claimed.png`.
+- Updated `/Users/zhaok/cat/tests/run_daily_task_overlay_tests.gd` to require the state-slot background and scan the three right-side state regions for baked-in green button pixels.
 - Verification: targeted daily-task state/overlay/reset checks passed, non-headless screenshot capture passed, and full Godot regression passed with `FULL_REGRESSION_PASS_CLEAN 53 tests`.
 
 **Energy Flow And Empty State**

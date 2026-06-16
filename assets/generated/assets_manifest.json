@@ -519,6 +519,11 @@
       "prompt_summary": "Image2 full-screen daily task overlay design with three task rows, claim buttons, close control, and blank runtime text areas."
     },
     {
+      "id": "daily_task_overlay_state_slots_design_reference",
+      "path": "res://assets/generated/ui/daily_task_overlay_state_slots_design_reference.png",
+      "prompt_summary": "Image2 full-screen daily task overlay design with blank right-side state slots so runtime ready, progress, and claimed assets do not stack over baked-in buttons."
+    },
+    {
       "id": "daily_task_claim_reward_design_reference",
       "path": "res://assets/generated/ui/daily_task_claim_reward_design_reference.png",
       "prompt_summary": "Image2 full-screen daily task claim reward overlay design with blank runtime title, reward amount, and button areas."

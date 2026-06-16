@@ -2,6 +2,7 @@ extends SceneTree
 
 const TEST_SAVE_PATH := "user://meow_defense_daily_task_test_save.json"
 const MANIFEST_PATH := "res://assets/generated/assets_manifest.json"
+const DAILY_TASK_OVERLAY_STATE_SLOTS_DESIGN_PATH := "res://assets/generated/ui/daily_task_overlay_state_slots_design_reference.png"
 const DAILY_TASK_CLAIM_REWARD_DESIGN_PATH := "res://assets/generated/ui/daily_task_claim_reward_design_reference.png"
 const DAILY_TASK_CLAIM_REWARD_BURST_PATH := "res://assets/generated/ui/daily_task_claim_reward_burst.png"
 const DAILY_TASK_CLAIM_REWARD_BURST_SOURCE_PATH := "res://assets/generated/ui/daily_task_claim_reward_burst_source.png"
@@ -37,9 +38,10 @@ func _run() -> void:
 	_assert_texture_node(
 		instance,
 		"DailyTaskDesignBackground",
-		"res://assets/generated/ui/daily_task_overlay_design_reference.png",
-		"daily task overlay should render from its Image2 full-screen design"
+		DAILY_TASK_OVERLAY_STATE_SLOTS_DESIGN_PATH,
+		"daily task overlay should render from its Image2 full-screen state-slot design"
 	)
+	_assert_no_static_green_state_buttons(DAILY_TASK_OVERLAY_STATE_SLOTS_DESIGN_PATH)
 	_assert_missing(instance, "RewardOverlay", "daily task should not reuse daily reward overlay")
 	_assert_missing(instance, "DailyTaskPanel", "daily task should not use a code-drawn panel")
 	var first_progress: Label = _assert_label(instance, "DailyTaskFirstClearProgress", "daily task should show first clear progress")
@@ -86,6 +88,7 @@ func _run() -> void:
 	_assert_manifest_entry("daily_task_claim_reward_design_reference", DAILY_TASK_CLAIM_REWARD_DESIGN_PATH)
 	_assert_manifest_entry("daily_task_claim_reward_burst_source", DAILY_TASK_CLAIM_REWARD_BURST_SOURCE_PATH)
 	_assert_manifest_entry("daily_task_claim_reward_burst", DAILY_TASK_CLAIM_REWARD_BURST_PATH)
+	_assert_manifest_entry("daily_task_overlay_state_slots_design_reference", DAILY_TASK_OVERLAY_STATE_SLOTS_DESIGN_PATH)
 
 	instance.queue_free()
 	await process_frame
@@ -137,6 +140,46 @@ func _assert_manifest_entry(id: String, expected_path: String) -> void:
 			_assert_true(str(entry.get("path", "")) == expected_path, "%s should point to %s" % [id, expected_path])
 			return
 	_failures.append("asset manifest should include %s" % id)
+
+
+func _assert_no_static_green_state_buttons(path: String) -> void:
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		_failures.append("daily task state-slot design should be readable")
+		return
+	var image: Image = Image.new()
+	var error: Error = image.load_png_from_buffer(file.get_buffer(file.get_length()))
+	if error != OK:
+		_failures.append("daily task state-slot design should load as png")
+		return
+	var regions: Array[Rect2] = [
+		Rect2(Vector2(0.61, 0.30), Vector2(0.16, 0.13)),
+		Rect2(Vector2(0.61, 0.46), Vector2(0.16, 0.12)),
+		Rect2(Vector2(0.61, 0.63), Vector2(0.16, 0.12))
+	]
+	for i: int in range(regions.size()):
+		var ratio: float = _green_button_pixel_ratio(image, regions[i])
+		_assert_true(ratio < 0.15, "daily task background row %d should leave the state slot blank instead of baking in a green button" % [i + 1])
+
+
+func _green_button_pixel_ratio(image: Image, normalized_region: Rect2) -> float:
+	var width: int = image.get_width()
+	var height: int = image.get_height()
+	var start_x: int = int(normalized_region.position.x * width)
+	var start_y: int = int(normalized_region.position.y * height)
+	var end_x: int = int((normalized_region.position.x + normalized_region.size.x) * width)
+	var end_y: int = int((normalized_region.position.y + normalized_region.size.y) * height)
+	var green_pixels: int = 0
+	var total_pixels: int = 0
+	for y: int in range(start_y, end_y):
+		for x: int in range(start_x, end_x):
+			var color: Color = image.get_pixel(x, y)
+			total_pixels += 1
+			if color.g > 0.47 and color.g > color.r * 1.15 and color.g > color.b * 1.15:
+				green_pixels += 1
+	if total_pixels == 0:
+		return 0.0
+	return float(green_pixels) / float(total_pixels)
 
 
 func _assert_button(root_node: Node, node_name: String, message: String) -> Button:
