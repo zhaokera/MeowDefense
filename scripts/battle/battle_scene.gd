@@ -30,6 +30,7 @@ const SettingsSliderKnobTexture := preload("res://assets/generated/ui/settings_s
 const SettingsCloseButtonTexture := preload("res://assets/generated/ui/settings_close_button.png")
 const YarnTrapItemIconTexture := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap_field_effect.png")
+const BattleYarnTrapEmptyBurstTexture := preload("res://assets/generated/ui/battle_yarn_trap_empty_burst.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
@@ -1036,7 +1037,8 @@ func _build_yarn_trap_hud() -> void:
 func _use_yarn_trap() -> void:
 	if yarn_traps_available <= 0:
 		if _tip_label != null:
-			_tip_label.text = "背包里没有毛线陷阱。"
+			_tip_label.text = "毛线陷阱用完了，去商店补给后再来。"
+		_show_yarn_trap_empty_feedback()
 		_update_yarn_trap_hud()
 		return
 	var target: Node2D = _first_active_enemy()
@@ -1050,6 +1052,43 @@ func _use_yarn_trap() -> void:
 	yarn_traps_changed.emit(yarn_traps_available)
 	if _tip_label != null:
 		_tip_label.text = "毛线陷阱缠住了小老鼠！"
+
+
+func _show_yarn_trap_empty_feedback() -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("BattleYarnTrapEmptyFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+
+	var feedback: TextureRect = _hud_texture_rect("BattleYarnTrapEmptyFeedback", BattleYarnTrapEmptyBurstTexture, Vector2(802, 306), Vector2(340, 340))
+	feedback.z_index = 86
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.70, 0.70)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("毛线陷阱用完啦\n去商店补给")
+	label.name = "BattleYarnTrapEmptyFeedbackLabel"
+	label.position = Vector2(44, 232)
+	label.size = Vector2(260, 72)
+	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_color_override("font_color", Color(0.39, 0.17, 0.05))
+	label.add_theme_constant_override("outline_size", 4)
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	feedback.add_child(label)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -3.0, 0.06).set_delay(0.14).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 3.0, 0.07).set_delay(0.22).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.08).set_delay(0.31).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 18.0, 0.34).set_delay(0.58).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.26).set_delay(1.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.48)
 
 
 func _first_active_enemy() -> Node2D:

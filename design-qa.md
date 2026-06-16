@@ -306,6 +306,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_yarn_trap_tests.gd` and `/Users/zhaok/cat/tests/run_battle_yarn_inventory_flow_tests.gd` to verify battle behavior, inventory handoff, and save persistence.
 - Added `/Users/zhaok/cat/tests/capture_battle_yarn_trap.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_yarn_trap.png`.
 
+**Battle Yarn Trap Empty Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_yarn_trap_empty_burst_source.png` with Image2 as a chroma-key source, then removed the key into `/Users/zhaok/cat/assets/generated/ui/battle_yarn_trap_empty_burst.png` for runtime use.
+- Tapping `UseYarnTrapButton` with zero inventory now keeps the trap count at `x0`, avoids placing a field effect, updates the bottom tip, and spawns `BattleYarnTrapEmptyFeedback` with a pulse, float, and fade animation.
+- The feedback layer uses the generated empty basket/restock burst plus `BattleYarnTrapEmptyFeedbackLabel` so the dead button now tells the player to restock in the shop.
+- Added `/Users/zhaok/cat/tests/run_battle_yarn_empty_feedback_tests.gd` to verify empty-inventory behavior, manifest coverage, and the Image2 feedback node.
+- Added `/Users/zhaok/cat/tests/capture_battle_yarn_empty_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_yarn_empty_feedback.png`.
+
 **Progression Persistence And Level Locking**
 - Generated `/Users/zhaok/cat/assets/generated/ui/level_lock_badge.png` as a transparent Image2 cat-paw lock badge for locked level cards.
 - Added persistent progress at `user://meow_defense_save.json` for best stars by level, total fish, unlocked level, reward claims, and basic settings.

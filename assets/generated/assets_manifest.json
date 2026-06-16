@@ -604,6 +604,16 @@
       "prompt_summary": "Image2 transparent battlefield yarn snare effect used when deploying the yarn trap consumable."
     },
     {
+      "id": "battle_yarn_trap_empty_burst_source",
+      "path": "res://assets/generated/ui/battle_yarn_trap_empty_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the battle HUD empty-yarn-trap feedback burst."
+    },
+    {
+      "id": "battle_yarn_trap_empty_burst",
+      "path": "res://assets/generated/ui/battle_yarn_trap_empty_burst.png",
+      "prompt_summary": "Transparent Image2 empty basket and yarn restock burst shown when the player taps the yarn trap button with zero inventory."
+    },
+    {
       "id": "shop_overlay_design_reference",
       "path": "res://assets/generated/ui/shop_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."
