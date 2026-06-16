@@ -614,6 +614,21 @@
       "prompt_summary": "Transparent Image2 shop purchase reward burst layered over purchase success overlays."
     },
     {
+      "id": "shop_insufficient_fish_design_reference",
+      "path": "res://assets/generated/ui/shop_insufficient_fish_design_reference.png",
+      "prompt_summary": "Image2 full-screen shop insufficient-fish feedback overlay with blank runtime text and action areas."
+    },
+    {
+      "id": "shop_insufficient_fish_burst_source",
+      "path": "res://assets/generated/ui/shop_insufficient_fish_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the shop insufficient-fish pouch burst."
+    },
+    {
+      "id": "shop_insufficient_fish_burst",
+      "path": "res://assets/generated/ui/shop_insufficient_fish_burst.png",
+      "prompt_summary": "Transparent Image2 empty fish-pouch burst used by shop insufficient-fish feedback."
+    },
+    {
       "id": "result_screen_design_reference",
       "path": "res://assets/generated/ui/result_screen_design_reference.png",
       "prompt_summary": "Image2 full-screen victory result design used directly as the high-fidelity post-level result screen."

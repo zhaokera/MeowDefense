@@ -40,6 +40,8 @@ const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_buyable_design_reference.png")
 const SHOP_PURCHASE_FEEDBACK_DESIGN := preload("res://assets/generated/ui/shop_purchase_feedback_design_reference.png")
 const SHOP_PURCHASE_REWARD_BURST := preload("res://assets/generated/ui/shop_purchase_reward_burst.png")
+const SHOP_INSUFFICIENT_FISH_DESIGN := preload("res://assets/generated/ui/shop_insufficient_fish_design_reference.png")
+const SHOP_INSUFFICIENT_FISH_BURST := preload("res://assets/generated/ui/shop_insufficient_fish_burst.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
@@ -977,6 +979,8 @@ func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counte
 		_show_shop_purchase_reward_overlay(parent, "体力补充", "体力 +%d" % restored_energy)
 	)
 	parent.add_child(buy_button)
+	if _energy < _max_energy and _total_fish < ENERGY_REFILL_COST:
+		_add_shop_shortage_button(parent, "ShopEnergyRefillShortageButton", Rect2(buy_button.position, buy_button.size), "体力补充", ENERGY_REFILL_COST, buy_button)
 
 
 func _can_buy_energy_refill() -> bool:
@@ -1392,6 +1396,8 @@ func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Ve
 		_show_shop_purchase_reward_overlay(parent, "猫爪徽章包", "徽章 +%d" % token_count)
 	)
 	parent.add_child(buy_button)
+	if _total_fish < price:
+		_add_shop_shortage_button(parent, "ShopPawBundleShortageButton", Rect2(buy_button.position, buy_button.size), "猫爪徽章包", price, buy_button)
 
 
 func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vector2, size: Vector2) -> void:
@@ -1416,6 +1422,62 @@ func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vec
 		_show_shop_purchase_reward_overlay(parent, "毛线陷阱", "毛线陷阱 +1")
 	)
 	parent.add_child(buy_button)
+	if _total_fish < price:
+		_add_shop_shortage_button(parent, "ShopYarnTrapKitShortageButton", Rect2(buy_button.position, buy_button.size), "毛线陷阱包", price, buy_button)
+
+
+func _add_shop_shortage_button(parent: Control, button_name: String, rect: Rect2, product_title: String, required_fish: int, feedback_target: Control) -> void:
+	var shortage_button: Button = _hotspot_button(button_name, rect.position, rect.size, "鱼干不足")
+	shortage_button.z_index = 6
+	shortage_button.pressed.connect(func() -> void:
+		_show_shop_insufficient_fish_feedback(parent, product_title, required_fish)
+	)
+	_attach_button_feedback(shortage_button, feedback_target)
+	parent.add_child(shortage_button)
+
+
+func _show_shop_insufficient_fish_feedback(parent: Control, product_title: String, required_fish: int) -> void:
+	_remove_named_child(parent, "ShopInsufficientFishOverlay")
+	var missing_fish: int = max(0, required_fish - _total_fish)
+	var overlay: Control = Control.new()
+	overlay.name = "ShopInsufficientFishOverlay"
+	overlay.size = VIEW_SIZE
+	overlay.z_index = 20
+	parent.add_child(overlay)
+
+	var design: TextureRect = _ui_texture_rect("ShopInsufficientFishDesignBackground", SHOP_INSUFFICIENT_FISH_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	overlay.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("ShopInsufficientFishBurst", SHOP_INSUFFICIENT_FISH_BURST, Vector2(316, 258), Vector2(210, 210))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.95)
+	burst.z_index = 1
+	overlay.add_child(burst)
+
+	var title: Label = _label("ShopInsufficientFishTitle", "小鱼干不够啦", Vector2(404, 112), Vector2(472, 62), 34, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title.z_index = 2
+	overlay.add_child(title)
+	var requirement: Label = _label("ShopInsufficientFishRequirement", "%s 还差 %d 小鱼干" % [product_title, missing_fish], Vector2(590, 284), Vector2(392, 54), 25, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	requirement.z_index = 2
+	overlay.add_child(requirement)
+	var copy: Label = _label("ShopInsufficientFishCopy", "完成今日任务或继续闯关，可以补足鱼干再回来购买。", Vector2(588, 360), Vector2(400, 100), 21, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	copy.z_index = 2
+	overlay.add_child(copy)
+	var tasks_button: Button = _transparent_text_button("GoDailyTaskFromShopShortageButton", "去今日任务", Rect2(Vector2(428, 556), Vector2(424, 82)), 28)
+	tasks_button.z_index = 3
+	tasks_button.pressed.connect(func() -> void:
+		_show_daily_task_overlay(self)
+	)
+	_attach_button_feedback(tasks_button, burst)
+	overlay.add_child(tasks_button)
+	var close_button: Button = _hotspot_button("CloseShopInsufficientFishButton", Vector2(1000, 84), Vector2(94, 94), "关闭")
+	close_button.z_index = 3
+	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	overlay.add_child(close_button)
+	_animate_overlay_entry(overlay)
+	_pulse_control(burst)
 
 
 func _is_level_unlocked(level_id: int) -> bool:

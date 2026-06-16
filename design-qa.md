@@ -252,6 +252,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_buyable_design_tests.gd` to verify the new design path, manifest entry, no duplicate runtime art/title overlays, and button text placement on the Image2 button plates.
 - Regenerated `/Users/zhaok/cat/artifacts/shop_overlay.png` and verified the buyable shop screen visually.
 
+**Shop Insufficient Fish Feedback**
+- Generated `/Users/zhaok/cat/assets/generated/ui/shop_insufficient_fish_design_reference.png` as the full-screen Image2 feedback design shown when a shop product cannot be afforded.
+- Generated `/Users/zhaok/cat/assets/generated/ui/shop_insufficient_fish_burst_source.png`, then removed the chroma-key background into `/Users/zhaok/cat/assets/generated/ui/shop_insufficient_fish_burst.png` for runtime use.
+- Unaffordable paw bundle, yarn trap, and energy refill controls now keep their disabled purchase buttons but add transparent shortage hit areas that open `ShopInsufficientFishOverlay` instead of feeling dead.
+- The feedback overlay uses the Image2 background, transparent empty-pouch burst, dynamic missing-fish text, close hit area, pulse feedback, and `GoDailyTaskFromShopShortageButton` to route players toward daily tasks.
+- Added `/Users/zhaok/cat/tests/run_shop_insufficient_fish_feedback_tests.gd` to verify shortage hit areas, Image2 assets, missing-fish copy, no accidental rewards/spend, close behavior, daily-task routing, and manifest entries.
+- Added `/Users/zhaok/cat/tests/capture_shop_insufficient_fish.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_insufficient_fish_feedback.png`, which was visually checked for text placement.
+
 **Shop Yarn Trap Purchase**
 - Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png` as a transparent Image2 yarn trap item icon for backpack and battle consumable flows.
 - Converted the shop's yarn trap product from a locked placeholder into a purchasable 25-fish item that increments `_yarn_traps`, updates the fish counter, persists through saves, and appears in the backpack count.
