@@ -199,6 +199,14 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/capture_daily_task_claim_reward.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_task_claim_reward.png`.
 - Verification: targeted daily-task/reward/shop overlay checks passed, and full Godot regression passed with `FULL_REGRESSION_PASS_CLEAN 45 tests`.
 
+**Daily Task Row State Assets**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/daily_task_state_design_reference.png` as the Image2 state reference for ready-to-claim, unfinished-progress, and claimed task rows.
+- Generated chroma-key sources and transparent final assets for `/Users/zhaok/cat/assets/generated/ui/daily_task_claim_button_plate.png`, `/Users/zhaok/cat/assets/generated/ui/daily_task_claimed_stamp.png`, and `/Users/zhaok/cat/assets/generated/ui/daily_task_progress_chip.png`.
+- Daily task rows now layer Image2 state art under dynamic Godot labels and transparent hit areas, with button feedback targeting the visible state asset.
+- Added `/Users/zhaok/cat/tests/run_daily_task_state_asset_tests.gd` to verify the ready button plate, unfinished progress chip, claimed stamp, dynamic claimed label, disabled claimed state, and manifest entries.
+- Added `/Users/zhaok/cat/tests/capture_daily_task_state_assets.gd` to regenerate `/Users/zhaok/cat/artifacts/daily_task_state_ready.png` and `/Users/zhaok/cat/artifacts/daily_task_state_claimed.png`.
+- Verification: targeted daily-task state/overlay/reset checks passed, non-headless screenshot capture passed, and full Godot regression passed with `FULL_REGRESSION_PASS_CLEAN 53 tests`.
+
 **Energy Flow And Empty State**
 - Generated `/Users/zhaok/cat/assets/generated/ui/energy_empty_overlay_design_reference.png` as a full-screen Image2 out-of-energy feedback design.
 - Converted the static `15/15` energy display into persistent `_energy`, `_max_energy`, and `_energy_refilled_on` state.

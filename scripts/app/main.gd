@@ -28,6 +28,9 @@ const DAILY_REWARD_CLAIM_SUCCESS_BURST := preload("res://assets/generated/ui/dai
 const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_design_reference.png")
 const DAILY_TASK_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/daily_task_claim_reward_design_reference.png")
 const DAILY_TASK_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/daily_task_claim_reward_burst.png")
+const DAILY_TASK_CLAIM_BUTTON_PLATE := preload("res://assets/generated/ui/daily_task_claim_button_plate.png")
+const DAILY_TASK_CLAIMED_STAMP := preload("res://assets/generated/ui/daily_task_claimed_stamp.png")
+const DAILY_TASK_PROGRESS_CHIP := preload("res://assets/generated/ui/daily_task_progress_chip.png")
 const ENERGY_EMPTY_DESIGN := preload("res://assets/generated/ui/energy_empty_overlay_design_reference.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
@@ -725,18 +728,43 @@ func _daily_task_row(parent: Control, task: Dictionary) -> void:
 	var reward_fish: int = max(0, int(task.get("reward_fish", 0)))
 	var title: String = str(task.get("title", "任务"))
 	var detail: String = str(task.get("detail", "完成目标"))
+	var state_target: Control = null
+
+	if claimed:
+		var stamp: TextureRect = _ui_texture_rect("%sClaimedStamp" % row_name, DAILY_TASK_CLAIMED_STAMP, position + Vector2(438, -8), Vector2(122, 122))
+		stamp.z_index = 1
+		stamp.rotation_degrees = -4.0
+		parent.add_child(stamp)
+		state_target = stamp
+	elif ready:
+		var claim_frame: TextureRect = _ui_texture_rect("%sClaimButtonFrame" % row_name, DAILY_TASK_CLAIM_BUTTON_PLATE, position + Vector2(402, 10), Vector2(198, 74))
+		claim_frame.z_index = 1
+		parent.add_child(claim_frame)
+		state_target = claim_frame
+	else:
+		var progress_chip: TextureRect = _ui_texture_rect("%sProgressChip" % row_name, DAILY_TASK_PROGRESS_CHIP, position + Vector2(316, 20), Vector2(142, 58))
+		progress_chip.z_index = 1
+		parent.add_child(progress_chip)
+		state_target = progress_chip
 
 	parent.add_child(_label("%sTitle" % row_name, title, position, Vector2(300, 32), 23, INK, HORIZONTAL_ALIGNMENT_LEFT))
 	parent.add_child(_label("%sDetail" % row_name, detail, position + Vector2(0, 34), Vector2(330, 30), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT))
 	var reward_label: Label = _label("%sReward" % row_name, "奖励 +%d" % reward_fish, position + Vector2(0, 56), Vector2(250, 26), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT)
 	parent.add_child(reward_label)
-	var progress_label: Label = _label("%sProgress" % row_name, "%d/%d" % [progress_value, target], position + Vector2(330, 30), Vector2(104, 42), 21, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	var progress_label: Label = _label("%sProgress" % row_name, "%d/%d" % [progress_value, target], position + Vector2(342, 30), Vector2(104, 42), 21, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	progress_label.z_index = 2
 	parent.add_child(progress_label)
 	var claim_label_text: String = "已领取" if claimed else ("领取" if ready else "未完成")
-	var claim_label: Label = _label("%sClaimLabel" % row_name, claim_label_text, position + Vector2(430, 26), Vector2(154, 50), 23, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	var claim_label_position: Vector2 = position + (Vector2(438, 34) if claimed else Vector2(456, 26))
+	var claim_label_size: Vector2 = Vector2(112, 44) if claimed else Vector2(122, 50)
+	var claim_label: Label = _label("%sClaimLabel" % row_name, claim_label_text, claim_label_position, claim_label_size, 23, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	claim_label.z_index = 2
 	parent.add_child(claim_label)
 	var claim_button: Button = _hotspot_button("Claim%sButton" % row_name, position + Vector2(410, 14), Vector2(178, 70), claim_label_text)
+	claim_button.z_index = 3
 	claim_button.disabled = claimed or not ready
+	if state_target != null:
+		_attach_button_feedback(claim_button, state_target)
 	claim_button.pressed.connect(func() -> void:
 		_claim_daily_task(task, parent, claim_label, claim_button)
 	)
