@@ -245,17 +245,24 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/capture_achievement_claimed.gd` to wait for animation frames and regenerate `/Users/zhaok/cat/artifacts/achievements_claimed_overlay.png`, which now captures the reward feedback overlay.
 - Verified the new reward screenshot visually, passed the targeted achievement/town/backpack/reward checks, and passed the full `tests/run_*.gd` regression suite with 44 clean Godot tests.
 
+**Shop Buyable Product Design**
+- Generated `/Users/zhaok/cat/assets/generated/ui/shop_overlay_buyable_design_reference.png` as the updated full-screen Image2 shop design where the paw bundle and yarn trap kit are visible buyable products instead of locked placeholders.
+- The new shop design keeps resource counters and button labels blank so Godot can render live fish/star/energy counts, affordability, and purchase state without fighting baked text.
+- `ShopOverlay` now uses `ShopDesignBackground` from the buyable design, and removed duplicate runtime title/product labels and duplicate item icons that were already part of the Image2 background.
+- Added `/Users/zhaok/cat/tests/run_shop_buyable_design_tests.gd` to verify the new design path, manifest entry, no duplicate runtime art/title overlays, and button text placement on the Image2 button plates.
+- Regenerated `/Users/zhaok/cat/artifacts/shop_overlay.png` and verified the buyable shop screen visually.
+
 **Shop Yarn Trap Purchase**
-- Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png` as a transparent Image2 yarn trap item icon for the shop inventory flow.
+- Generated `/Users/zhaok/cat/assets/generated/ui/yarn_trap_item_icon.png` as a transparent Image2 yarn trap item icon for backpack and battle consumable flows.
 - Converted the shop's yarn trap product from a locked placeholder into a purchasable 25-fish item that increments `_yarn_traps`, updates the fish counter, persists through saves, and appears in the backpack count.
-- Kept the shop and backpack full-screen Image2 designs as the visual base, adding only dynamic labels, the small Image2 item badge, and transparent hit areas.
+- Kept the shop and backpack full-screen Image2 designs as the visual base, adding only dynamic labels and transparent hit areas over the generated product art.
 - Added `/Users/zhaok/cat/tests/run_shop_yarn_trap_tests.gd` to verify purchase, cost, inventory count, persistence, and backpack display.
 - Added `/Users/zhaok/cat/tests/capture_shop_yarn_trap.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_yarn_trap_purchase.png` and `/Users/zhaok/cat/artifacts/backpack_yarn_trap_item.png`.
 
 **Shop Paw Bundle Purchase**
-- Reused `/Users/zhaok/cat/assets/generated/ui/album_paw_badge.png` as the Image2 item badge for the shop paw bundle.
+- Reused `/Users/zhaok/cat/assets/generated/ui/album_paw_badge.png` as Image2 badge art for backpack and achievement-related surfaces; the shop paw bundle product art now comes from the buyable shop design.
 - Converted the shop's paw bundle product from a locked placeholder into a purchasable 45-fish item that grants 2 `_paw_tokens`, updates the fish counter, persists through saves, and appears in the backpack badge count.
-- Kept the shop and backpack full-screen Image2 designs as the visual base, adding only dynamic labels, the small Image2 item badge, and transparent hit areas.
+- Kept the shop and backpack full-screen Image2 designs as the visual base, adding only dynamic labels and transparent hit areas over the generated product art.
 - Added `/Users/zhaok/cat/tests/run_shop_paw_bundle_tests.gd` to verify purchase, cost, badge count, persistence, and backpack display.
 - Added `/Users/zhaok/cat/tests/capture_shop_paw_bundle.gd` to regenerate `/Users/zhaok/cat/artifacts/shop_paw_bundle_purchase.png`.
 

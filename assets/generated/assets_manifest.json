@@ -594,6 +594,11 @@
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."
     },
     {
+      "id": "shop_overlay_buyable_design_reference",
+      "path": "res://assets/generated/ui/shop_overlay_buyable_design_reference.png",
+      "prompt_summary": "Image2 full-screen shop overlay design with buyable paw bundle and yarn trap product cards, blank runtime counters, and blank button label areas."
+    },
+    {
       "id": "shop_purchase_feedback_design_reference",
       "path": "res://assets/generated/ui/shop_purchase_feedback_design_reference.png",
       "prompt_summary": "Image2 full-screen shop purchase success overlay for fish, badge, trap, and energy purchases."

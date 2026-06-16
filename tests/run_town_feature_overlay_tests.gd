@@ -76,7 +76,7 @@ func _assert_main_menu_shop(instance: Node) -> void:
 	shop_button.emit_signal("pressed")
 	await process_frame
 	_assert_exists(instance, "ShopOverlay", "shop button should open the shop overlay")
-	_assert_design_texture(instance, "ShopDesignBackground", "res://assets/generated/ui/shop_overlay_design_reference.png", "shop should render from its Image2 full-screen design")
+	_assert_design_texture(instance, "ShopDesignBackground", "res://assets/generated/ui/shop_overlay_buyable_design_reference.png", "shop should render from its Image2 full-screen design")
 	_assert_missing(instance, "RewardOverlay", "shop should not reuse the daily reward overlay")
 	var fish_counter: Label = _assert_label(instance, "ShopFishCounter", "shop should show the current fish total")
 	var claim_button: Button = _assert_button(instance, "ClaimShopFishPackButton", "shop should expose a fish-pack claim action")
@@ -110,7 +110,7 @@ func _assert_level_select_shop(instance: Node) -> void:
 	shop_button.emit_signal("pressed")
 	await process_frame
 	_assert_exists(instance, "ShopOverlay", "level select shop should open the shop overlay")
-	_assert_design_texture(instance, "ShopDesignBackground", "res://assets/generated/ui/shop_overlay_design_reference.png", "level select shop should render from its Image2 full-screen design")
+	_assert_design_texture(instance, "ShopDesignBackground", "res://assets/generated/ui/shop_overlay_buyable_design_reference.png", "level select shop should render from its Image2 full-screen design")
 
 
 func _finish() -> void:

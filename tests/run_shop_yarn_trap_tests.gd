@@ -29,14 +29,8 @@ func _run() -> void:
 	_assert_design_texture(
 		instance,
 		"ShopDesignBackground",
-		"res://assets/generated/ui/shop_overlay_design_reference.png",
+		"res://assets/generated/ui/shop_overlay_buyable_design_reference.png",
 		"shop should keep the Image2 full-screen design"
-	)
-	_assert_design_texture(
-		instance,
-		"ShopYarnTrapIcon",
-		"res://assets/generated/ui/yarn_trap_item_icon.png",
-		"yarn trap product should use an Image2 item icon"
 	)
 	var fish_counter: Label = _assert_label(instance, "ShopFishCounter", "shop should show fish total")
 	var status: Label = _assert_label(instance, "ShopYarnTrapKitStatus", "yarn trap product should show purchase state")

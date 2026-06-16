@@ -28,9 +28,9 @@ func _run() -> void:
 
 	_assert_design_texture(
 		instance,
-		"ShopPawBundleIcon",
-		"res://assets/generated/ui/album_paw_badge.png",
-		"paw bundle product should use an Image2 paw badge asset"
+		"ShopDesignBackground",
+		"res://assets/generated/ui/shop_overlay_buyable_design_reference.png",
+		"paw bundle product art should come from the Image2 buyable shop design"
 	)
 	var fish_counter: Label = _assert_label(instance, "ShopFishCounter", "shop should show fish total")
 	var status: Label = _assert_label(instance, "ShopPawBundleStatus", "paw bundle product should show purchase state")

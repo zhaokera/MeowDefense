@@ -37,7 +37,7 @@ const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievemen
 const ACHIEVEMENT_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/achievement_claim_reward_design_reference.png")
 const ACHIEVEMENT_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/achievement_claim_reward_burst.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
-const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_design_reference.png")
+const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_buyable_design_reference.png")
 const SHOP_PURCHASE_FEEDBACK_DESIGN := preload("res://assets/generated/ui/shop_purchase_feedback_design_reference.png")
 const SHOP_PURCHASE_REWARD_BURST := preload("res://assets/generated/ui/shop_purchase_reward_burst.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
@@ -920,7 +920,6 @@ func _show_achievements_overlay(parent: Node) -> void:
 func _show_shop_overlay(parent: Node) -> void:
 	_sync_energy_for_today()
 	var content: Control = _image_overlay(parent, "ShopOverlay", "ShopDesignBackground", SHOP_OVERLAY_DESIGN)
-	content.add_child(_label("ShopTitle", "猫猫商店", Vector2(460, 128), Vector2(360, 62), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var fish_counter: Label = _label("ShopFishCounter", "%d" % _total_fish, Vector2(584, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	content.add_child(fish_counter)
 	content.add_child(_label("ShopStarsCounter", "%d" % _best_stars, Vector2(804, 29), Vector2(92, 40), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
@@ -928,11 +927,10 @@ func _show_shop_overlay(parent: Node) -> void:
 	content.add_child(energy_counter)
 	_add_shop_energy_refill(content, fish_counter, energy_counter)
 
-	content.add_child(_label("ShopFishPackTitle", "小鱼干补给", Vector2(270, 294), Vector2(214, 36), 21, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var claim_status: Label = _label("ShopClaimStatus", "已领取" if _shop_starter_claimed else "免费领取", Vector2(324, 482), Vector2(136, 36), 20, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	content.add_child(claim_status)
 	var claim_text: String = "已领取" if _shop_starter_claimed else "领取 +15"
-	var claim_button: Button = _transparent_text_button("ClaimShopFishPackButton", claim_text, Rect2(Vector2(278, 548), Vector2(202, 62)), 22)
+	var claim_button: Button = _transparent_text_button("ClaimShopFishPackButton", claim_text, Rect2(Vector2(278, 504), Vector2(202, 62)), 22)
 	claim_button.disabled = _shop_starter_claimed
 	claim_button.pressed.connect(func() -> void:
 		if _shop_starter_claimed:
@@ -1375,14 +1373,10 @@ func _shop_locked_product(parent: Control, node_prefix: String, title: String, d
 func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Vector2, size: Vector2) -> void:
 	var price := 45
 	var token_count := 2
-	var icon: TextureRect = _ui_texture_rect("ShopPawBundleIcon", SHOP_PAW_BUNDLE_ICON, position + Vector2(145, 150), Vector2(46, 46))
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	parent.add_child(icon)
-	parent.add_child(_label("ShopPawBundleTitle", "猫爪徽章包", position, Vector2(size.x, 36), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var status: Label = _label("ShopPawBundleStatus", "%d鱼干  持有%d" % [price, _paw_tokens], position + Vector2(58, 188), Vector2(size.x - 70, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	parent.add_child(status)
 	var buy_text: String = "购买 %d" % price if _total_fish >= price else "鱼干不足"
-	var buy_button: Button = _transparent_text_button("BuyShopPawBundleButton", buy_text, Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
+	var buy_button: Button = _transparent_text_button("BuyShopPawBundleButton", buy_text, Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), 22)
 	buy_button.disabled = _total_fish < price
 	buy_button.pressed.connect(func() -> void:
 		if _total_fish < price:
@@ -1394,7 +1388,7 @@ func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Ve
 		status.text = "已购买  持有%d" % _paw_tokens
 		buy_button.text = "再买 %d" % price if _total_fish >= price else "鱼干不足"
 		buy_button.disabled = _total_fish < price
-		_pulse_control(icon)
+		_pulse_control(parent)
 		_show_shop_purchase_reward_overlay(parent, "猫爪徽章包", "徽章 +%d" % token_count)
 	)
 	parent.add_child(buy_button)
@@ -1402,15 +1396,11 @@ func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Ve
 
 func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vector2, size: Vector2) -> void:
 	var price := 25
-	var icon: TextureRect = _ui_texture_rect("ShopYarnTrapIcon", YARN_TRAP_ITEM_ICON, position + Vector2(146, 150), Vector2(44, 44))
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	parent.add_child(icon)
-	parent.add_child(_label("ShopYarnTrapKitTitle", "毛线陷阱包", position, Vector2(size.x, 36), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var status_text: String = "25鱼干  持有%d" % _yarn_traps
 	var status: Label = _label("ShopYarnTrapKitStatus", status_text, position + Vector2(62, 188), Vector2(size.x - 76, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	parent.add_child(status)
 	var buy_text: String = "购买 25" if _total_fish >= price else "鱼干不足"
-	var buy_button: Button = _transparent_text_button("BuyShopYarnTrapKitButton", buy_text, Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
+	var buy_button: Button = _transparent_text_button("BuyShopYarnTrapKitButton", buy_text, Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), 22)
 	buy_button.disabled = _total_fish < price
 	buy_button.pressed.connect(func() -> void:
 		if _total_fish < price:
@@ -1422,7 +1412,7 @@ func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vec
 		status.text = "已购买  持有%d" % _yarn_traps
 		buy_button.text = "再买 25" if _total_fish >= price else "鱼干不足"
 		buy_button.disabled = _total_fish < price
-		_pulse_control(icon)
+		_pulse_control(parent)
 		_show_shop_purchase_reward_overlay(parent, "毛线陷阱", "毛线陷阱 +1")
 	)
 	parent.add_child(buy_button)

@@ -33,7 +33,7 @@ func _run() -> void:
 	_assert_design_texture(
 		instance,
 		"ShopDesignBackground",
-		"res://assets/generated/ui/shop_overlay_design_reference.png",
+		"res://assets/generated/ui/shop_overlay_buyable_design_reference.png",
 		"shop energy refill should keep the Image2 full-screen design"
 	)
 	var fish_counter: Label = _assert_label(instance, "ShopFishCounter", "shop should show fish total")
