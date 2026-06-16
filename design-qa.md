@@ -313,6 +313,15 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_yarn_empty_feedback_tests.gd` to verify empty-inventory behavior, manifest coverage, and the Image2 feedback node.
 - Added `/Users/zhaok/cat/tests/capture_battle_yarn_empty_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_yarn_empty_feedback.png`.
 
+**Battle Tower Selector Cards**
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_tower_selector_cards_design_reference.png` as the full-screen Image2 direction for replacing plain tower text buttons with tactile tower cards.
+- Generated `/Users/zhaok/cat/assets/generated/ui/battle_tower_card_orange_cat_source.png`, `/Users/zhaok/cat/assets/generated/ui/battle_tower_card_tabby_slow_cat_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_tower_card_selected_badge_source.png`, then removed chroma-key backgrounds into runtime transparent PNGs.
+- The battle HUD now renders `TowerCardOrangeCatFrame` and `TowerCardTabbySlowCatFrame` Image2 textures with dynamic name/cost labels, transparent hit areas, press feedback, and `TowerCard*SelectedState` golden paw overlays.
+- Selecting the tabby card updates `_selected_tower_id`, moves the selected-state overlay, and building from a paw slot creates `tabby_slow_cat` instead of always defaulting visually to the orange tower.
+- Added `/Users/zhaok/cat/tests/run_battle_tower_selector_card_tests.gd` to verify card assets, selected-state switching, empty button text, manifest coverage, and actual selected-tower building behavior.
+- Added `/Users/zhaok/cat/tests/capture_battle_tower_selector_cards.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_tower_selector_cards.png`.
+- Verified `/Users/zhaok/cat/artifacts/battle_tower_selector_cards.png` visually, passed the targeted tower/menu/build/playthrough checks, and passed the full `tests/run_*.gd` regression suite with 51 clean Godot tests.
+
 **Progression Persistence And Level Locking**
 - Generated `/Users/zhaok/cat/assets/generated/ui/level_lock_badge.png` as a transparent Image2 cat-paw lock badge for locked level cards.
 - Added persistent progress at `user://meow_defense_save.json` for best stars by level, total fish, unlocked level, reward claims, and basic settings.

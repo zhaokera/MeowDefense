@@ -614,6 +614,41 @@
       "prompt_summary": "Transparent Image2 empty basket and yarn restock burst shown when the player taps the yarn trap button with zero inventory."
     },
     {
+      "id": "battle_tower_selector_cards_design_reference",
+      "path": "res://assets/generated/ui/battle_tower_selector_cards_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle HUD design reference replacing text tower selectors with tactile tower cards and selected-state treatment."
+    },
+    {
+      "id": "battle_tower_card_orange_cat_source",
+      "path": "res://assets/generated/ui/battle_tower_card_orange_cat_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the orange cat fishbone cannon tower selector card."
+    },
+    {
+      "id": "battle_tower_card_orange_cat",
+      "path": "res://assets/generated/ui/battle_tower_card_orange_cat.png",
+      "prompt_summary": "Transparent Image2 orange cat fishbone cannon tower selector card with blank runtime label areas."
+    },
+    {
+      "id": "battle_tower_card_tabby_slow_cat_source",
+      "path": "res://assets/generated/ui/battle_tower_card_tabby_slow_cat_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the tabby yarn slow tower selector card."
+    },
+    {
+      "id": "battle_tower_card_tabby_slow_cat",
+      "path": "res://assets/generated/ui/battle_tower_card_tabby_slow_cat.png",
+      "prompt_summary": "Transparent Image2 tabby yarn slow tower selector card with blank runtime label areas."
+    },
+    {
+      "id": "battle_tower_card_selected_badge_source",
+      "path": "res://assets/generated/ui/battle_tower_card_selected_badge_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the golden paw selected-state tower card overlay."
+    },
+    {
+      "id": "battle_tower_card_selected_badge",
+      "path": "res://assets/generated/ui/battle_tower_card_selected_badge.png",
+      "prompt_summary": "Transparent Image2 golden paw selected-state overlay for battle tower selector cards."
+    },
+    {
       "id": "shop_overlay_design_reference",
       "path": "res://assets/generated/ui/shop_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."

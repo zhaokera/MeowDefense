@@ -31,6 +31,9 @@ const SettingsCloseButtonTexture := preload("res://assets/generated/ui/settings_
 const YarnTrapItemIconTexture := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap_field_effect.png")
 const BattleYarnTrapEmptyBurstTexture := preload("res://assets/generated/ui/battle_yarn_trap_empty_burst.png")
+const BattleTowerCardOrangeTexture := preload("res://assets/generated/ui/battle_tower_card_orange_cat.png")
+const BattleTowerCardTabbyTexture := preload("res://assets/generated/ui/battle_tower_card_tabby_slow_cat.png")
+const BattleTowerCardSelectedBadgeTexture := preload("res://assets/generated/ui/battle_tower_card_selected_badge.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
@@ -291,12 +294,13 @@ func _build_hud() -> void:
 
 	var tower_selector: HBoxContainer = HBoxContainer.new()
 	tower_selector.name = "TowerSelector"
-	tower_selector.position = Vector2(552, 572)
-	tower_selector.size = Vector2(352, 128)
-	tower_selector.add_theme_constant_override("separation", 18)
+	tower_selector.position = Vector2(538, 532)
+	tower_selector.size = Vector2(384, 176)
+	tower_selector.add_theme_constant_override("separation", 12)
 	_hud.add_child(tower_selector)
 	for tower_id: String in level.allowed_towers:
-		tower_selector.add_child(_tower_select_button(tower_id))
+		tower_selector.add_child(_tower_select_card(tower_id))
+	_update_tower_selector_state()
 
 	var pause_frame: TextureRect = _hud_texture_rect("BattlePauseFrame", BattlePauseButtonTexture, Vector2(1150, 14), Vector2(104, 104))
 	_hud.add_child(pause_frame)
@@ -973,20 +977,57 @@ func _try_build_at_screen_position(screen_position: Vector2) -> bool:
 	return true
 
 
-func _tower_select_button(tower_id: String) -> Button:
+func _tower_select_card(tower_id: String) -> Control:
 	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
+	var card_size := Vector2(174, 172)
+	var card: Control = Control.new()
+	card.name = _tower_card_container_name(tower_id)
+	card.custom_minimum_size = card_size
+	card.size = card_size
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var frame: TextureRect = _hud_texture_rect(_tower_card_frame_name(tower_id), _tower_card_texture(tower_id), Vector2.ZERO, card_size)
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(frame)
+
+	var selected_state: TextureRect = _hud_texture_rect(_tower_selected_state_name(tower_id), BattleTowerCardSelectedBadgeTexture, Vector2.ZERO, card_size)
+	selected_state.z_index = 2
+	selected_state.visible = tower_id == _selected_tower_id
+	card.add_child(selected_state)
+
+	var name_label: Label = _hud_label(str(stats.get("name", tower_id)))
+	name_label.name = _tower_label_name(tower_id, "NameLabel")
+	name_label.position = Vector2(22, 106)
+	name_label.size = Vector2(130, 28)
+	name_label.z_index = 3
+	name_label.add_theme_font_size_override("font_size", 16)
+	name_label.add_theme_color_override("font_color", Color(0.33, 0.14, 0.05))
+	name_label.add_theme_constant_override("outline_size", 2)
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	card.add_child(name_label)
+
+	var cost_label: Label = _hud_label("小鱼干 %d" % int(stats.get("cost", 0)))
+	cost_label.name = _tower_label_name(tower_id, "CostLabel")
+	cost_label.position = Vector2(28, 135)
+	cost_label.size = Vector2(118, 24)
+	cost_label.z_index = 3
+	cost_label.add_theme_font_size_override("font_size", 14)
+	cost_label.add_theme_color_override("font_color", Color(0.46, 0.22, 0.07))
+	cost_label.add_theme_constant_override("outline_size", 2)
+	card.add_child(cost_label)
+
 	var button: Button = Button.new()
 	button.name = _tower_button_name(tower_id)
-	button.text = "%s\n%d" % [str(stats.get("name", tower_id)), int(stats.get("cost", 0))]
-	button.custom_minimum_size = Vector2(156, 122)
-	button.add_theme_font_size_override("font_size", 18)
-	button.add_theme_color_override("font_color", Color(0.28, 0.13, 0.06))
-	button.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.86))
-	button.add_theme_constant_override("outline_size", 3)
+	button.text = ""
+	button.position = Vector2.ZERO
+	button.size = card_size
+	button.custom_minimum_size = card_size
+	button.z_index = 4
 	_make_button_transparent(button)
-	_attach_press_feedback(button, button)
+	_attach_press_feedback(button, card)
 	button.pressed.connect(func() -> void: _select_tower(tower_id))
-	return button
+	card.add_child(button)
+	return card
 
 
 func _select_tower(tower_id: String) -> void:
@@ -995,6 +1036,36 @@ func _select_tower(tower_id: String) -> void:
 	_selected_tower_id = tower_id
 	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
 	_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
+	_update_tower_selector_state()
+	_show_tower_card_selection_feedback(tower_id)
+
+
+func _update_tower_selector_state() -> void:
+	if _hud == null or level == null:
+		return
+	for tower_id: String in level.allowed_towers:
+		var selected: bool = tower_id == _selected_tower_id
+		var selected_state: TextureRect = _hud.find_child(_tower_selected_state_name(tower_id), true, false) as TextureRect
+		if selected_state != null:
+			selected_state.visible = selected
+		var frame: TextureRect = _hud.find_child(_tower_card_frame_name(tower_id), true, false) as TextureRect
+		if frame != null:
+			frame.modulate = Color.WHITE if selected else Color(0.82, 0.78, 0.70, 0.88)
+
+
+func _show_tower_card_selection_feedback(tower_id: String) -> void:
+	if _hud == null:
+		return
+	var selected_state: TextureRect = _hud.find_child(_tower_selected_state_name(tower_id), true, false) as TextureRect
+	if selected_state == null:
+		return
+	selected_state.pivot_offset = selected_state.size * 0.5
+	selected_state.scale = Vector2(0.88, 0.88)
+	selected_state.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var tween: Tween = selected_state.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(selected_state, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(selected_state, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func _toggle_battle_speed() -> void:
@@ -1148,6 +1219,32 @@ func _tower_button_name(tower_id: String) -> String:
 	if tower_id == "tabby_slow_cat":
 		return "SelectTowerTabbySlowCatButton"
 	return "SelectTower%sButton" % tower_id.capitalize().replace("_", "")
+
+
+func _tower_card_container_name(tower_id: String) -> String:
+	if tower_id == "orange_cat":
+		return "TowerCardOrangeCat"
+	if tower_id == "tabby_slow_cat":
+		return "TowerCardTabbySlowCat"
+	return "TowerCard%s" % tower_id.capitalize().replace("_", "")
+
+
+func _tower_card_frame_name(tower_id: String) -> String:
+	return "%sFrame" % _tower_card_container_name(tower_id)
+
+
+func _tower_selected_state_name(tower_id: String) -> String:
+	return "%sSelectedState" % _tower_card_container_name(tower_id)
+
+
+func _tower_label_name(tower_id: String, suffix: String) -> String:
+	return "%s%s" % [_tower_card_container_name(tower_id), suffix]
+
+
+func _tower_card_texture(tower_id: String) -> Texture2D:
+	if tower_id == "tabby_slow_cat":
+		return BattleTowerCardTabbyTexture
+	return BattleTowerCardOrangeTexture
 
 
 func _on_tower_fired(tower: Node2D, target: Node2D) -> void:
