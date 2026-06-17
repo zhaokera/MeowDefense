@@ -4,6 +4,7 @@ class_name CatDefenseEnemy
 const ENEMY_HEALTH_BAR_UNDER := preload("res://assets/generated/ui/enemy_health_bar_under.png")
 const ENEMY_HEALTH_BAR_FILL := preload("res://assets/generated/ui/enemy_health_bar_fill.png")
 const ENEMY_HEALTH_BAR_DANGER_FILL := preload("res://assets/generated/ui/enemy_health_bar_danger_fill.png")
+const ENEMY_FALLBACK_SHEET := preload("res://assets/generated/enemies/mouse_basic_sheet.png")
 const ENEMY_HEALTH_BAR_ROOT_POS := Vector2(-58, -62)
 const ENEMY_HEALTH_BAR_FRAME_SIZE := Vector2(116, 25)
 const ENEMY_HEALTH_BAR_FILL_POS := Vector2(22, 6)
@@ -174,12 +175,12 @@ func _apply_visuals() -> void:
 	if not texture_path.is_empty() and ResourceLoader.exists(texture_path):
 		_sprite.texture = load(texture_path)
 		_uses_sprite_sheet = texture_path.ends_with("_sheet.png")
-		_sprite.region_enabled = _uses_sprite_sheet
-		_set_sprite_frame(0)
-		_apply_sprite_scale()
 	else:
-		_sprite.texture = null
-	queue_redraw()
+		_sprite.texture = ENEMY_FALLBACK_SHEET
+		_uses_sprite_sheet = true
+	_sprite.region_enabled = _uses_sprite_sheet
+	_set_sprite_frame(0)
+	_apply_sprite_scale()
 
 
 func _update_animation(delta: float) -> void:
@@ -244,12 +245,3 @@ func _pulse_hp_bar() -> void:
 	_hp_bar_root.scale = Vector2(1.08, 1.08)
 	var tween: Tween = create_tween()
 	tween.tween_property(_hp_bar_root, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-
-
-func _draw() -> void:
-	if _sprite != null and _sprite.texture != null:
-		return
-	draw_circle(Vector2.ZERO, 20.0, accent)
-	draw_circle(Vector2(-7, -7), 4.0, Color(0.14, 0.1, 0.08))
-	draw_circle(Vector2(7, -7), 4.0, Color(0.14, 0.1, 0.08))
-	draw_arc(Vector2(0, 3), 8.0, 0.2, 2.9, 16, Color(0.18, 0.11, 0.08), 2.0)

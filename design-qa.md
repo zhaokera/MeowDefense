@@ -520,3 +520,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_range_aura_tests.gd` to verify the Image2 aura sprite, manifest entries, readable scale, z-order, and no `draw_arc`/`draw_circle`/`draw_line` fallback in `tower.gd`.
 - Added `/Users/zhaok/cat/tests/capture_tower_range_aura.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_range_aura.png`.
 - Verified `/Users/zhaok/cat/artifacts/tower_range_aura.png` visually in battle and passed the targeted tower range aura check.
+
+**Image2 Enemy Fallback**
+- Enemy visual fallback now uses `/Users/zhaok/cat/assets/generated/enemies/mouse_basic_sheet.png` instead of drawing a circle face when a configured enemy texture is missing.
+- Removed `enemy.gd` code-drawn fallback circles and mouth arc so even error/future-content paths stay on generated sprite art.
+- Added `/Users/zhaok/cat/tests/run_enemy_fallback_asset_tests.gd` to verify missing enemy textures still render a sprite-sheet `Sprite2D`, use the Image2 mouse sheet, keep readable scale, and contain no `draw_circle`/`draw_arc` fallback.
+- Added `/Users/zhaok/cat/tests/capture_enemy_fallback_asset.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_fallback_asset.png` on the generated level background.
+- Verified `/Users/zhaok/cat/artifacts/enemy_fallback_asset.png` visually and passed targeted fallback plus normal enemy animation checks.
