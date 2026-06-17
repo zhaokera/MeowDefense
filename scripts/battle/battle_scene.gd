@@ -45,6 +45,7 @@ const BuildSuccessCatPawPuffTexture := preload("res://assets/generated/effects/b
 const TowerUpgradeCatStarburstTexture := preload("res://assets/generated/effects/tower_upgrade_cat_starburst.png")
 const TowerSellFishRefundBurstTexture := preload("res://assets/generated/effects/tower_sell_fish_refund_burst.png")
 const TowerFireFishboneMuzzleFlashTexture := preload("res://assets/generated/effects/tower_fire_fishbone_muzzle_flash.png")
+const FallbackBattleBackgroundTexture := preload("res://assets/generated/backgrounds/level_001_meadow.png")
 
 @export var level_path: String = "res://data/levels/level_001.json"
 
@@ -204,16 +205,10 @@ func _build_world_nodes() -> void:
 
 
 func _build_level_visuals() -> void:
+	var background_texture: Texture2D = FallbackBattleBackgroundTexture
 	if not str(level.background).is_empty() and ResourceLoader.exists(str(level.background)):
-		_background_sprite = Sprite2D.new()
-		_background_sprite.texture = load(str(level.background))
-		_background_sprite.centered = false
-		_background_sprite.position = Vector2.ZERO
-		var texture_size: Vector2 = _background_sprite.texture.get_size()
-		if texture_size.x > 0.0 and texture_size.y > 0.0:
-			_background_sprite.scale = Vector2(1280.0 / texture_size.x, 720.0 / texture_size.y)
-		_background_sprite.z_index = -20
-		_world.add_child(_background_sprite)
+		background_texture = load(str(level.background))
+	_add_battle_background(background_texture)
 
 	_base_node = Node2D.new()
 	_base_node.name = "FishBase"
@@ -226,6 +221,20 @@ func _build_level_visuals() -> void:
 		_base_sprite.texture = load(str(level.base_texture))
 		_base_sprite.scale = Vector2(0.08, 0.08)
 	_base_node.add_child(_base_sprite)
+
+
+func _add_battle_background(texture: Texture2D) -> void:
+	_background_sprite = Sprite2D.new()
+	_background_sprite.name = "BattleBackground"
+	_background_sprite.texture = texture
+	_background_sprite.centered = false
+	_background_sprite.position = Vector2.ZERO
+	if texture != null:
+		var texture_size: Vector2 = texture.get_size()
+		if texture_size.x > 0.0 and texture_size.y > 0.0:
+			_background_sprite.scale = Vector2(1280.0 / texture_size.x, 720.0 / texture_size.y)
+	_background_sprite.z_index = -20
+	_world.add_child(_background_sprite)
 
 
 func _build_slots() -> void:
@@ -1615,19 +1624,3 @@ func _update_base_animation(delta: float) -> void:
 	_base_node.scale = Vector2(pulse, pulse)
 	if _base_sprite != null:
 		_base_sprite.modulate = Color(1.0, 0.65, 0.60) if _base_hit_timer > 0.0 or low_hp else Color.WHITE
-
-
-func _draw() -> void:
-	if level == null:
-		return
-	if _background_sprite == null or _background_sprite.texture == null:
-		draw_rect(Rect2(Vector2.ZERO, Vector2(1280, 720)), Color(0.66, 0.86, 0.52))
-	if level.path_points.size() >= 2:
-		for i: int in range(level.path_points.size() - 1):
-			var a: Vector2 = level.path_points[i]
-			var b: Vector2 = level.path_points[i + 1]
-			draw_line(a, b, Color(0.44, 0.25, 0.10, 0.20), 42.0, true)
-			draw_line(a, b, Color(1.0, 0.86, 0.52, 0.20), 26.0, true)
-		var goal: Vector2 = level.path_points[level.path_points.size() - 1]
-		draw_circle(goal, 42.0, Color(0.96, 0.62, 0.34))
-		draw_circle(goal, 28.0, Color(1.0, 0.86, 0.48))

@@ -527,3 +527,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_enemy_fallback_asset_tests.gd` to verify missing enemy textures still render a sprite-sheet `Sprite2D`, use the Image2 mouse sheet, keep readable scale, and contain no `draw_circle`/`draw_arc` fallback.
 - Added `/Users/zhaok/cat/tests/capture_enemy_fallback_asset.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_fallback_asset.png` on the generated level background.
 - Verified `/Users/zhaok/cat/artifacts/enemy_fallback_asset.png` visually and passed targeted fallback plus normal enemy animation checks.
+
+**Image2 Battle Background Fallback**
+- Battle scenes now always create `BattleBackground` as a `Sprite2D`; if a level config references a missing background, it falls back to `/Users/zhaok/cat/assets/generated/backgrounds/level_001_meadow.png`.
+- Removed the old `battle_scene.gd` `_draw()` fallback that painted grass, path lines, and base circles with code.
+- Added `/Users/zhaok/cat/tests/run_battle_background_fallback_tests.gd` to verify missing-background levels still render an Image2 background and that `battle_scene.gd` no longer contains `draw_rect`/`draw_line`/`draw_circle` fallback drawing.
+- Added `/Users/zhaok/cat/tests/capture_battle_background_fallback.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_background_fallback.png`.
+- Verified `/Users/zhaok/cat/artifacts/battle_background_fallback.png` visually and passed the targeted fallback, playthrough, and scene smoke checks.
