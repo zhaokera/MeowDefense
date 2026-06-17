@@ -359,6 +359,41 @@
       "prompt_summary": "Image2 transparent fish reward burst used when defeated enemies grant fish snacks."
     },
     {
+      "id": "enemy_health_bar_design_reference",
+      "path": "res://assets/generated/ui/enemy_health_bar_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle design reference showing object-like enemy health bars above moving enemies."
+    },
+    {
+      "id": "enemy_health_bar_under_source",
+      "path": "res://assets/generated/ui/enemy_health_bar_under_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the empty enemy health bar backplate."
+    },
+    {
+      "id": "enemy_health_bar_under",
+      "path": "res://assets/generated/ui/enemy_health_bar_under.png",
+      "prompt_summary": "Transparent Image2 under texture for enemy TextureProgressBar health UI."
+    },
+    {
+      "id": "enemy_health_bar_fill_source",
+      "path": "res://assets/generated/ui/enemy_health_bar_fill_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the healthy green enemy health fill."
+    },
+    {
+      "id": "enemy_health_bar_fill",
+      "path": "res://assets/generated/ui/enemy_health_bar_fill.png",
+      "prompt_summary": "Transparent Image2 healthy fill texture for enemy TextureProgressBar health UI."
+    },
+    {
+      "id": "enemy_health_bar_danger_fill_source",
+      "path": "res://assets/generated/ui/enemy_health_bar_danger_fill_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the low-health red enemy health fill."
+    },
+    {
+      "id": "enemy_health_bar_danger_fill",
+      "path": "res://assets/generated/ui/enemy_health_bar_danger_fill.png",
+      "prompt_summary": "Transparent Image2 danger fill texture used when enemy health is low."
+    },
+    {
       "id": "battle_pause_menu_design_reference",
       "path": "res://assets/generated/ui/battle_pause_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen pause menu design reference used to restore the battle pause overlay."

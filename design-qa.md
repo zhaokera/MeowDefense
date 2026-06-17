@@ -39,8 +39,6 @@
 
 final result: passed
 
----
-
 **Five-Level Campaign QA**
 - Level configs: `/Users/zhaok/cat/data/levels/level_001.json` through `/Users/zhaok/cat/data/levels/level_005.json`
 - Asset manifest: `/Users/zhaok/cat/assets/generated/assets_manifest.json`
@@ -493,3 +491,14 @@ final result: passed
 - Verified `/Users/zhaok/cat/artifacts/hamster_runner_animation.png` visually against the Image2 reference, then passed the targeted hamster/tank/fast-enemy/playthrough/unit checks and the full `tests/run_*.gd` regression suite with 44 clean Godot tests.
 
 final result: passed
+
+---
+
+**Image2 Enemy Health Bar**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/enemy_health_bar_design_reference.png` as the full-screen Image2 battle reference for object-like enemy health bars.
+- Generated chroma-key source assets and transparent runtime textures for `/Users/zhaok/cat/assets/generated/ui/enemy_health_bar_under.png`, `/Users/zhaok/cat/assets/generated/ui/enemy_health_bar_fill.png`, and `/Users/zhaok/cat/assets/generated/ui/enemy_health_bar_danger_fill.png`.
+- Enemy health UI now uses an Image2 frame `TextureRect` with paw badge and fish-bone cap plus an inner `TextureProgressBar` for healthy/danger fill states, avoiding the old code-drawn `ColorRect` and preventing the fill from covering decorative caps.
+- Damaged enemies pulse the full Image2 health-bar group and switch to the danger fill below 40% HP.
+- Added `/Users/zhaok/cat/tests/run_enemy_health_bar_asset_tests.gd` to verify Image2 frame/fill paths, no `ColorRect` health bar, readable battle-scale dimensions, low-health danger state, and manifest entries.
+- Added `/Users/zhaok/cat/tests/capture_enemy_health_bar.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_health_bar.png`.
+- Verified `/Users/zhaok/cat/artifacts/enemy_health_bar.png` visually against the Image2 reference, then passed the targeted enemy health, hit feedback, enemy animation, build input, playthrough, menu, and scene smoke checks.
