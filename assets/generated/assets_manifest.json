@@ -235,6 +235,21 @@
       "id": "tower_fire_fishbone_muzzle_flash",
       "path": "res://assets/generated/effects/tower_fire_fishbone_muzzle_flash.png",
       "prompt_summary": "Image2 transparent fishbone muzzle flash used when a cat tower fires."
+    },
+    {
+      "id": "tower_projectile_design_reference",
+      "path": "res://assets/generated/effects/tower_projectile_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle design reference showing a cat fishbone projectile flying from tower to enemy."
+    },
+    {
+      "id": "tower_fishbone_projectile_source",
+      "path": "res://assets/generated/effects/tower_fishbone_projectile_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the tower fishbone projectile."
+    },
+    {
+      "id": "tower_fishbone_projectile",
+      "path": "res://assets/generated/effects/tower_fishbone_projectile.png",
+      "prompt_summary": "Image2 transparent fishbone projectile sprite used while a cat tower shot travels toward an enemy."
     }
   ],
   "ui": [

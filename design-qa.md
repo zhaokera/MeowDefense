@@ -502,3 +502,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_enemy_health_bar_asset_tests.gd` to verify Image2 frame/fill paths, no `ColorRect` health bar, readable battle-scale dimensions, low-health danger state, and manifest entries.
 - Added `/Users/zhaok/cat/tests/capture_enemy_health_bar.gd` to regenerate `/Users/zhaok/cat/artifacts/enemy_health_bar.png`.
 - Verified `/Users/zhaok/cat/artifacts/enemy_health_bar.png` visually against the Image2 reference, then passed the targeted enemy health, hit feedback, enemy animation, build input, playthrough, menu, and scene smoke checks.
+
+**Image2 Tower Projectile**
+- Generated and archived `/Users/zhaok/cat/assets/generated/effects/tower_projectile_design_reference.png` as the full-screen Image2 battle reference for a cat fishbone shot traveling from tower to enemy.
+- Generated `/Users/zhaok/cat/assets/generated/effects/tower_fishbone_projectile_source.png`, then removed the chroma-key background and cropped the transparent runtime sprite into `/Users/zhaok/cat/assets/generated/effects/tower_fishbone_projectile.png`.
+- Tower fire now spawns `Image2ProjectileN` as a textured `Sprite2D` traveling from the tower muzzle toward the target, while the old `projectile.gd` code-drawn circle has been removed.
+- The projectile keeps damage application disabled in the current tower signal path, so existing tower balance stays intact while the shot becomes visible and animated.
+- Updated `/Users/zhaok/cat/tests/run_tower_fire_feedback_tests.gd` to verify real tower attack behavior, Image2 muzzle feedback, Image2 projectile texture, rotation toward target, manifest entries, and no `draw_circle` fallback.
+- Updated `/Users/zhaok/cat/tests/capture_tower_fire_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_fire_feedback.png` with a clearer in-flight projectile frame.
+- Verified `/Users/zhaok/cat/artifacts/tower_fire_feedback.png` visually against the Image2 projectile reference and passed the targeted tower fire feedback check.

@@ -10,6 +10,7 @@ const TowerStatsScript := preload("res://scripts/core/tower_stats.gd")
 const EnemyScript := preload("res://scripts/battle/enemy.gd")
 const TowerScript := preload("res://scripts/battle/tower.gd")
 const BuildSlotScript := preload("res://scripts/battle/build_slot.gd")
+const ProjectileScript := preload("res://scripts/battle/projectile.gd")
 const BattleHudTopBarTexture := preload("res://assets/generated/ui/battle_hud_top_bar.png")
 const BattleHudBottomDockTexture := preload("res://assets/generated/ui/battle_hud_bottom_dock.png")
 const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_pause_button.png")
@@ -94,6 +95,7 @@ var _build_success_feedback_index: int = 0
 var _tower_upgrade_feedback_index: int = 0
 var _tower_sell_feedback_index: int = 0
 var _tower_fire_feedback_index: int = 0
+var _projectile_index: int = 0
 
 
 func _ready() -> void:
@@ -125,6 +127,7 @@ func start_level(path: String) -> void:
 	_tower_upgrade_feedback_index = 0
 	_tower_sell_feedback_index = 0
 	_tower_fire_feedback_index = 0
+	_projectile_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -870,6 +873,17 @@ func _show_tower_fire_feedback(tower_anchor: Vector2, target_anchor: Vector2) ->
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.34)
 
 
+func _spawn_tower_projectile(tower_anchor: Vector2, target: Node2D) -> void:
+	if _world == null or target == null or not is_instance_valid(target):
+		return
+	_projectile_index += 1
+	var projectile: Sprite2D = ProjectileScript.new()
+	projectile.name = "Image2Projectile%d" % _projectile_index
+	projectile.global_position = tower_anchor + Vector2(0, -28)
+	projectile.configure(target, 0.0, Color.WHITE, false)
+	_world.add_child(projectile)
+
+
 func _show_build_success_feedback(world_anchor: Vector2) -> void:
 	if _world == null:
 		return
@@ -1252,6 +1266,7 @@ func _on_tower_fired(tower: Node2D, target: Node2D) -> void:
 		return
 	if tower != null and is_instance_valid(tower):
 		_show_tower_fire_feedback(tower.global_position, target.global_position)
+		_spawn_tower_projectile(tower.global_position, target)
 	_show_enemy_hit_feedback(target.global_position)
 
 

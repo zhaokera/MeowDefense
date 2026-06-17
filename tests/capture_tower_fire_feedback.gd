@@ -35,7 +35,7 @@ func _capture() -> void:
 	var enemy: Node2D = EnemyScript.new()
 	enemy.set("max_hp", 20.0)
 	enemy.set("hp", 20.0)
-	enemy.global_position = tower.global_position + Vector2(82, -8)
+	enemy.global_position = tower.global_position + Vector2(180, -8)
 	battle.enemies.append(enemy)
 	var enemy_layer: Node = battle.get_node_or_null("World/Enemies")
 	if enemy_layer == null:
@@ -45,7 +45,7 @@ func _capture() -> void:
 	enemy_layer.add_child(enemy)
 
 	battle.simulate_step(0.12)
-	for i: int in range(4):
+	for i: int in range(7):
 		await process_frame
 
 	var image: Image = root.get_texture().get_image()
