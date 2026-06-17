@@ -250,6 +250,21 @@
       "id": "tower_fishbone_projectile",
       "path": "res://assets/generated/effects/tower_fishbone_projectile.png",
       "prompt_summary": "Image2 transparent fishbone projectile sprite used while a cat tower shot travels toward an enemy."
+    },
+    {
+      "id": "tower_range_aura_design_reference",
+      "path": "res://assets/generated/effects/tower_range_aura_design_reference.png",
+      "prompt_summary": "Full-screen Image2 battle reference composite for replacing the code-drawn tower range arc with a warm cat-paw aura."
+    },
+    {
+      "id": "tower_range_aura_source",
+      "path": "res://assets/generated/effects/tower_range_aura_source.png",
+      "prompt_summary": "Image2 source art for the circular cat-paw/yarn battlefield aura used as tower range feedback."
+    },
+    {
+      "id": "tower_range_aura",
+      "path": "res://assets/generated/effects/tower_range_aura.png",
+      "prompt_summary": "Image2 transparent tower range aura rendered behind cat towers instead of a code-drawn arc."
     }
   ],
   "ui": [

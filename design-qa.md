@@ -511,3 +511,12 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/run_tower_fire_feedback_tests.gd` to verify real tower attack behavior, Image2 muzzle feedback, Image2 projectile texture, rotation toward target, manifest entries, and no `draw_circle` fallback.
 - Updated `/Users/zhaok/cat/tests/capture_tower_fire_feedback.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_fire_feedback.png` with a clearer in-flight projectile frame.
 - Verified `/Users/zhaok/cat/artifacts/tower_fire_feedback.png` visually against the Image2 projectile reference and passed the targeted tower fire feedback check.
+
+**Image2 Tower Range Aura**
+- Added `/Users/zhaok/cat/assets/generated/effects/tower_range_aura_design_reference.png` as the full-screen battle reference for replacing the old code-drawn tower range arc.
+- Derived `/Users/zhaok/cat/assets/generated/effects/tower_range_aura_source.png` and `/Users/zhaok/cat/assets/generated/effects/tower_range_aura.png` from existing Image2 cat-paw/yarn battlefield effect art, then tuned the runtime alpha for range feedback.
+- Tower visuals now create `TowerRangeAura` as a textured `Sprite2D` behind the tower, scaled from `attack_range` and given a subtle breathing alpha/scale motion.
+- Removed the tower `_draw()` fallback circles, lines, and range arc so player-visible tower/range art comes from generated assets instead of code drawing.
+- Added `/Users/zhaok/cat/tests/run_tower_range_aura_tests.gd` to verify the Image2 aura sprite, manifest entries, readable scale, z-order, and no `draw_arc`/`draw_circle`/`draw_line` fallback in `tower.gd`.
+- Added `/Users/zhaok/cat/tests/capture_tower_range_aura.gd` to regenerate `/Users/zhaok/cat/artifacts/tower_range_aura.png`.
+- Verified `/Users/zhaok/cat/artifacts/tower_range_aura.png` visually in battle and passed the targeted tower range aura check.

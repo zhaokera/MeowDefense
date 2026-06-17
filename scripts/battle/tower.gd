@@ -3,6 +3,8 @@ class_name CatDefenseTower
 
 signal fired(tower: Node2D, target: Node2D)
 
+const TowerRangeAuraTexture := preload("res://assets/generated/effects/tower_range_aura.png")
+
 var tower_id: String = ""
 var display_name: String = ""
 var cost: int = 0
@@ -17,6 +19,8 @@ var level: int = 1
 var _cooldown: float = 0.0
 var _visual_root: Node2D
 var _sprite: Sprite2D
+var _range_aura: Sprite2D
+var _range_aura_base_scale: Vector2 = Vector2.ONE
 var _visual_time: float = 0.0
 var _recoil_timer: float = 0.0
 var _uses_sprite_sheet: bool = false
@@ -91,6 +95,7 @@ func upgrade() -> void:
 	fire_interval = max(0.25, fire_interval * 0.92)
 	scale = Vector2.ONE * (1.0 + float(level - 1) * 0.08)
 	_recoil_timer = 0.24
+	_apply_range_aura_scale()
 
 
 func _process(delta: float) -> void:
@@ -102,6 +107,7 @@ func has_animation_support() -> bool:
 
 
 func _apply_visuals() -> void:
+	_ensure_range_aura()
 	if _visual_root == null:
 		_visual_root = Node2D.new()
 		_visual_root.name = "AnimatedTowerVisual"
@@ -119,7 +125,6 @@ func _apply_visuals() -> void:
 			_visual_root.add_child(_sprite)
 	else:
 		_sprite.texture = null
-	queue_redraw()
 
 
 func _update_animation(delta: float) -> void:
@@ -133,6 +138,32 @@ func _update_animation(delta: float) -> void:
 		var recoil_offset: float = -8.0 * (_recoil_timer / 0.16) if _recoil_timer > 0.0 else 0.0
 		_visual_root.position = Vector2(recoil_offset, sin(_visual_time * 4.0) * 1.5)
 		_visual_root.scale = Vector2(breath, breath)
+	if _range_aura != null:
+		var aura_breath: float = 1.0 + sin(_visual_time * 2.2) * 0.018
+		_range_aura.scale = _range_aura_base_scale * aura_breath
+		_range_aura.modulate.a = 0.52 + sin(_visual_time * 2.2) * 0.08
+
+
+func _ensure_range_aura() -> void:
+	if _range_aura == null:
+		_range_aura = Sprite2D.new()
+		_range_aura.name = "TowerRangeAura"
+		_range_aura.texture = TowerRangeAuraTexture
+		_range_aura.centered = true
+		_range_aura.z_index = -5
+		add_child(_range_aura)
+	_apply_range_aura_scale()
+
+
+func _apply_range_aura_scale() -> void:
+	if _range_aura == null or _range_aura.texture == null:
+		return
+	var texture_size: Vector2 = _range_aura.texture.get_size()
+	var diameter: float = attack_range * 2.0
+	var ratio: float = diameter / max(1.0, texture_size.x)
+	_range_aura_base_scale = Vector2(ratio, ratio)
+	_range_aura.scale = _range_aura_base_scale
+	_range_aura.modulate = Color(1.0, 1.0, 1.0, 0.54)
 
 
 func _set_sprite_frame(frame: int) -> void:
@@ -153,13 +184,3 @@ func _apply_sprite_scale() -> void:
 	var desired_height: float = 96.0
 	var ratio: float = desired_height / max(1.0, frame_size.y)
 	_sprite.scale = Vector2(ratio, ratio)
-
-
-func _draw() -> void:
-	if _sprite == null or _sprite.texture == null:
-		draw_circle(Vector2.ZERO, 27.0, Color(1.0, 0.82, 0.48))
-		draw_circle(Vector2.ZERO, 20.0, accent)
-		draw_circle(Vector2(-8, -7), 3.0, Color(0.12, 0.08, 0.05))
-		draw_circle(Vector2(8, -7), 3.0, Color(0.12, 0.08, 0.05))
-		draw_line(Vector2(-10, 8), Vector2(10, 8), Color(0.35, 0.18, 0.1), 3.0)
-	draw_arc(Vector2.ZERO, attack_range, 0.0, TAU, 80, Color(1.0, 0.75, 0.25, 0.13), 2.0)
