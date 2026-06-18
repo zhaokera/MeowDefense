@@ -776,3 +776,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_build_slot_affordability_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_affordability_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/build_slot_affordability_feedback.png`; GUI capture was used for visual evidence.
 - Passed build slot affordability feedback, build slot affordability preview, battle resource feedback, build slot tower ghost, build slot range preview, build input, tower selector card, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 88 tests`.
+
+**Image2 Build Slot Manage Badge**
+- Occupied build slots now show a small HUD-layer Image2 paw badge using `/Users/zhaok/cat/assets/generated/ui/album_paw_badge.png`, making the tower management entry visible after building.
+- Tapping an occupied slot still opens the Image2 tower action panel and now pulses the local manage badge with `image2_slot_manage_feedback`; selling hides the badge and restores the buildable slot state.
+- The badge is a transparent HUD texture and does not block the existing transparent build/manage hit area.
+- Added `/Users/zhaok/cat/tests/run_build_slot_manage_badge_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_manage_badge.gd`.
+- Captured `/Users/zhaok/cat/artifacts/build_slot_manage_badge.png`; GUI capture was used for visual evidence.
+- Passed build slot manage badge, tower action, tower sell action exit animation, build input, build slot affordability feedback, build slot affordability preview, build slot tower ghost, build slot range preview, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 89 tests`.

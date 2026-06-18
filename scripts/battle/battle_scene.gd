@@ -40,6 +40,7 @@ const BattleTowerCardOrangeTexture := preload("res://assets/generated/ui/battle_
 const BattleTowerCardTabbyTexture := preload("res://assets/generated/ui/battle_tower_card_tabby_slow_cat.png")
 const BattleTowerCardSelectedBadgeTexture := preload("res://assets/generated/ui/battle_tower_card_selected_badge.png")
 const BattleTowerCardInsufficientFishStampTexture := preload("res://assets/generated/ui/battle_tower_card_insufficient_fish_stamp.png")
+const BuildSlotManageBadgeTexture := preload("res://assets/generated/ui/album_paw_badge.png")
 const TowerMaxLevelStampTexture := preload("res://assets/generated/ui/tower_max_level_stamp.png")
 const TowerMaxLevelBurstTexture := preload("res://assets/generated/ui/tower_max_level_burst.png")
 const TowerRangeAuraTexture := preload("res://assets/generated/effects/tower_range_aura.png")
@@ -533,6 +534,7 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	if finished:
 		return
 	if slot.occupied:
+		_show_build_slot_manage_badge_feedback(slot)
 		_show_tower_action_overlay(slot)
 		return
 	var tower_id: String = _selected_tower_id
@@ -574,6 +576,12 @@ func _build_slot_buttons() -> void:
 		var visual: TextureRect = _hud_texture_rect("BuildSlot%dVisual" % index, BattleBuildSlotMarkerTexture, slot.position - Vector2(42, 42), Vector2(84, 84))
 		_slot_buttons.add_child(visual)
 
+		var manage_badge: TextureRect = _hud_texture_rect(_build_slot_manage_badge_name(index), BuildSlotManageBadgeTexture, visual.position + Vector2(50, -12), Vector2(44, 44))
+		manage_badge.z_index = 4
+		manage_badge.visible = false
+		manage_badge.set_meta("image2_slot_manage_base_scale", manage_badge.scale)
+		_slot_buttons.add_child(manage_badge)
+
 		var button: Button = Button.new()
 		button.name = "BuildSlot%dButton" % index
 		button.text = ""
@@ -604,6 +612,9 @@ func _mark_slot_button_occupied(slot: Node2D) -> void:
 			if visual != null:
 				visual.modulate = Color(0.55, 0.47, 0.36, 0.55)
 				visual.scale = Vector2(0.82, 0.82)
+			var manage_badge: TextureRect = _slot_buttons.get_node_or_null(NodePath(button.name.replace("Button", "ManageBadge"))) as TextureRect
+			if manage_badge != null:
+				manage_badge.visible = true
 			_update_build_slot_range_previews()
 			_update_build_slot_tower_ghosts()
 			return
@@ -624,6 +635,12 @@ func _mark_slot_button_empty(slot: Node2D) -> void:
 			if visual != null:
 				visual.modulate = Color.WHITE
 				visual.scale = Vector2.ONE
+			var manage_badge: TextureRect = _slot_buttons.get_node_or_null(NodePath(button.name.replace("Button", "ManageBadge"))) as TextureRect
+			if manage_badge != null:
+				manage_badge.visible = false
+				manage_badge.scale = manage_badge.get_meta("image2_slot_manage_base_scale", Vector2.ONE) as Vector2
+				manage_badge.rotation = 0.0
+				manage_badge.set_meta("image2_slot_manage_feedback", false)
 			_update_build_slot_range_previews(true)
 			_update_build_slot_tower_ghosts(true)
 			return
@@ -725,6 +742,10 @@ func _build_slot_tower_ghost_name(index: int) -> String:
 	return "BuildSlot%dTowerGhost" % index
 
 
+func _build_slot_manage_badge_name(index: int) -> String:
+	return "BuildSlot%dManageBadge" % index
+
+
 func _build_slot_affordability_stamp_name(index: int) -> String:
 	return "BuildSlot%dAffordabilityStamp" % index
 
@@ -806,6 +827,33 @@ func _show_build_slot_affordability_press_feedback(slot: Node2D) -> void:
 	tween.chain().tween_callback(func() -> void:
 		if stamp != null and is_instance_valid(stamp):
 			stamp.set_meta("image2_slot_affordability_feedback", false)
+	)
+
+
+func _show_build_slot_manage_badge_feedback(slot: Node2D) -> void:
+	if _slot_buttons == null:
+		return
+	var index: int = _build_slot_index(slot)
+	if index <= 0:
+		return
+	var manage_badge: TextureRect = _slot_buttons.get_node_or_null(NodePath(_build_slot_manage_badge_name(index))) as TextureRect
+	if manage_badge == null:
+		return
+	manage_badge.visible = true
+	manage_badge.set_meta("image2_slot_manage_feedback", true)
+	manage_badge.pivot_offset = manage_badge.size * 0.5
+	var base_scale: Vector2 = manage_badge.get_meta("image2_slot_manage_base_scale", Vector2.ONE) as Vector2
+	manage_badge.scale = base_scale * 1.28
+	manage_badge.rotation = -0.10
+	var tween: Tween = manage_badge.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(manage_badge, "scale", base_scale * 1.08, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(manage_badge, "rotation", 0.06, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_property(manage_badge, "scale", base_scale, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(manage_badge, "rotation", 0.0, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(func() -> void:
+		if manage_badge != null and is_instance_valid(manage_badge):
+			manage_badge.set_meta("image2_slot_manage_feedback", false)
 	)
 
 
