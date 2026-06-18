@@ -992,6 +992,21 @@
       "id": "battle_speed_feedback_burst",
       "path": "res://assets/generated/ui/battle_speed_feedback_burst.png",
       "prompt_summary": "Project-bound transparent Image2-derived blue-gold burst used when the player toggles battle speed."
+    },
+    {
+      "id": "battle_wave_clear_feedback_design_reference",
+      "path": "res://assets/generated/ui/battle_wave_clear_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing a gold fish-and-paw burst when a wave is cleared."
+    },
+    {
+      "id": "battle_wave_clear_burst_source",
+      "path": "res://assets/generated/ui/battle_wave_clear_burst_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 battle HUD, reward, tap, and wave art for wave-clear feedback."
+    },
+    {
+      "id": "battle_wave_clear_burst",
+      "path": "res://assets/generated/ui/battle_wave_clear_burst.png",
+      "prompt_summary": "Project-bound transparent Image2-derived gold fish-and-paw burst used after a wave is cleared."
     }
   ]
 }

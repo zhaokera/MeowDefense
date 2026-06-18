@@ -17,6 +17,7 @@ const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_paus
 const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
 const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
 const BattleWaveRushBurstTexture := preload("res://assets/generated/ui/battle_wave_rush_burst.png")
+const BattleWaveClearBurstTexture := preload("res://assets/generated/ui/battle_wave_clear_burst.png")
 const BattleSpeedButtonTexture := preload("res://assets/generated/ui/battle_speed_button.png")
 const BattleSpeedFeedbackBurstTexture := preload("res://assets/generated/ui/battle_speed_feedback_burst.png")
 const BattlePauseMenuPanelTexture := preload("res://assets/generated/ui/battle_pause_menu_panel.png")
@@ -68,6 +69,7 @@ var finished: bool = false
 var enemies: Array[Node2D] = []
 var towers: Array[Node2D] = []
 var _wave_states: Array[Dictionary] = []
+var _cleared_wave_indices: Dictionary = {}
 
 var _world: Node2D
 var _slot_layer: Node2D
@@ -111,6 +113,7 @@ var _tower_fire_feedback_index: int = 0
 var _projectile_index: int = 0
 var _battle_tap_feedback_index: int = 0
 var _wave_rush_feedback_index: int = 0
+var _wave_clear_feedback_index: int = 0
 var _battle_speed_feedback_index: int = 0
 
 
@@ -132,6 +135,7 @@ func start_level(path: String) -> void:
 	towers.clear()
 	_tower_by_slot.clear()
 	_wave_states.clear()
+	_cleared_wave_indices.clear()
 	_selected_tower_id = level.allowed_towers[0] if not level.allowed_towers.is_empty() else "orange_cat"
 	_battle_speed_multiplier = 1.0
 	_yarn_trap_effect_index = 0
@@ -147,6 +151,7 @@ func start_level(path: String) -> void:
 	_tower_fire_feedback_index = 0
 	_projectile_index = 0
 	_wave_rush_feedback_index = 0
+	_wave_clear_feedback_index = 0
 	_battle_speed_feedback_index = 0
 
 	_build_world_nodes()
@@ -512,15 +517,17 @@ func _spawn_due_enemies() -> void:
 			continue
 		if elapsed < float(state["next_time"]):
 			continue
-		_spawn_enemy(str(state["enemy"]))
+		_spawn_enemy(str(state["enemy"]), int(state.get("index", 1)))
 		state["remaining"] = int(state["remaining"]) - 1
 		state["next_time"] = float(state["next_time"]) + float(state["interval"])
 
 
-func _spawn_enemy(enemy_id: String) -> void:
+func _spawn_enemy(enemy_id: String, wave_index: int = -1) -> void:
 	var enemy_data: Dictionary = TowerStatsScript.get_enemy(enemy_id)
 	var enemy: Node2D = EnemyScript.new()
 	enemy.configure(enemy_data, level.path_points)
+	if wave_index > 0:
+		enemy.set_meta("battle_wave_index", wave_index)
 	enemy.defeated.connect(_on_enemy_defeated)
 	enemy.reached_goal.connect(_on_enemy_reached_goal)
 	enemies.append(enemy)
@@ -1719,6 +1726,71 @@ func _show_wave_rush_feedback(message: String) -> void:
 	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.34)
 
 
+func _maybe_show_wave_clear_feedback(wave_index: int) -> void:
+	if wave_index <= 0 or _cleared_wave_indices.has(wave_index):
+		return
+	var state: Dictionary = _wave_state_for_index(wave_index)
+	if state.is_empty() or int(state.get("remaining", 0)) > 0:
+		return
+	for enemy: Node2D in enemies:
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		if int(enemy.get_meta("battle_wave_index", -1)) == wave_index:
+			return
+	_cleared_wave_indices[wave_index] = true
+	var message: String = "第 %d/%d 波 清理完成" % [wave_index, _wave_states.size()]
+	_show_wave_clear_feedback(message)
+	if _tip_label != null:
+		_tip_label.text = "第 %d 波清理完成，准备下一波猫爪防线。" % wave_index
+	_update_hud()
+
+
+func _wave_state_for_index(wave_index: int) -> Dictionary:
+	for state: Dictionary in _wave_states:
+		if int(state.get("index", 0)) == wave_index:
+			return state
+	return {}
+
+
+func _show_wave_clear_feedback(message: String) -> void:
+	if _hud == null:
+		return
+	_wave_clear_feedback_index += 1
+	var feedback: TextureRect = _hud_texture_rect("BattleWaveClearFeedback%d" % _wave_clear_feedback_index, BattleWaveClearBurstTexture, Vector2(468, 126), Vector2(344, 344))
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 87
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.62, 0.62)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label(message)
+	label.name = "BattleWaveClearFeedbackLabel"
+	label.position = Vector2(58, 242)
+	label.size = Vector2(228, 44)
+	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_color_override("font_color", Color(0.35, 0.15, 0.04))
+	label.add_theme_constant_override("outline_size", 4)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var preview_frame: Control = _hud.find_child("WavePreviewFrame", true, false) as Control
+	if preview_frame != null:
+		_animate_control_scale(preview_frame, 1.06, 0.08)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 0.96, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -3.0, 0.08).set_delay(0.13).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 3.0, 0.08).set_delay(0.22).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.09).set_delay(0.31).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 18.0, 0.44).set_delay(0.42).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.26).set_delay(1.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.44)
+
+
 func _build_yarn_trap_hud() -> void:
 	_yarn_trap_hud_icon = _hud_texture_rect("YarnTrapHudIcon", YarnTrapItemIconTexture, Vector2(936, 536), Vector2(96, 96))
 	_yarn_trap_hud_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -2002,6 +2074,7 @@ func _on_tower_fired(tower: Node2D, target: Node2D) -> void:
 
 
 func _on_enemy_defeated(enemy: Node2D) -> void:
+	var wave_index: int = int(enemy.get_meta("battle_wave_index", -1))
 	if enemies.has(enemy):
 		enemies.erase(enemy)
 	var reward: int = int(enemy.reward)
@@ -2010,10 +2083,12 @@ func _on_enemy_defeated(enemy: Node2D) -> void:
 	_update_hud()
 	_show_enemy_defeat_feedback(reward_anchor)
 	_show_enemy_reward_feedback(reward, reward_anchor)
+	_maybe_show_wave_clear_feedback(wave_index)
 	enemy.queue_free()
 
 
 func _on_enemy_reached_goal(enemy: Node2D) -> void:
+	var wave_index: int = int(enemy.get_meta("battle_wave_index", -1))
 	if enemies.has(enemy):
 		enemies.erase(enemy)
 	var damage: int = int(enemy.base_damage)
@@ -2022,6 +2097,8 @@ func _on_enemy_reached_goal(enemy: Node2D) -> void:
 	var base_anchor: Vector2 = _base_node.global_position if _base_node != null else level.path_points[level.path_points.size() - 1]
 	_show_base_damage_feedback(damage, base_anchor)
 	_update_hud()
+	if base_hp > 0:
+		_maybe_show_wave_clear_feedback(wave_index)
 	enemy.queue_free()
 	if base_hp <= 0:
 		_finish(false)

@@ -792,3 +792,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_speed_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_speed_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_speed_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed battle speed feedback, battle speed/wave, battle wave rush, battle tap feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 90 tests`.
+
+**Image2 Battle Wave Clear Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_wave_clear_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_wave_clear_burst_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_wave_clear_burst.png`, assembled from existing Image2 battle HUD, reward, tap, and wave-rush art.
+- Spawned enemies now keep their wave index, and the battle scene tracks already-cleared waves so the feedback appears once when the last enemy from a wave leaves the field.
+- Clearing a wave creates `BattleWaveClearFeedback#` with dynamic `第 N/M 波 清理完成` text, pulses the Image2 wave preview chip, and updates the bottom guidance copy for the next defensive decision.
+- Added `/Users/zhaok/cat/tests/run_battle_wave_clear_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_clear_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_wave_clear_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed battle wave clear feedback, battle speed/wave, battle wave rush, enemy reward feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 91 tests`.
