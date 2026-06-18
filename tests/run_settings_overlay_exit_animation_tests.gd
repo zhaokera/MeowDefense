@@ -44,12 +44,8 @@ func _run() -> void:
 		_assert_true(is_instance_valid(overlay), "settings overlay should remain alive for exit animation immediately after close")
 		_assert_true(overlay.get_meta("image2_overlay_exit_animation", false), "settings overlay should mark Image2 exit animation metadata")
 		_assert_true(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "settings overlay should stop catching input while exiting")
+		_assert_true(overlay.modulate.a < 1.0, "settings overlay should start fading out immediately during exit animation")
 		_assert_true(close_button.disabled, "settings close button should disable during exit animation")
-		await process_frame
-		if not is_instance_valid(overlay):
-			_failures.append("settings overlay should still exist during the first exit animation frame")
-		else:
-			_assert_true(overlay.modulate.a < 1.0, "settings overlay should start fading out during exit animation")
 		for _frame: int in range(16):
 			await process_frame
 		_assert_true(_find_by_name(instance, "SettingsOverlay") == null, "settings overlay should be removed after exit animation")

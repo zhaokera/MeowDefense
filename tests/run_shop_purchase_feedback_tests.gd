@@ -78,7 +78,8 @@ func _assert_purchase_feedback(instance: Node, button_name: String, expected_tit
 	var close_button: Button = _assert_button(instance, "CloseShopPurchaseRewardButton", "shop purchase feedback should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for i: int in range(45):
+			await process_frame
 		_assert_missing(instance, "ShopPurchaseRewardOverlay", "closed shop purchase feedback should be removed")
 
 

@@ -83,7 +83,8 @@ func _run() -> void:
 	var close_button: Button = _assert_button(instance, "CloseShopInsufficientFishButton", "shop shortage feedback should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for i: int in range(45):
+			await process_frame
 		_assert_missing(instance, "ShopInsufficientFishOverlay", "closing shop shortage feedback should remove it")
 
 	_assert_manifest_entry("shop_insufficient_fish_design_reference", SHOP_INSUFFICIENT_FISH_DESIGN_PATH)

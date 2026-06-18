@@ -91,12 +91,8 @@ func _assert_overlay_exit_animation(instance: Node, overlay_name: String, close_
 	if is_instance_valid(overlay):
 		_assert_true(overlay.get_meta("image2_overlay_exit_animation", false), "%s overlay should mark Image2 exit animation metadata" % label)
 		_assert_true(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "%s overlay should stop catching input while exiting" % label)
+		_assert_true(overlay.modulate.a < 1.0, "%s overlay should start fading out immediately during exit animation" % label)
 	_assert_true(close_button.disabled, "%s close button should disable during exit animation" % label)
-	await process_frame
-	if not is_instance_valid(overlay):
-		_failures.append("%s overlay should still exist during the first exit animation frame" % label)
-	else:
-		_assert_true(overlay.modulate.a < 1.0, "%s overlay should start fading out during exit animation" % label)
 	for _frame: int in range(45):
 		await process_frame
 	_assert_true(_find_by_name(instance, overlay_name) == null, "%s overlay should be removed after exit animation" % label)

@@ -82,7 +82,8 @@ func _run() -> void:
 	var reward_close: Button = _assert_button(instance, "CloseAchievementClaimRewardButton", "achievement reward overlay should be closable")
 	if reward_close != null:
 		reward_close.emit_signal("pressed")
-		await process_frame
+		for i: int in range(45):
+			await process_frame
 		_assert_missing(instance, "AchievementClaimRewardOverlay", "closing achievement reward overlay should remove it")
 
 	_assert_manifest_entry("achievement_claim_reward_design_reference", ACHIEVEMENT_CLAIM_REWARD_DESIGN_PATH)

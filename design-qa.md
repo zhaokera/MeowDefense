@@ -632,3 +632,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_detail_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_detail_overlay_exit_animations.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/album_entry_detail_exit_animation.png`, `/Users/zhaok/cat/artifacts/backpack_item_detail_exit_animation.png`, and `/Users/zhaok/cat/artifacts/achievement_progress_guidance_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed detail overlay exit animation, album entry detail, backpack item detail, achievement progress guidance, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 70 tests`.
+
+**Image2 Reward And Shop Feedback Exit Animations**
+- Backpack organize reward, achievement claim reward, shop purchase reward, and shop insufficient-fish feedback now reuse `_animate_overlay_exit()` instead of hard-removing their full-screen Image2 feedback panels.
+- Primary and dismiss close controls on the reward-style panels now mark `image2_overlay_exit_animation`, disable the pressed control, make the overlay ignore input, and start fading immediately before cleanup.
+- Hardened existing exit-animation tests to assert the immediate Image2 exit state instead of depending on the next headless frame still landing before the short tween completes.
+- Updated `/Users/zhaok/cat/tests/run_achievement_claim_tests.gd`, `/Users/zhaok/cat/tests/run_shop_purchase_feedback_tests.gd`, and `/Users/zhaok/cat/tests/run_shop_insufficient_fish_feedback_tests.gd` to wait for animated close completion.
+- Added `/Users/zhaok/cat/tests/run_reward_shop_feedback_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_shop_feedback_exit_animations.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/backpack_organize_reward_exit_animation.png`, `/Users/zhaok/cat/artifacts/achievement_claim_reward_exit_animation.png`, `/Users/zhaok/cat/artifacts/shop_purchase_reward_exit_animation.png`, and `/Users/zhaok/cat/artifacts/shop_insufficient_fish_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed reward/shop feedback exit animation, backpack organize reward, achievement claim, shop purchase feedback, shop insufficient-fish feedback, scene smoke, unit tests, all exit-animation tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 71 tests`.

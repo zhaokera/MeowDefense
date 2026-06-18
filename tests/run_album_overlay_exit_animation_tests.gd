@@ -45,12 +45,8 @@ func _run() -> void:
 		if is_instance_valid(overlay):
 			_assert_true(overlay.get_meta("image2_overlay_exit_animation", false), "album overlay should mark Image2 exit animation metadata")
 			_assert_true(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "album overlay should stop catching input while exiting")
+			_assert_true(overlay.modulate.a < 1.0, "album overlay should start fading out immediately during exit animation")
 		_assert_true(close_button.disabled, "album close button should disable during exit animation")
-		await process_frame
-		if not is_instance_valid(overlay):
-			_failures.append("album overlay should still exist during the first exit animation frame")
-		else:
-			_assert_true(overlay.modulate.a < 1.0, "album overlay should start fading out during exit animation")
 		for _frame: int in range(16):
 			await process_frame
 		_assert_true(_find_by_name(instance, "AlbumOverlay") == null, "album overlay should be removed after exit animation")
