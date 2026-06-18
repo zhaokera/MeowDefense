@@ -48,7 +48,8 @@ func _open_and_claim(instance: Node) -> void:
 		quit(1)
 		return
 	claim_button.emit_signal("pressed")
-	await process_frame
+	for _frame: int in range(45):
+		await process_frame
 
 
 func _open_reward(instance: Node) -> void:

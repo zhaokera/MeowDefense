@@ -681,3 +681,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_overlay_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_overlay_action_exit_animations.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/locked_level_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/album_detail_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/backpack_detail_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/achievement_guidance_action_exit_animation.png`, and `/Users/zhaok/cat/artifacts/shop_shortage_action_exit_animation.png`; GUI capture was used for visual evidence.
 - Passed overlay action exit animation, locked-level feedback, album entry detail, backpack item detail, achievement progress guidance, shop insufficient-fish feedback, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 76 tests`.
+
+**Image2 Daily Reward Claim Action Exit Animation**
+- Claiming the daily reward now runs the base Image2 reward panel through `_animate_overlay_exit()` before opening `DailyRewardClaimSuccessOverlay`, avoiding the previous hard cut from the claim panel to the success screen.
+- The claim exit state marks `image2_overlay_exit_animation`, disables `ClaimRewardButton`, makes the reward overlay ignore input, and preserves the single fish grant before the success overlay appears.
+- Updated reward feedback tests and daily reward capture scripts to wait for the animated claim transition instead of expecting the success overlay immediately.
+- Added `/Users/zhaok/cat/tests/run_reward_claim_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_claim_action_exit_animation.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/reward_claim_action_exit_animation.png`; GUI capture was used for visual evidence.
+- Passed reward claim action exit animation, reward overlay, reward overlay exit animation, reward feedback exit animation, daily reward reset, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 77 tests`.

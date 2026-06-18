@@ -55,9 +55,9 @@ func _run() -> void:
 	var claim_button: Button = _assert_button(instance, "ClaimRewardButton", "reward should expose a claim button")
 	if claim_button != null:
 		claim_button.emit_signal("pressed")
-		await process_frame
-		await process_frame
 		_assert_true(int(instance.get("_total_fish")) == before_fish + 20, "claiming reward should add 20 fish")
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "RewardOverlay", "reward overlay should close after claiming")
 		_assert_exists(instance, "DailyRewardClaimSuccessOverlay", "claiming daily reward should open a success feedback overlay")
 		_assert_texture_node(

@@ -598,8 +598,11 @@ func _show_reward_overlay(parent: Node) -> void:
 	claim.pressed.connect(func() -> void:
 		if _claim_daily_reward():
 			_pulse_control(chest)
-			_show_daily_reward_claim_success_overlay(parent)
-		overlay.queue_free()
+			_animate_overlay_exit(overlay, claim, func() -> void:
+				_show_daily_reward_claim_success_overlay(parent)
+			)
+		else:
+			_animate_overlay_exit(overlay, claim)
 	)
 	content.add_child(claim)
 	var close_button: Button = _hotspot_button("CloseRewardButton", Vector2(846, 92), Vector2(88, 88), "关闭")

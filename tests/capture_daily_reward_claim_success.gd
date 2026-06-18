@@ -34,7 +34,7 @@ func _capture() -> void:
 		quit(1)
 		return
 	claim_button.emit_signal("pressed")
-	for i: int in range(16):
+	for i: int in range(45):
 		await process_frame
 
 	var viewport_texture: ViewportTexture = root.get_texture()

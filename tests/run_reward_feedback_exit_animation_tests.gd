@@ -48,8 +48,8 @@ func _open_daily_reward_success(instance: Node) -> void:
 		_failures.append("daily reward should expose a claim button")
 		return
 	claim_button.emit_signal("pressed")
-	await process_frame
-	await process_frame
+	for _frame: int in range(45):
+		await process_frame
 
 
 func _open_daily_task_reward(instance: Node) -> void:

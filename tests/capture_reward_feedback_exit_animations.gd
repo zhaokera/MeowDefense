@@ -50,8 +50,8 @@ func _capture_daily_reward_success_exit(instance: Node) -> bool:
 		quit(1)
 		return false
 	claim_button.emit_signal("pressed")
-	await process_frame
-	await process_frame
+	for _frame: int in range(45):
+		await process_frame
 	return await _capture_overlay_exit(
 		instance,
 		"DailyRewardClaimSuccessOverlay",
