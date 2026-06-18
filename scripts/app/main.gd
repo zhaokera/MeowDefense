@@ -1747,37 +1747,6 @@ func _completed_level_count() -> int:
 	return count
 
 
-func _level_card(level_info: Dictionary, position: Vector2) -> Panel:
-	var level_id: int = int(level_info.get("id", 1))
-	var card: Panel = _panel("LevelCard%d" % level_id, position, Vector2(326, 170), Color(1.0, 0.93, 0.67, 0.95), Color(0.50, 0.28, 0.10), 18)
-	card.clip_contents = true
-	var thumb_path: String = str(level_info.get("thumb", ""))
-	var thumb_texture: Texture2D = load(thumb_path) if ResourceLoader.exists(thumb_path) else LEVEL_BACKGROUND
-	card.add_child(_texture("Level%dThumb" % level_id, thumb_texture, Vector2(10, 10), Vector2(306, 92)))
-	var shade: ColorRect = ColorRect.new()
-	shade.name = "Level%dTextWash" % level_id
-	shade.position = Vector2(10, 10)
-	shade.size = Vector2(306, 92)
-	shade.color = Color(1.0, 0.92, 0.60, 0.36)
-	card.add_child(shade)
-	card.add_child(_label("Level%dName" % level_id, "第 %d 关  %s" % [level_id, str(level_info.get("name", ""))], Vector2(18, 18), Vector2(290, 34), 22, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	card.add_child(_label("Level%dStars" % level_id, "评级：%s" % _star_text(_level_stars(level_id)), Vector2(54, 54), Vector2(218, 28), 18, Color(0.45, 0.23, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
-	var button: Button = _button("StartLevel%dButton" % level_id, "出发", Vector2(62, 112), Vector2(200, 44), ORANGE, 22)
-	var copied_info: Dictionary = level_info.duplicate(true)
-	button.pressed.connect(func() -> void: _start_level(copied_info))
-	card.add_child(button)
-	return card
-
-
-func _level_preview_card(card_name: String, title: String, subtitle: String, position: Vector2, locked: bool) -> Panel:
-	var card: Panel = _panel(card_name, position, Vector2(226, 246), Color(0.95, 0.89, 0.68, 0.86), Color(0.45, 0.29, 0.16), 18)
-	card.add_child(_label("%sTitle" % card_name, title, Vector2(22, 30), Vector2(182, 38), 28, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	card.add_child(_label("%sSubtitle" % card_name, subtitle, Vector2(22, 76), Vector2(182, 34), 22, Color(0.39, 0.21, 0.10), HORIZONTAL_ALIGNMENT_CENTER))
-	var status: String = "待开放" if locked else "可挑战"
-	card.add_child(_label("%sStatus" % card_name, status, Vector2(38, 150), Vector2(150, 44), 24, Color(0.54, 0.26, 0.10), HORIZONTAL_ALIGNMENT_CENTER))
-	return card
-
-
 func _level_info_by_id(level_id: int) -> Dictionary:
 	for level_info: Dictionary in LEVELS:
 		if int(level_info.get("id", 0)) == level_id:
@@ -1787,55 +1756,6 @@ func _level_info_by_id(level_id: int) -> Dictionary:
 
 func _level_stars(level_id: int) -> int:
 	return int(_best_stars_by_level.get(level_id, 0))
-
-
-func _add_resource_strip(parent: Control) -> void:
-	var strip: Panel = _panel("ResourceStrip", Vector2(760, 20), Vector2(430, 58), Color(1.0, 0.95, 0.76, 0.92), Color(0.45, 0.25, 0.10), 16)
-	parent.add_child(strip)
-	strip.add_child(_label("FishCounter", "小鱼干 %d" % _total_fish, Vector2(22, 8), Vector2(158, 40), 22, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	strip.add_child(_label("BestStarsCounter", "最高 %s" % _star_text(_best_stars), Vector2(188, 8), Vector2(124, 40), 22, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	var plus_button: Button = _button("ResourcePlusButton", "+", Vector2(342, 8), Vector2(56, 40), GREEN, 26)
-	plus_button.pressed.connect(func() -> void: _show_reward_overlay(parent))
-	strip.add_child(plus_button)
-
-
-func _add_bottom_nav(parent: Control, active: String) -> void:
-	var dock: Panel = _panel("BottomNav", Vector2(386, 624), Vector2(508, 66), Color(1.0, 0.94, 0.72, 0.94), Color(0.48, 0.27, 0.12), 18)
-	parent.add_child(dock)
-	var home: Button = _button("BottomHomeButton", "主页", Vector2(18, 10), Vector2(108, 46), HONEY if active == "主页" else BLUE, 19)
-	home.pressed.connect(_show_main_menu)
-	dock.add_child(home)
-	var levels: Button = _button("BottomLevelsButton", "关卡", Vector2(140, 10), Vector2(108, 46), HONEY if active == "关卡" else BLUE, 19)
-	levels.pressed.connect(_show_level_select)
-	dock.add_child(levels)
-	var album: Button = _button("BottomAlbumButton", "图鉴", Vector2(262, 10), Vector2(108, 46), HONEY if active == "图鉴" else BLUE, 19)
-	album.pressed.connect(func() -> void: _show_album_overlay(parent))
-	dock.add_child(album)
-	var settings: Button = _button("BottomSettingsButton", "设置", Vector2(384, 10), Vector2(108, 46), HONEY if active == "设置" else BLUE, 19)
-	settings.pressed.connect(func() -> void: _show_settings_overlay(parent))
-	dock.add_child(settings)
-
-
-func _menu_screen(screen_name: String) -> Control:
-	var screen: Control = Control.new()
-	screen.name = screen_name
-	screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-
-	var background: TextureRect = TextureRect.new()
-	background.name = "MapBackground"
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	background.texture = LEVEL_BACKGROUND
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	screen.add_child(background)
-
-	var wash: ColorRect = ColorRect.new()
-	wash.name = "SunnyWash"
-	wash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	wash.color = Color(1.0, 0.92, 0.58, 0.10)
-	screen.add_child(wash)
-
-	return screen
 
 
 func _image_design_screen(screen_name: String, texture: Texture2D, background_name: String = "Image2DesignBackground") -> Control:
@@ -1959,45 +1879,6 @@ func _overlay(overlay_name: String) -> Control:
 	return overlay
 
 
-func _panel(panel_name: String, position: Vector2, size: Vector2, fill: Color, border: Color, radius: int) -> Panel:
-	var panel: Panel = Panel.new()
-	panel.name = panel_name
-	panel.position = position
-	panel.size = size
-	panel.add_theme_stylebox_override("panel", _style(fill, border, radius, 3))
-	return panel
-
-
-func _button(button_name: String, text: String, position: Vector2, size: Vector2, fill: Color, font_size: int) -> Button:
-	var button: Button = Button.new()
-	button.name = button_name
-	button.text = text
-	button.position = position
-	button.size = size
-	button.clip_text = true
-	button.add_theme_font_size_override("font_size", font_size)
-	button.add_theme_color_override("font_color", INK)
-	button.add_theme_color_override("font_hover_color", INK)
-	button.add_theme_color_override("font_pressed_color", Color(0.18, 0.08, 0.04))
-	button.add_theme_stylebox_override("normal", _style(fill, fill.darkened(0.45), 18, 4))
-	button.add_theme_stylebox_override("hover", _style(fill.lightened(0.08), fill.darkened(0.45), 18, 4))
-	button.add_theme_stylebox_override("pressed", _style(fill.darkened(0.10), fill.darkened(0.55), 18, 4))
-	button.add_theme_stylebox_override("disabled", _style(Color(0.70, 0.68, 0.58), Color(0.38, 0.32, 0.24), 18, 4))
-	return button
-
-
-func _toggle(toggle_name: String, text: String, position: Vector2, enabled: bool) -> CheckButton:
-	var toggle: CheckButton = CheckButton.new()
-	toggle.name = toggle_name
-	toggle.text = text
-	toggle.button_pressed = enabled
-	toggle.position = position
-	toggle.size = Vector2(420, 48)
-	toggle.add_theme_font_size_override("font_size", 25)
-	toggle.add_theme_color_override("font_color", INK)
-	return toggle
-
-
 func _label(label_name: String, text: String, position: Vector2, size: Vector2, font_size: int, color: Color, alignment: HorizontalAlignment) -> Label:
 	var label: Label = Label.new()
 	label.name = label_name
@@ -2042,22 +1923,6 @@ func _sprite(node_name: String, texture: Texture2D, center: Vector2, max_size: V
 		var ratio: float = min(max_size.x / texture_size.x, max_size.y / texture_size.y)
 		sprite.scale = Vector2(ratio, ratio)
 	return sprite
-
-
-func _style(fill: Color, border: Color, radius: int, border_width: int) -> StyleBoxFlat:
-	var style: StyleBoxFlat = StyleBoxFlat.new()
-	style.bg_color = fill
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.content_margin_left = 16
-	style.content_margin_top = 10
-	style.content_margin_right = 16
-	style.content_margin_bottom = 10
-	style.shadow_color = Color(0.30, 0.14, 0.05, 0.22)
-	style.shadow_size = 7
-	style.shadow_offset = Vector2(0, 4)
-	return style
 
 
 func _transparent_style() -> StyleBoxFlat:

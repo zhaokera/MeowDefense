@@ -534,3 +534,9 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_background_fallback_tests.gd` to verify missing-background levels still render an Image2 background and that `battle_scene.gd` no longer contains `draw_rect`/`draw_line`/`draw_circle` fallback drawing.
 - Added `/Users/zhaok/cat/tests/capture_battle_background_fallback.gd` to regenerate `/Users/zhaok/cat/artifacts/battle_background_fallback.png`.
 - Verified `/Users/zhaok/cat/artifacts/battle_background_fallback.png` visually and passed the targeted fallback, playthrough, and scene smoke checks.
+
+**Image2 App Helper Cleanup**
+- Removed unused legacy `main.gd` helpers that could recreate visible UI with `Panel`, code-styled `Button`, `CheckButton`, and `StyleBoxFlat` instead of the current Image2 screen and transparent hit-area model.
+- Kept transparent hotspot/style helpers for interaction layers over generated UI art.
+- Added `/Users/zhaok/cat/tests/run_app_legacy_ui_helper_tests.gd` to prevent reintroducing the old visible Panel/Button/StyleBoxFlat helper path.
+- Passed the new source hygiene check plus menu, town feature overlay, scene smoke, and unit tests.
