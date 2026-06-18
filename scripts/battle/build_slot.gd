@@ -19,7 +19,6 @@ func _ready() -> void:
 		_shape.shape = circle
 		add_child(_shape)
 	input_event.connect(_on_input_event)
-	queue_redraw()
 
 
 func set_occupied(value: bool) -> void:
@@ -35,7 +34,3 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		var touch: InputEventScreenTouch = event as InputEventScreenTouch
 		if touch.pressed:
 			clicked.emit(self)
-
-
-func _draw() -> void:
-	pass

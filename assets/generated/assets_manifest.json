@@ -289,6 +289,21 @@
       "prompt_summary": "Transparent Image2-derived paw badge sparkle used for tactile feedback on transparent hotspot buttons."
     },
     {
+      "id": "battle_tap_feedback_starburst",
+      "path": "res://assets/generated/ui/battle_tap_feedback_starburst.png",
+      "prompt_summary": "Transparent Image2-derived golden starburst used for battle HUD and build-slot tap feedback."
+    },
+    {
+      "id": "battle_tap_feedback_starburst_source",
+      "path": "res://assets/generated/ui/battle_tap_feedback_starburst_source.png",
+      "prompt_summary": "Project-bound Image2-derived transparent source assembled from existing generated battle starburst and reward feedback art."
+    },
+    {
+      "id": "battle_tap_feedback_design_reference",
+      "path": "res://assets/generated/ui/battle_tap_feedback_design_reference.png",
+      "prompt_summary": "Image2 battle HUD reference showing the derived golden starburst tap feedback over a build marker."
+    },
+    {
       "id": "main_menu_design_reference",
       "path": "res://assets/generated/ui/main_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen main menu design reference used directly as the high-fidelity menu background."

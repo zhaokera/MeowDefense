@@ -562,3 +562,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_hotspot_feedback_tests.gd` to verify project-bound tap art, `UI_TAP_FEEDBACK_TEXTURE`, pointer-centered feedback, and non-blocking input.
 - Added `/Users/zhaok/cat/tests/capture_hotspot_feedback.gd` and regenerated `/Users/zhaok/cat/artifacts/hotspot_tap_feedback.png` for the main menu start-button press state.
 - Passed the hotspot feedback, menu, and scene smoke checks.
+
+**Image2 Battle Tap Feedback**
+- Added `/Users/zhaok/cat/assets/generated/ui/battle_tap_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_tap_feedback_starburst_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_tap_feedback_starburst.png` as the battle-specific tap feedback asset chain.
+- Battle buttons using `_attach_press_feedback()` now spawn a non-blocking Image2 `TextureRect` burst. Map/build-slot controls stay pointer-centered; edge HUD controls clamp the burst inside the viewport so the feedback remains visible near screen edges.
+- Removed the empty `build_slot.gd` `_draw()` hook and `queue_redraw()` path so build slots stay on Image2 marker art plus transparent interaction layers.
+- Added `/Users/zhaok/cat/tests/run_battle_tap_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_tap_feedback.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/battle_tap_feedback.png`; GUI capture was required because headless viewport texture capture returned a null texture.
+- Passed battle tap, build input, battle speed/wave, pause menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite.

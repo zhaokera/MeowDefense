@@ -23,6 +23,7 @@ const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/b
 const BattlePauseMenuBlueButtonTexture := preload("res://assets/generated/ui/battle_pause_button_blue.png")
 const BattlePauseMenuRedButtonTexture := preload("res://assets/generated/ui/battle_pause_button_red.png")
 const CommonOverlayDimTexture := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
+const BattleTapFeedbackTexture := preload("res://assets/generated/ui/battle_tap_feedback_starburst.png")
 const TowerActionPanelTexture := preload("res://assets/generated/ui/tower_action_panel.png")
 const SettingsOverlayPanelTexture := preload("res://assets/generated/ui/settings_overlay_panel.png")
 const SettingsToggleOnTexture := preload("res://assets/generated/ui/settings_toggle_on.png")
@@ -98,6 +99,7 @@ var _tower_upgrade_feedback_index: int = 0
 var _tower_sell_feedback_index: int = 0
 var _tower_fire_feedback_index: int = 0
 var _projectile_index: int = 0
+var _battle_tap_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -391,6 +393,65 @@ func _attach_press_feedback(button: Button, target: Control) -> void:
 	button.mouse_exited.connect(func() -> void: _animate_control_scale(target, 1.0, 0.10))
 	button.button_down.connect(func() -> void: _animate_control_scale(target, 0.94, 0.05))
 	button.button_up.connect(func() -> void: _animate_control_scale(target, 1.0, 0.08))
+	button.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton:
+			var mouse: InputEventMouseButton = event as InputEventMouseButton
+			if mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT:
+				_show_battle_tap_feedback(button, mouse.position)
+				button.set_meta("battle_pointer_feedback_msec", Time.get_ticks_msec())
+		elif event is InputEventScreenTouch:
+			var touch: InputEventScreenTouch = event as InputEventScreenTouch
+			if touch.pressed:
+				_show_battle_tap_feedback(button, touch.position)
+				button.set_meta("battle_pointer_feedback_msec", Time.get_ticks_msec())
+	)
+	button.button_down.connect(func() -> void:
+		var last_pointer_msec: int = int(button.get_meta("battle_pointer_feedback_msec", -1000))
+		if Time.get_ticks_msec() - last_pointer_msec > 80:
+			_show_battle_tap_feedback(button, button.size * 0.5)
+	)
+
+
+func _show_battle_tap_feedback(button: Button, local_position: Vector2) -> void:
+	if button == null or not is_instance_valid(button) or button.get_parent() == null:
+		return
+	var parent: Node = button.get_parent()
+	var feedback_parent: Control = parent as Control
+	var feedback_parent_node: Node = feedback_parent
+	var clamp_to_viewport: bool = false
+	var feedback_bounds: Vector2 = Vector2.ZERO
+	if feedback_parent != null:
+		feedback_bounds = feedback_parent.size
+	elif _hud != null:
+		feedback_parent_node = _hud
+		clamp_to_viewport = true
+		feedback_bounds = get_viewport_rect().size
+	if feedback_parent_node == null:
+		return
+	_battle_tap_feedback_index += 1
+	var feedback: TextureRect = TextureRect.new()
+	feedback.name = "BattleTapFeedback%d" % _battle_tap_feedback_index
+	feedback.texture = BattleTapFeedbackTexture
+	feedback.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var edge: float = clamp(max(button.size.x, button.size.y) * 1.75, 132.0, 220.0)
+	feedback.size = Vector2(edge, edge)
+	feedback.position = button.position + local_position - feedback.size * 0.5
+	if clamp_to_viewport and feedback_bounds.x > 0.0 and feedback_bounds.y > 0.0:
+		feedback.position = Vector2(
+			clampf(feedback.position.x, 0.0, maxf(0.0, feedback_bounds.x - feedback.size.x)),
+			clampf(feedback.position.y, 0.0, maxf(0.0, feedback_bounds.y - feedback.size.y))
+		)
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.z_index = button.z_index + 260
+	feedback.scale = Vector2(0.72, 0.72)
+	feedback_parent_node.add_child(feedback)
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "scale", Vector2(1.10, 1.10), 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(feedback.queue_free)
 
 
 func _animate_control_scale(target: Control, scale_value: float, duration: float) -> void:
