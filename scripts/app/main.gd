@@ -385,6 +385,7 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 		next_button.pressed.connect(func() -> void:
 			_start_level_from_result(screen, next_button, _level_info_by_id(next_level_id))
 		)
+	_animate_result_screen_entry(screen)
 
 
 func _start_level_from_result(screen: Control, trigger_button: Button, level_info: Dictionary) -> void:
@@ -1810,6 +1811,30 @@ func _animate_image2_screen_entry(screen: Control, slide_offset: Vector2) -> voi
 	tween.tween_property(screen, "position", Vector2.ZERO, 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(screen, "scale", Vector2.ONE, 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(screen, "modulate:a", 1.0, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _animate_result_screen_entry(screen: Control) -> void:
+	if screen == null or not is_instance_valid(screen):
+		return
+	screen.set_meta("image2_result_entry_animation", true)
+	screen.pivot_offset = VIEW_SIZE * 0.5
+	screen.position = Vector2(0.0, 24.0)
+	screen.scale = Vector2(1.035, 1.035)
+	screen.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var screen_ref: WeakRef = weakref(screen)
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(screen, "position", Vector2.ZERO, 0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(screen, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(screen, "modulate:a", 1.0, 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(func() -> void:
+		var resolved: Object = screen_ref.get_ref()
+		if resolved is Control:
+			var resolved_screen: Control = resolved as Control
+			resolved_screen.position = Vector2.ZERO
+			resolved_screen.scale = Vector2.ONE
+			resolved_screen.modulate.a = 1.0
+	)
 
 
 func _animate_result_screen_exit(screen: Control, trigger_button: Button = null, finish_callback: Callable = Callable()) -> void:

@@ -665,3 +665,11 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/run_result_screen_tests.gd` to wait for the animated level-map transition.
 - Regenerated `/Users/zhaok/cat/artifacts/result_screen_exit_animation.png`; GUI capture was required because headless capture stalled waiting for a rendered frame.
 - Passed result screen exit animation, result screen, defeat result, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 74 tests`.
+
+**Image2 Result Screen Entry Animation**
+- Victory and defeat result screens now run `_animate_result_screen_entry()` after their Image2 result design, dynamic labels, reward pieces, and action hit areas are assembled.
+- The entry state marks `image2_result_entry_animation` and starts the full result screen slightly lowered, lightly zoomed, and faded, then settles to the normal Image2 layout.
+- The entry completion callback uses a `WeakRef` so quick result-button transitions cannot produce stale tween captures if the result screen is removed before the entry tween ends.
+- Added `/Users/zhaok/cat/tests/run_result_screen_entry_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_result_screen_entry_animation.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/result_screen_entry_animation.png`; GUI capture was used for visual evidence.
+- Passed result screen entry animation, result screen, defeat result, result screen exit animation, playthrough, scene smoke, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 75 tests`.
