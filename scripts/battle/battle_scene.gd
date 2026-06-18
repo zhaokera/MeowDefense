@@ -42,6 +42,7 @@ const BattleTowerCardSelectedBadgeTexture := preload("res://assets/generated/ui/
 const BattleTowerCardInsufficientFishStampTexture := preload("res://assets/generated/ui/battle_tower_card_insufficient_fish_stamp.png")
 const TowerMaxLevelStampTexture := preload("res://assets/generated/ui/tower_max_level_stamp.png")
 const TowerMaxLevelBurstTexture := preload("res://assets/generated/ui/tower_max_level_burst.png")
+const TowerRangeAuraTexture := preload("res://assets/generated/effects/tower_range_aura.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
@@ -582,6 +583,7 @@ func _build_slot_buttons() -> void:
 		button.pressed.connect(func() -> void: _on_slot_clicked(slot))
 		_slot_buttons.add_child(button)
 		index += 1
+	_update_build_slot_range_previews()
 
 
 func _mark_slot_button_occupied(slot: Node2D) -> void:
@@ -599,6 +601,7 @@ func _mark_slot_button_occupied(slot: Node2D) -> void:
 			if visual != null:
 				visual.modulate = Color(0.55, 0.47, 0.36, 0.55)
 				visual.scale = Vector2(0.82, 0.82)
+			_update_build_slot_range_previews()
 			return
 
 
@@ -617,7 +620,68 @@ func _mark_slot_button_empty(slot: Node2D) -> void:
 			if visual != null:
 				visual.modulate = Color.WHITE
 				visual.scale = Vector2.ONE
+			_update_build_slot_range_previews(true)
 			return
+
+
+func _update_build_slot_range_previews(animated: bool = false) -> void:
+	if _slot_layer == null:
+		return
+	var target_scale: Vector2 = _build_slot_range_preview_scale(_selected_tower_id)
+	var index: int = 1
+	for child: Node in _slot_layer.get_children():
+		var slot: Node2D = child as Node2D
+		if slot == null:
+			continue
+		var preview: Sprite2D = slot.get_node_or_null(NodePath(_build_slot_range_preview_name(index))) as Sprite2D
+		if preview == null:
+			preview = _create_build_slot_range_preview(index)
+			slot.add_child(preview)
+		var occupied: bool = bool(slot.get("occupied"))
+		preview.visible = not occupied
+		preview.scale = target_scale
+		if preview.visible and animated:
+			_show_build_slot_range_preview_refresh(preview)
+		index += 1
+
+
+func _create_build_slot_range_preview(index: int) -> Sprite2D:
+	var preview: Sprite2D = Sprite2D.new()
+	preview.name = _build_slot_range_preview_name(index)
+	preview.texture = TowerRangeAuraTexture
+	preview.centered = true
+	preview.z_index = -3
+	preview.modulate = Color(1.0, 1.0, 1.0, 0.36)
+	_start_build_slot_range_preview_breath(preview)
+	return preview
+
+
+func _build_slot_range_preview_name(index: int) -> String:
+	return "BuildSlot%dRangePreview" % index
+
+
+func _build_slot_range_preview_scale(tower_id: String) -> Vector2:
+	if TowerRangeAuraTexture == null:
+		return Vector2.ONE
+	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
+	var attack_range: float = float(stats.get("range", 160.0))
+	var texture_size: Vector2 = TowerRangeAuraTexture.get_size()
+	var ratio: float = (attack_range * 2.0) / max(1.0, texture_size.x)
+	return Vector2(ratio, ratio)
+
+
+func _start_build_slot_range_preview_breath(preview: Sprite2D) -> void:
+	var tween: Tween = preview.create_tween()
+	tween.set_loops()
+	tween.tween_property(preview, "modulate:a", 0.50, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(preview, "modulate:a", 0.34, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _show_build_slot_range_preview_refresh(preview: Sprite2D) -> void:
+	preview.rotation = -0.035
+	var tween: Tween = preview.create_tween()
+	tween.tween_property(preview, "rotation", 0.035, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(preview, "rotation", 0.0, 0.10).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _show_tower_action_overlay(slot: Node2D) -> void:
@@ -1263,6 +1327,7 @@ func _select_tower(tower_id: String) -> void:
 	else:
 		_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
 	_update_tower_selector_state()
+	_update_build_slot_range_previews(true)
 	_show_tower_card_selection_feedback(tower_id)
 
 

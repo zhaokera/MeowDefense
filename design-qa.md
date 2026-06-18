@@ -744,3 +744,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_yarn_trap_ready_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_yarn_trap_ready.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_yarn_trap_ready.png`; GUI capture was used for visual evidence.
 - Passed battle yarn trap ready, yarn trap, yarn inventory flow, yarn empty feedback, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 84 tests`.
+
+**Image2 Build Slot Range Preview**
+- Empty build slots now show the project-bound Image2 `tower_range_aura.png` as a translucent pre-build range preview, scaled to the currently selected tower.
+- Selecting a different tower card refreshes every empty slot preview with a small rotation feedback; occupied slots hide the preview while other empty slots keep showing it.
+- This slice reuses `/Users/zhaok/cat/assets/generated/effects/tower_range_aura.png`, so no visible battle guidance falls back to code-drawn circles or arcs.
+- Added `/Users/zhaok/cat/tests/run_build_slot_range_preview_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_range_preview.gd`.
+- Captured `/Users/zhaok/cat/artifacts/build_slot_range_preview.png`; GUI capture was used for visual evidence.
+- Passed build slot range preview, build input, tower selector card, tower range aura, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 85 tests`.
