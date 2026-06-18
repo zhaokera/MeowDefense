@@ -702,6 +702,7 @@ func _update_build_slot_tower_ghosts(animated: bool = false) -> void:
 		_configure_build_slot_tower_ghost(ghost, _selected_tower_id)
 		var occupied: bool = bool(slot.get("occupied"))
 		ghost.visible = not occupied and ghost.texture != null
+		_update_build_slot_affordability_state(slot, index, ghost)
 		if ghost.visible and animated:
 			_show_build_slot_tower_ghost_refresh(ghost)
 		index += 1
@@ -720,6 +721,10 @@ func _create_build_slot_tower_ghost(index: int) -> Sprite2D:
 
 func _build_slot_tower_ghost_name(index: int) -> String:
 	return "BuildSlot%dTowerGhost" % index
+
+
+func _build_slot_affordability_stamp_name(index: int) -> String:
+	return "BuildSlot%dAffordabilityStamp" % index
 
 
 func _configure_build_slot_tower_ghost(ghost: Sprite2D, tower_id: String) -> void:
@@ -743,6 +748,56 @@ func _configure_build_slot_tower_ghost(ghost: Sprite2D, tower_id: String) -> voi
 	var ratio: float = 72.0 / max(1.0, frame_size.y)
 	ghost.scale = Vector2(ratio, ratio)
 	ghost.modulate = Color(1.0, 1.0, 1.0, 0.44)
+
+
+func _update_build_slot_affordability_state(slot: Node2D, index: int, ghost: Sprite2D) -> void:
+	var stamp: Sprite2D = slot.get_node_or_null(NodePath(_build_slot_affordability_stamp_name(index))) as Sprite2D
+	if stamp == null:
+		stamp = _create_build_slot_affordability_stamp(index)
+		slot.add_child(stamp)
+	var is_shortage: bool = not _selected_tower_affordable()
+	var occupied: bool = bool(slot.get("occupied"))
+	stamp.visible = not occupied and is_shortage
+	if ghost != null:
+		if is_shortage:
+			ghost.modulate = Color(0.62, 0.55, 0.50, ghost.modulate.a)
+		else:
+			ghost.modulate = Color(1.0, 1.0, 1.0, ghost.modulate.a)
+
+
+func _create_build_slot_affordability_stamp(index: int) -> Sprite2D:
+	var stamp: Sprite2D = Sprite2D.new()
+	stamp.name = _build_slot_affordability_stamp_name(index)
+	stamp.texture = BattleTowerCardInsufficientFishStampTexture
+	stamp.centered = true
+	stamp.position = Vector2(44.0, -72.0)
+	stamp.z_index = 1
+	var texture_size: Vector2 = BattleTowerCardInsufficientFishStampTexture.get_size()
+	var ratio: float = 58.0 / max(1.0, max(texture_size.x, texture_size.y))
+	stamp.scale = Vector2(ratio, ratio)
+	stamp.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	return stamp
+
+
+func _update_build_slot_affordability_states() -> void:
+	if _slot_layer == null:
+		return
+	var index: int = 1
+	for child: Node in _slot_layer.get_children():
+		var slot: Node2D = child as Node2D
+		if slot == null:
+			continue
+		var ghost: Sprite2D = slot.get_node_or_null(NodePath(_build_slot_tower_ghost_name(index))) as Sprite2D
+		if ghost != null:
+			_update_build_slot_affordability_state(slot, index, ghost)
+		index += 1
+
+
+func _selected_tower_affordable() -> bool:
+	if level == null:
+		return true
+	var stats: Dictionary = TowerStatsScript.get_tower(_selected_tower_id)
+	return coins >= int(stats.get("cost", 0))
 
 
 func _start_build_slot_tower_ghost_breath(ghost: Sprite2D) -> void:
@@ -2147,6 +2202,7 @@ func _update_hud() -> void:
 		_wave_preview_label.text = _wave_preview_text()
 	_update_yarn_trap_hud()
 	_update_tower_selector_state()
+	_update_build_slot_affordability_states()
 
 
 func _wave_preview_text() -> String:

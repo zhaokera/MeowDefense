@@ -760,3 +760,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_build_slot_tower_ghost_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_tower_ghost.gd`.
 - Captured `/Users/zhaok/cat/artifacts/build_slot_tower_ghost.png`; GUI capture was used for visual evidence.
 - Passed build slot tower ghost, build slot range preview, build input, tower selector card, battle tower affordability, tower range aura, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 86 tests`.
+
+**Image2 Build Slot Affordability Preview**
+- Empty build slots now mirror the selected tower affordability state: unaffordable tower ghosts dim and show the Image2 red paw insufficient-fish stamp before the player taps.
+- The stamp uses `/Users/zhaok/cat/assets/generated/ui/battle_tower_card_insufficient_fish_stamp.png` and is scaled by texture size so it stays slot-sized instead of covering the map.
+- When fish increases enough to afford the selected tower, `_update_hud()` restores the build-slot ghost color and hides the stamp without changing the selected tower.
+- Added `/Users/zhaok/cat/tests/run_build_slot_affordability_preview_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_affordability_preview.gd`.
+- Captured `/Users/zhaok/cat/artifacts/build_slot_affordability_preview.png`; GUI capture was used for visual evidence.
+- Passed build slot affordability preview, build slot tower ghost, build slot range preview, battle tower affordability, battle resource feedback, build input, tower selector card, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 87 tests`.
