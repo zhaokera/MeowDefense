@@ -48,7 +48,8 @@ func _run() -> void:
 		var close_settings: Button = _assert_button(instance, "CloseSettingsButton", "settings should be closable")
 		if close_settings != null:
 			close_settings.emit_signal("pressed")
-			await process_frame
+			for _frame: int in range(18):
+				await process_frame
 			_assert_missing(instance, "SettingsOverlay", "settings overlay should close")
 
 	if album_button != null:

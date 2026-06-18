@@ -442,7 +442,7 @@ func _show_settings_overlay(parent: Node) -> void:
 	overlay.add_child(close_frame)
 	var close_button: Button = _transparent_text_button("CloseSettingsButton", "完成", Rect2(close_frame.position, close_frame.size), 28)
 	_attach_button_feedback(close_button, close_frame)
-	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	overlay.add_child(close_button)
 
 
@@ -1957,6 +1957,24 @@ func _animate_overlay_entry(target: Control) -> void:
 	tween.set_parallel(true)
 	tween.tween_property(target, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(target, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _animate_overlay_exit(target: Control, trigger_button: Button = null) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	if bool(target.get_meta("image2_overlay_exit_animation", false)):
+		return
+	target.set_meta("image2_overlay_exit_animation", true)
+	target.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	target.pivot_offset = VIEW_SIZE * 0.5
+	if trigger_button != null and is_instance_valid(trigger_button):
+		trigger_button.disabled = true
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(target, "scale", Vector2(0.96, 0.96), 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	tween.tween_property(target, "position:y", target.position.y + 14.0, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_property(target, "modulate:a", 0.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.chain().tween_callback(target.queue_free)
 
 
 func _scale_control(target: Control, scale_value: float, duration: float) -> void:

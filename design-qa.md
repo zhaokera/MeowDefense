@@ -584,3 +584,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_image2_screen_entry_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_image2_screen_entry_animation.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/image2_screen_entry_animation.png`; GUI capture was required because headless viewport texture capture returned a null texture.
 - Passed Image2 screen entry animation, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite.
+
+**Image2 Settings Overlay Exit Animation**
+- Settings overlay close now runs `_animate_overlay_exit()` instead of removing the Image2 panel immediately, so the modal fades, scales down, and slides slightly before cleanup.
+- The exit state marks `image2_overlay_exit_animation`, disables the close button, and makes the overlay ignore mouse input while it is leaving.
+- Updated `/Users/zhaok/cat/tests/run_menu_tests.gd` to wait for the close transition instead of assuming the overlay disappears on the next frame.
+- Added `/Users/zhaok/cat/tests/run_settings_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_settings_overlay_exit_animation.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/settings_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returned a null texture.
+- Passed settings overlay exit animation, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 65 tests`.
