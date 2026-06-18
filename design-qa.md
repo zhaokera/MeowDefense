@@ -719,3 +719,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_wave_rush_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_rush.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_wave_rush_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed battle wave rush, battle speed/wave, battle tap feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 81 tests`.
+
+**Image2 Tower Max Level State**
+- Added feature-specific project assets `/Users/zhaok/cat/assets/generated/ui/tower_max_level_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/tower_max_level_stamp.png`, and `/Users/zhaok/cat/assets/generated/ui/tower_max_level_burst.png` from existing Image2 tower-upgrade and claimed-stamp artwork.
+- Towers now have `max_level = 3`; upgrade attempts at max level do not spend fish, do not increase the tower level, and instead show a tactile Image2 max-level burst plus bottom guidance text.
+- The Image2 tower action panel now overlays `TowerMaxLevelStamp` and dynamic `满级` text when a tower reaches the cap, while keeping the existing panel art as the visual source of truth.
+- Added `/Users/zhaok/cat/tests/run_tower_max_level_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_max_level.gd`.
+- Captured `/Users/zhaok/cat/artifacts/tower_max_level_overlay.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed tower max level, tower action, tower upgrade feedback, playthrough, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 82 tests`.

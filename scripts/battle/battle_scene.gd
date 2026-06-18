@@ -38,6 +38,8 @@ const BattleYarnTrapEmptyBurstTexture := preload("res://assets/generated/ui/batt
 const BattleTowerCardOrangeTexture := preload("res://assets/generated/ui/battle_tower_card_orange_cat.png")
 const BattleTowerCardTabbyTexture := preload("res://assets/generated/ui/battle_tower_card_tabby_slow_cat.png")
 const BattleTowerCardSelectedBadgeTexture := preload("res://assets/generated/ui/battle_tower_card_selected_badge.png")
+const TowerMaxLevelStampTexture := preload("res://assets/generated/ui/tower_max_level_stamp.png")
+const TowerMaxLevelBurstTexture := preload("res://assets/generated/ui/tower_max_level_burst.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
@@ -98,6 +100,7 @@ var _enemy_spawn_feedback_index: int = 0
 var _build_success_feedback_index: int = 0
 var _tower_upgrade_feedback_index: int = 0
 var _tower_sell_feedback_index: int = 0
+var _tower_max_level_feedback_index: int = 0
 var _tower_fire_feedback_index: int = 0
 var _projectile_index: int = 0
 var _battle_tap_feedback_index: int = 0
@@ -132,6 +135,7 @@ func start_level(path: String) -> void:
 	_build_success_feedback_index = 0
 	_tower_upgrade_feedback_index = 0
 	_tower_sell_feedback_index = 0
+	_tower_max_level_feedback_index = 0
 	_tower_fire_feedback_index = 0
 	_projectile_index = 0
 	_wave_rush_feedback_index = 0
@@ -638,18 +642,24 @@ func _show_tower_action_overlay(slot: Node2D) -> void:
 	overlay.add_child(_pause_label("管理 %s" % tower_name, Vector2(398, 226), Vector2(484, 42), 27, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER))
 	var stats_label: Label = _pause_label(_tower_action_stats_text(tower), Vector2(382, 330), Vector2(516, 36), 21, Color(0.38, 0.18, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	overlay.add_child(stats_label)
-	overlay.add_child(_pause_label("升级消耗 %d" % upgrade_cost, Vector2(384, 456), Vector2(236, 58), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER))
+	var upgrade_label: Label = _pause_label(_tower_upgrade_label_text(tower, upgrade_cost), Vector2(384, 456), Vector2(236, 58), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER)
+	upgrade_label.name = "TowerUpgradeCostLabel"
+	overlay.add_child(upgrade_label)
 	var sell_label: Label = _pause_label("出售返还 %d" % sell_refund, Vector2(660, 456), Vector2(236, 58), 24, Color(0.27, 0.13, 0.07), HORIZONTAL_ALIGNMENT_CENTER)
 	overlay.add_child(sell_label)
+	_refresh_tower_action_max_state(overlay, tower)
 
 	var upgrade_button: Button = _pause_transparent_text_button("UpgradeTowerButton", "", Rect2(Vector2(384, 442), Vector2(244, 82)), 24)
 	_attach_press_feedback(upgrade_button, panel)
 	upgrade_button.pressed.connect(func() -> void:
 		var previous_level: int = int(tower.get("level"))
 		_upgrade_tower_from_overlay(tower, panel)
-		if tower != null and is_instance_valid(tower) and int(tower.get("level")) != previous_level:
+		if tower != null and is_instance_valid(tower):
 			stats_label.text = _tower_action_stats_text(tower)
 			sell_label.text = "出售返还 %d" % _tower_sell_refund(tower)
+			upgrade_label.text = _tower_upgrade_label_text(tower, upgrade_cost)
+			if int(tower.get("level")) != previous_level:
+				_refresh_tower_action_max_state(overlay, tower)
 	)
 	overlay.add_child(upgrade_button)
 
@@ -671,13 +681,23 @@ func _upgrade_tower_from_overlay(tower: Node2D, feedback_target: Control) -> voi
 	if tower == null or not is_instance_valid(tower):
 		return
 	var upgrade_cost: int = int(tower.get("upgrade_cost"))
+	if _tower_is_max_level(tower):
+		if _tip_label != null:
+			_tip_label.text = "%s 已经满级，守住这一波！" % str(tower.get("display_name"))
+		_show_tower_max_level_feedback(tower.global_position)
+		_animate_control_scale(feedback_target, 1.03, 0.08)
+		return
 	if coins < upgrade_cost:
 		_tip_label.text = "小鱼干不够，先守住下一波。"
 		_show_resource_shortage_feedback("升级还差 %d 小鱼干" % max(1, upgrade_cost - coins), tower.global_position)
 		_animate_control_scale(feedback_target, 0.98, 0.06)
 		return
+	var did_upgrade: bool = bool(tower.call("upgrade"))
+	if not did_upgrade:
+		_show_tower_max_level_feedback(tower.global_position)
+		_update_hud()
+		return
 	coins -= upgrade_cost
-	tower.call("upgrade")
 	_show_tower_upgrade_feedback(tower.global_position)
 	_tip_label.text = "%s 升到 %d 级！" % [str(tower.get("display_name")), int(tower.get("level"))]
 	_animate_control_scale(feedback_target, 1.05, 0.08)
@@ -711,7 +731,99 @@ func _tower_sell_refund(tower: Node2D) -> int:
 
 
 func _tower_action_stats_text(tower: Node2D) -> String:
-	return "等级 %d    伤害 %.1f    范围 %d" % [int(tower.get("level")), float(tower.get("damage")), int(float(tower.get("attack_range")))]
+	return "等级 %d/%d    伤害 %.1f    范围 %d" % [int(tower.get("level")), _tower_max_level(tower), float(tower.get("damage")), int(float(tower.get("attack_range")))]
+
+
+func _tower_upgrade_label_text(tower: Node2D, upgrade_cost: int) -> String:
+	if _tower_is_max_level(tower):
+		return "已达满级"
+	return "升级消耗 %d" % upgrade_cost
+
+
+func _tower_max_level(tower: Node2D) -> int:
+	if tower == null:
+		return 3
+	return max(1, int(tower.get("max_level")))
+
+
+func _tower_is_max_level(tower: Node2D) -> bool:
+	if tower == null or not is_instance_valid(tower):
+		return false
+	return int(tower.get("level")) >= _tower_max_level(tower)
+
+
+func _refresh_tower_action_max_state(overlay: Control, tower: Node2D) -> void:
+	if overlay == null or not is_instance_valid(overlay):
+		return
+	var existing_stamp: Node = overlay.find_child("TowerMaxLevelStamp", true, false)
+	if existing_stamp != null:
+		existing_stamp.queue_free()
+	var existing_label: Node = overlay.find_child("TowerMaxLevelLabel", true, false)
+	if existing_label != null:
+		existing_label.queue_free()
+	if not _tower_is_max_level(tower):
+		return
+
+	var stamp: TextureRect = _hud_texture_rect("TowerMaxLevelStamp", TowerMaxLevelStampTexture, Vector2(418, 384), Vector2(190, 150))
+	stamp.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	stamp.z_index = 8
+	stamp.process_mode = Node.PROCESS_MODE_ALWAYS
+	stamp.pivot_offset = stamp.size * 0.5
+	stamp.scale = Vector2(0.88, 0.88)
+	stamp.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	overlay.add_child(stamp)
+
+	var label: Label = _pause_label("满级", Vector2(445, 440), Vector2(136, 42), 30, Color(1.0, 0.88, 0.38), HORIZONTAL_ALIGNMENT_CENTER)
+	label.name = "TowerMaxLevelLabel"
+	label.z_index = 9
+	label.add_theme_color_override("font_outline_color", Color(0.55, 0.12, 0.02, 0.95))
+	label.add_theme_constant_override("outline_size", 5)
+	overlay.add_child(label)
+
+	var tween: Tween = stamp.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(stamp, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(stamp, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _show_tower_max_level_feedback(world_anchor: Vector2) -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("TowerMaxLevelFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+	_tower_max_level_feedback_index += 1
+	var feedback: TextureRect = _hud_texture_rect("TowerMaxLevelFeedback", TowerMaxLevelBurstTexture, Vector2.ZERO, Vector2(320, 320))
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 86
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	var target_center: Vector2 = Vector2(clamp(world_anchor.x, 440.0, 820.0), clamp(world_anchor.y - 74.0, 230.0, 430.0))
+	feedback.position = target_center - feedback.size * 0.5
+	feedback.scale = Vector2(0.68, 0.68)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("满级啦")
+	label.name = "TowerMaxLevelFeedbackLabel"
+	label.position = Vector2(72, 202)
+	label.size = Vector2(176, 48)
+	label.add_theme_font_size_override("font_size", 26)
+	label.add_theme_color_override("font_color", Color(0.43, 0.15, 0.04))
+	label.add_theme_constant_override("outline_size", 4)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -5.0, 0.08).set_delay(0.14).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 5.0, 0.08).set_delay(0.24).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.08).set_delay(0.34).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 24.0, 0.44).set_delay(0.42).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.26).set_delay(1.06).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.38)
 
 
 func _show_resource_shortage_feedback(message: String, world_anchor: Vector2) -> void:

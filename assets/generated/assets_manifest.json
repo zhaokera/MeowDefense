@@ -379,6 +379,21 @@
       "prompt_summary": "Image2 transparent tower management panel used for upgrade, sell, and close actions during battle."
     },
     {
+      "id": "tower_max_level_feedback_design_reference",
+      "path": "res://assets/generated/ui/tower_max_level_feedback_design_reference.png",
+      "prompt_summary": "Image2 battle feedback reference reused for the tower max-level management state."
+    },
+    {
+      "id": "tower_max_level_stamp",
+      "path": "res://assets/generated/ui/tower_max_level_stamp.png",
+      "prompt_summary": "Feature-specific Image2 cat-paw stamp layered over the tower action upgrade area when a tower reaches max level."
+    },
+    {
+      "id": "tower_max_level_burst",
+      "path": "res://assets/generated/ui/tower_max_level_burst.png",
+      "prompt_summary": "Feature-specific Image2 golden burst used when the player taps upgrade on an already max-level tower."
+    },
+    {
       "id": "battle_resource_shortage_design_reference",
       "path": "res://assets/generated/ui/battle_resource_shortage_design_reference.png",
       "prompt_summary": "Image2 full-screen battle feedback design reference showing the not-enough-fish burst over the battle HUD."

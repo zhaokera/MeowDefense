@@ -15,6 +15,7 @@ var fire_interval: float = 0.6
 var texture_path: String = ""
 var accent: Color = Color(1.0, 0.58, 0.23)
 var level: int = 1
+var max_level: int = 3
 
 var _cooldown: float = 0.0
 var _visual_root: Node2D
@@ -37,6 +38,7 @@ func configure(id: String, stats: Dictionary) -> void:
 	display_name = str(stats.get("name", id))
 	cost = int(stats.get("cost", 0))
 	upgrade_cost = int(stats.get("upgrade_cost", 0))
+	max_level = int(stats.get("max_level", 3))
 	attack_range = float(stats.get("range", 160.0))
 	damage = float(stats.get("damage", 4.0))
 	fire_interval = float(stats.get("fire_interval", 0.6))
@@ -88,7 +90,13 @@ func apply_damage_to(enemy: Node2D) -> void:
 	_set_sprite_frame(2)
 
 
-func upgrade() -> void:
+func can_upgrade() -> bool:
+	return level < max_level
+
+
+func upgrade() -> bool:
+	if not can_upgrade():
+		return false
 	level += 1
 	damage *= 1.35
 	attack_range += 14.0
@@ -96,6 +104,7 @@ func upgrade() -> void:
 	scale = Vector2.ONE * (1.0 + float(level - 1) * 0.08)
 	_recoil_timer = 0.24
 	_apply_range_aura_scale()
+	return true
 
 
 func _process(delta: float) -> void:
