@@ -269,6 +269,16 @@
   ],
   "ui": [
     {
+      "id": "common_overlay_dim_design_reference",
+      "path": "res://assets/generated/ui/common_overlay_dim_design_reference.png",
+      "prompt_summary": "Image2-first full-screen overlay design reference derived from the generated home screen art, showing the warm dim/vignette treatment for modal layers."
+    },
+    {
+      "id": "common_overlay_dim_vignette",
+      "path": "res://assets/generated/ui/common_overlay_dim_vignette.png",
+      "prompt_summary": "Reusable warm Image2-derived vignette texture with subtle paw and fish-bone details for modal dim layers."
+    },
+    {
       "id": "main_menu_design_reference",
       "path": "res://assets/generated/ui/main_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen main menu design reference used directly as the high-fidelity menu background."

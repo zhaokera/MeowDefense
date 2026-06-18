@@ -4,6 +4,7 @@ const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
 const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_meadow.png")
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
+const COMMON_OVERLAY_DIM_TEXTURE := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
 const LOCKED_LEVEL_FEEDBACK_DESIGN := preload("res://assets/generated/ui/locked_level_feedback_design_reference.png")
 const LOCKED_LEVEL_FEEDBACK_BURST := preload("res://assets/generated/ui/locked_level_feedback_burst.png")
@@ -1871,10 +1872,8 @@ func _overlay(overlay_name: String) -> Control:
 	overlay.name = overlay_name
 	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var dim: ColorRect = ColorRect.new()
-	dim.name = "OverlayDim"
-	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	dim.color = Color(0.14, 0.08, 0.04, 0.42)
+	var dim: TextureRect = _ui_texture_rect("OverlayDimTexture", COMMON_OVERLAY_DIM_TEXTURE, Vector2.ZERO, VIEW_SIZE)
+	dim.modulate = Color(1.0, 1.0, 1.0, 0.58)
 	overlay.add_child(dim)
 	return overlay
 

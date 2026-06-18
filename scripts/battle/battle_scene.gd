@@ -22,6 +22,7 @@ const BattlePauseMenuGreenButtonTexture := preload("res://assets/generated/ui/ba
 const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/battle_pause_button_orange.png")
 const BattlePauseMenuBlueButtonTexture := preload("res://assets/generated/ui/battle_pause_button_blue.png")
 const BattlePauseMenuRedButtonTexture := preload("res://assets/generated/ui/battle_pause_button_red.png")
+const CommonOverlayDimTexture := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
 const TowerActionPanelTexture := preload("res://assets/generated/ui/tower_action_panel.png")
 const SettingsOverlayPanelTexture := preload("res://assets/generated/ui/settings_overlay_panel.png")
 const SettingsToggleOnTexture := preload("res://assets/generated/ui/settings_toggle_on.png")
@@ -1329,13 +1330,13 @@ func _show_pause_menu() -> void:
 	_pause_overlay = Control.new()
 	_pause_overlay.name = "PauseMenuOverlay"
 	_pause_overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	_pause_overlay.z_index = 100
+	_pause_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	_pause_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_hud.add_child(_pause_overlay)
 
-	var dim: ColorRect = ColorRect.new()
-	dim.name = "PauseDim"
-	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	dim.color = Color(0.12, 0.07, 0.04, 0.50)
+	var dim: TextureRect = _hud_texture_rect("PauseDimTexture", CommonOverlayDimTexture, Vector2.ZERO, Vector2(1280, 720))
+	dim.modulate = Color(1.0, 1.0, 1.0, 0.62)
 	_pause_overlay.add_child(dim)
 
 	var panel: TextureRect = _hud_texture_rect("PauseMenuDesignPanel", BattlePauseMenuPanelTexture, Vector2(346, 42), Vector2(588, 640))
@@ -1485,7 +1486,7 @@ func _set_pause_menu_content_visible(visible: bool) -> void:
 	if _pause_overlay == null or not is_instance_valid(_pause_overlay):
 		return
 	for child: Node in _pause_overlay.get_children():
-		if child.name == "PauseDim" or child.name == "PauseSettingsOverlay":
+		if child.name == "PauseDimTexture" or child.name == "PauseSettingsOverlay":
 			continue
 		if child is CanvasItem:
 			(child as CanvasItem).visible = visible

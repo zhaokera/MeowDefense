@@ -22,6 +22,7 @@ func _run() -> void:
 		await process_frame
 
 	_assert_exists(battle, "PauseMenuOverlay", "pause should open an overlay")
+	_assert_overlay_z_index(battle, "PauseMenuOverlay", 100, "pause overlay should render above battle HUD controls")
 	_assert_texture_node(
 		battle,
 		"PauseMenuDesignPanel",
@@ -150,6 +151,16 @@ func _assert_node_is_not_panel(root_node: Node, node_name: String, message: Stri
 	var node: Node = _find_by_name(root_node, node_name)
 	if node != null and node is Panel:
 		_failures.append(message)
+
+
+func _assert_overlay_z_index(root_node: Node, node_name: String, min_z_index: int, message: String) -> void:
+	var node: Node = _find_by_name(root_node, node_name)
+	if node == null:
+		return
+	if node is CanvasItem:
+		_assert_true((node as CanvasItem).z_index >= min_z_index, message)
+	else:
+		_failures.append("%s should be a CanvasItem" % node_name)
 
 
 func _assert_true(condition: bool, message: String) -> void:

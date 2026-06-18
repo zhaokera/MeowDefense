@@ -546,3 +546,12 @@ final result: passed
 - Kept the active pause menu on Image2 button frames plus transparent hit/text controls.
 - Added `/Users/zhaok/cat/tests/run_battle_legacy_ui_helper_tests.gd` to prevent reintroducing the old code-styled pause button path.
 - Passed the new source hygiene check plus pause menu, playthrough, battle speed/wave, scene smoke, and unit tests.
+
+**Image2 Common Overlay Dim**
+- Added `/Users/zhaok/cat/assets/generated/ui/common_overlay_dim_design_reference.png` and `/Users/zhaok/cat/assets/generated/ui/common_overlay_dim_vignette.png` as the common warm Image2-derived modal dim treatment.
+- App overlays and the battle pause overlay now use the common `TextureRect` dim layer instead of code-drawn `ColorRect` blocks.
+- Raised `PauseMenuOverlay` above battle HUD controls so tower cards and build controls cannot overlap the pause panel.
+- Updated `/Users/zhaok/cat/assets/generated/assets_manifest.json` with the common overlay entries.
+- Added `/Users/zhaok/cat/tests/run_overlay_dim_asset_tests.gd` and extended `/Users/zhaok/cat/tests/run_pause_menu_tests.gd` to prevent ColorRect dim regressions and pause overlay z-order regressions.
+- Regenerated `/Users/zhaok/cat/artifacts/settings_overlay.png`, `/Users/zhaok/cat/artifacts/pause_menu.png`, and `/Users/zhaok/cat/artifacts/pause_settings.png`; headless screenshots could not read the viewport texture, so GUI Godot capture was used for visual evidence.
+- Passed overlay dim, menu, pause menu, playthrough, scene smoke, and unit tests.
