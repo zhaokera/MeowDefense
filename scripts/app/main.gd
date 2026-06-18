@@ -537,7 +537,7 @@ func _show_album_overlay(parent: Node) -> void:
 	content.add_child(close_frame)
 	var close_button: Button = _transparent_text_button("CloseAlbumButton", "收起图鉴", Rect2(close_frame.position, close_frame.size), 27)
 	_attach_button_feedback(close_button, close_frame)
-	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
 

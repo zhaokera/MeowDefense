@@ -592,3 +592,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_settings_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_settings_overlay_exit_animation.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/settings_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returned a null texture.
 - Passed settings overlay exit animation, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 65 tests`.
+
+**Image2 Album Overlay Exit Animation**
+- Album overlay close now reuses `_animate_overlay_exit()` instead of hard-removing the Image2 guide panel, so the panel fades, scales, and slides out before cleanup.
+- The exit state marks `image2_overlay_exit_animation`, disables `CloseAlbumButton`, and makes the overlay ignore mouse input while the animation is running.
+- Updated `/Users/zhaok/cat/tests/run_album_overlay_tests.gd` and `/Users/zhaok/cat/tests/run_menu_tests.gd` to wait for the animated close.
+- Added `/Users/zhaok/cat/tests/run_album_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_album_overlay_exit_animation.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/album_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed album overlay exit animation, album overlay, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 66 tests`.

@@ -61,7 +61,8 @@ func _run() -> void:
 	var close_button: Button = _assert_button(instance, "CloseAlbumButton", "album should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(18):
+			await process_frame
 		_assert_missing(instance, "AlbumOverlay", "album overlay should close")
 
 	instance.queue_free()
