@@ -624,3 +624,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_guidance_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_guidance_overlay_exit_animations.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/locked_level_feedback_exit_animation.png`, `/Users/zhaok/cat/artifacts/energy_empty_overlay_exit_animation.png`, and `/Users/zhaok/cat/artifacts/daily_task_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed guidance overlay exit animation, locked-level feedback, energy flow, daily task overlay, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 69 tests`.
+
+**Image2 Detail Overlay Exit Animations**
+- Album entry detail, backpack item detail, and achievement progress guidance now reuse `_animate_overlay_exit()` instead of hard-removing their full-screen Image2 detail panels.
+- Each close state marks `image2_overlay_exit_animation`, disables the pressed close hit area, and makes the overlay ignore mouse input while fading, scaling, and sliding out.
+- Updated `/Users/zhaok/cat/tests/run_achievement_progress_guidance_tests.gd` to wait for the animated close; album and backpack detail action flows remain covered by their existing detail tests.
+- Added `/Users/zhaok/cat/tests/run_detail_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_detail_overlay_exit_animations.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/album_entry_detail_exit_animation.png`, `/Users/zhaok/cat/artifacts/backpack_item_detail_exit_animation.png`, and `/Users/zhaok/cat/artifacts/achievement_progress_guidance_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed detail overlay exit animation, album entry detail, backpack item detail, achievement progress guidance, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 70 tests`.

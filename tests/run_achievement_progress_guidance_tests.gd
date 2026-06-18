@@ -69,7 +69,8 @@ func _run() -> void:
 	var close_button: Button = _assert_button(instance, "CloseAchievementProgressGuidanceButton", "achievement progress guidance should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for i: int in range(45):
+			await process_frame
 		_assert_missing(instance, "AchievementProgressGuidanceOverlay", "closing achievement progress guidance should remove it")
 
 	var stars_row_button: Button = _assert_button(instance, "AchievementStarsButton", "second unfinished achievement should expose a row guidance hit area")
