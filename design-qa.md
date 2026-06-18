@@ -800,3 +800,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_wave_clear_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_clear_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_wave_clear_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed battle wave clear feedback, battle speed/wave, battle wave rush, enemy reward feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 91 tests`.
+
+**Image2 Battle Wave Incoming Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_wave_incoming_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_wave_incoming_burst_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_wave_incoming_burst.png`, assembled from existing Image2 battle HUD, enemy-spawn, wave-rush, and wave-preview art.
+- The first enemy spawned from each wave now triggers `BattleWaveIncomingFeedback#` with dynamic `第 N/M 波 来袭` text, pulses the Image2 wave preview chip, and updates the bottom guidance copy.
+- Subsequent enemies in the same wave do not repeat the incoming feedback, keeping the action readable.
+- Added `/Users/zhaok/cat/tests/run_battle_wave_incoming_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_incoming_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_wave_incoming_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed battle wave incoming feedback, battle speed/wave, battle wave rush, enemy spawn feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 92 tests`.

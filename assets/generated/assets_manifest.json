@@ -1007,6 +1007,21 @@
       "id": "battle_wave_clear_burst",
       "path": "res://assets/generated/ui/battle_wave_clear_burst.png",
       "prompt_summary": "Project-bound transparent Image2-derived gold fish-and-paw burst used after a wave is cleared."
+    },
+    {
+      "id": "battle_wave_incoming_feedback_design_reference",
+      "path": "res://assets/generated/ui/battle_wave_incoming_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing a mouse entrance and fishbone speed burst when a new wave begins."
+    },
+    {
+      "id": "battle_wave_incoming_burst_source",
+      "path": "res://assets/generated/ui/battle_wave_incoming_burst_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 enemy spawn, wave rush, and wave preview art for incoming-wave feedback."
+    },
+    {
+      "id": "battle_wave_incoming_burst",
+      "path": "res://assets/generated/ui/battle_wave_incoming_burst.png",
+      "prompt_summary": "Project-bound transparent Image2-derived mouse entrance and fishbone burst used when a wave starts."
     }
   ]
 }
