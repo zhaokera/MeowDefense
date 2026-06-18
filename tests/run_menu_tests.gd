@@ -103,7 +103,8 @@ func _run() -> void:
 						quit_button = _assert_button(instance, "QuitToLevelsButton", "pause menu should return to level select")
 				if quit_button != null:
 					quit_button.emit_signal("pressed")
-					await process_frame
+					for _frame: int in range(45):
+						await process_frame
 					_assert_exists(instance, "LevelSelectScreen", "quit from pause should return to level select")
 					var level_two_button: Button = _assert_button(instance, "StartLevel2Button", "level select should start level two")
 					if level_two_button != null:

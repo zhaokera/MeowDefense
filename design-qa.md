@@ -689,3 +689,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_reward_claim_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_claim_action_exit_animation.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/reward_claim_action_exit_animation.png`; GUI capture was used for visual evidence.
 - Passed reward claim action exit animation, reward overlay, reward overlay exit animation, reward feedback exit animation, daily reward reset, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 77 tests`.
+
+**Image2 Pause Menu Action Exit Animations**
+- Pause menu restart and quit actions now reuse `_animate_hud_overlay_exit()` before resetting the battle or routing back to level select, matching the existing Image2 resume exit behavior instead of hard-cutting.
+- The action exit state marks `image2_overlay_exit_animation`, disables the pressed pause action button, makes the pause menu ignore input, and delays restart/quit routing until the Image2 pause panel has faded, scaled, and slid out.
+- Updated `/Users/zhaok/cat/tests/run_menu_tests.gd` to wait for the animated quit-to-levels transition.
+- Added `/Users/zhaok/cat/tests/run_pause_menu_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_menu_action_exit_animations.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/pause_restart_action_exit_animation.png` and `/Users/zhaok/cat/artifacts/pause_quit_action_exit_animation.png`; GUI capture was used for visual evidence.
+- Passed pause menu action exit animation, menu, pause menu, battle overlay exit animation, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 78 tests`.

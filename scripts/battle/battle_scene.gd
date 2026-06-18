@@ -1436,13 +1436,26 @@ func _resume_from_pause() -> void:
 
 func _restart_from_pause() -> void:
 	get_tree().paused = false
-	_pause_overlay = null
-	start_level(level_path)
+	if _pause_overlay != null and is_instance_valid(_pause_overlay):
+		_animate_hud_overlay_exit(_pause_overlay, _pause_overlay.find_child("RestartBattleButton", true, false) as Button, func() -> void:
+			_pause_overlay = null
+			start_level(level_path)
+		)
+	else:
+		_pause_overlay = null
+		start_level(level_path)
 
 
 func _quit_to_levels_from_pause() -> void:
 	get_tree().paused = false
-	exit_to_levels_requested.emit()
+	if _pause_overlay != null and is_instance_valid(_pause_overlay):
+		_animate_hud_overlay_exit(_pause_overlay, _pause_overlay.find_child("QuitToLevelsButton", true, false) as Button, func() -> void:
+			_pause_overlay = null
+			exit_to_levels_requested.emit()
+		)
+	else:
+		_pause_overlay = null
+		exit_to_levels_requested.emit()
 
 
 func _pause_menu_button(button_name: String, frame_name: String, texture: Texture2D, text: String, position: Vector2, size: Vector2) -> Button:
