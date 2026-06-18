@@ -648,3 +648,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_reward_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_overlay_exit_animation.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/reward_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed reward overlay exit animation, reward overlay, reward feedback exit animation, daily reward reset, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 72 tests`.
+
+**Image2 Battle Overlay Exit Animations**
+- Tower action close, pause settings close, and pause resume now use `_animate_hud_overlay_exit()` instead of hard-removing battle HUD overlays.
+- The battle HUD exit state marks `image2_overlay_exit_animation`, disables the pressed control, makes the overlay ignore input, and fades/scales/slides out before cleanup. Pause settings keeps the pause menu buttons hidden until its exit completes.
+- Added `/Users/zhaok/cat/tests/run_battle_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_overlay_exit_animations.gd`.
+- Updated `/Users/zhaok/cat/tests/run_pause_menu_tests.gd` and `/Users/zhaok/cat/tests/run_menu_tests.gd` to wait for animated pause overlay cleanup.
+- Regenerated `/Users/zhaok/cat/artifacts/tower_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/pause_settings_exit_animation.png`, and `/Users/zhaok/cat/artifacts/pause_menu_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed battle overlay exit animation, pause menu, tower action, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 73 tests`.

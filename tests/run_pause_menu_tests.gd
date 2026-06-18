@@ -98,13 +98,15 @@ func _run() -> void:
 		var close_settings: Button = _assert_button(battle, "ClosePauseSettingsButton", "pause settings should be closable")
 		if close_settings != null:
 			close_settings.emit_signal("pressed")
-			await process_frame
+			for _frame: int in range(45):
+				await process_frame
 			_assert_missing(battle, "PauseSettingsOverlay", "pause settings should close without closing pause menu")
 			_assert_exists(battle, "PauseMenuOverlay", "pause menu should remain open after closing pause settings")
 			_assert_true(settings_button.visible, "pause menu controls should return after closing pause settings")
 	if resume_button != null:
 		resume_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(battle, "PauseMenuOverlay", "resume should close pause menu")
 
 	battle.queue_free()

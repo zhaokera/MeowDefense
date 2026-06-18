@@ -647,7 +647,7 @@ func _show_tower_action_overlay(slot: Node2D) -> void:
 
 	var close_button: Button = _pause_transparent_text_button("CloseTowerActionButton", "", Rect2(Vector2(842, 206), Vector2(106, 92)), 22)
 	_attach_press_feedback(close_button, panel)
-	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	close_button.pressed.connect(func() -> void: _animate_hud_overlay_exit(overlay, close_button))
 	overlay.add_child(close_button)
 	_pop_in_control(panel)
 
@@ -1427,8 +1427,11 @@ func _show_pause_menu() -> void:
 func _resume_from_pause() -> void:
 	get_tree().paused = false
 	if _pause_overlay != null and is_instance_valid(_pause_overlay):
-		_pause_overlay.queue_free()
-	_pause_overlay = null
+		_animate_hud_overlay_exit(_pause_overlay, _pause_overlay.find_child("ResumeButton", true, false) as Button, func() -> void:
+			_pause_overlay = null
+		)
+	else:
+		_pause_overlay = null
 
 
 func _restart_from_pause() -> void:
@@ -1537,8 +1540,9 @@ func _show_pause_settings() -> void:
 	var close: Button = _pause_transparent_text_button("ClosePauseSettingsButton", "完成", Rect2(close_frame.position, close_frame.size), 25)
 	_attach_press_feedback(close, close_frame)
 	close.pressed.connect(func() -> void:
-		_set_pause_menu_content_visible(true)
-		overlay.queue_free()
+		_animate_hud_overlay_exit(overlay, close, func() -> void:
+			_set_pause_menu_content_visible(true)
+		)
 	)
 	overlay.add_child(close)
 
@@ -1551,6 +1555,32 @@ func _set_pause_menu_content_visible(visible: bool) -> void:
 			continue
 		if child is CanvasItem:
 			(child as CanvasItem).visible = visible
+
+
+func _animate_hud_overlay_exit(target: Control, trigger_button: Button = null, finish_callback: Callable = Callable()) -> void:
+	if target == null or not is_instance_valid(target):
+		if finish_callback.is_valid():
+			finish_callback.call()
+		return
+	if bool(target.get_meta("image2_overlay_exit_animation", false)):
+		return
+	target.set_meta("image2_overlay_exit_animation", true)
+	target.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	target.pivot_offset = Vector2(640, 360)
+	target.modulate.a = min(target.modulate.a, 0.96)
+	if trigger_button != null and is_instance_valid(trigger_button):
+		trigger_button.disabled = true
+	var tween: Tween = target.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(target, "scale", Vector2(0.96, 0.96), 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	tween.tween_property(target, "position:y", target.position.y + 14.0, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_property(target, "modulate:a", 0.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.chain().tween_callback(func() -> void:
+		if is_instance_valid(target):
+			target.queue_free()
+		if finish_callback.is_valid():
+			finish_callback.call()
+	)
 
 
 func _pause_transparent_text_button(button_name: String, text: String, rect: Rect2, font_size: int) -> Button:
