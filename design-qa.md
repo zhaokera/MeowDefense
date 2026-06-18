@@ -540,3 +540,9 @@ final result: passed
 - Kept transparent hotspot/style helpers for interaction layers over generated UI art.
 - Added `/Users/zhaok/cat/tests/run_app_legacy_ui_helper_tests.gd` to prevent reintroducing the old visible Panel/Button/StyleBoxFlat helper path.
 - Passed the new source hygiene check plus menu, town feature overlay, scene smoke, and unit tests.
+
+**Image2 Battle Helper Cleanup**
+- Removed unused legacy `battle_scene.gd` helpers that could recreate code-styled pause buttons and panels with `StyleBoxFlat`.
+- Kept the active pause menu on Image2 button frames plus transparent hit/text controls.
+- Added `/Users/zhaok/cat/tests/run_battle_legacy_ui_helper_tests.gd` to prevent reintroducing the old code-styled pause button path.
+- Passed the new source hygiene check plus pause menu, playthrough, battle speed/wave, scene smoke, and unit tests.

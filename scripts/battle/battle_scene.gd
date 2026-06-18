@@ -400,22 +400,6 @@ func _animate_control_scale(target: Control, scale_value: float, duration: float
 	tween.tween_property(target, "scale", Vector2(scale_value, scale_value), duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-func _panel_style(fill: Color, border: Color, radius: int = 8, border_width: int = 2) -> StyleBoxFlat:
-	var style: StyleBoxFlat = StyleBoxFlat.new()
-	style.bg_color = fill
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.content_margin_left = 18
-	style.content_margin_top = 10
-	style.content_margin_right = 18
-	style.content_margin_bottom = 10
-	style.shadow_color = Color(0.18, 0.10, 0.04, 0.22)
-	style.shadow_size = 6
-	style.shadow_offset = Vector2(0, 3)
-	return style
-
-
 func _prepare_waves() -> void:
 	var wave_index: int = 1
 	for wave: Dictionary in level.waves:
@@ -1505,21 +1489,6 @@ func _set_pause_menu_content_visible(visible: bool) -> void:
 			continue
 		if child is CanvasItem:
 			(child as CanvasItem).visible = visible
-
-
-func _pause_button(button_name: String, text: String, position: Vector2, color: Color) -> Button:
-	var button: Button = Button.new()
-	button.name = button_name
-	button.text = text
-	button.position = position
-	button.size = Vector2(252, 58)
-	button.process_mode = Node.PROCESS_MODE_ALWAYS
-	button.add_theme_font_size_override("font_size", 25)
-	button.add_theme_color_override("font_color", Color(0.27, 0.13, 0.07))
-	button.add_theme_stylebox_override("normal", _panel_style(color, color.darkened(0.45), 18, 4))
-	button.add_theme_stylebox_override("hover", _panel_style(color.lightened(0.08), color.darkened(0.45), 18, 4))
-	button.add_theme_stylebox_override("pressed", _panel_style(color.darkened(0.10), color.darkened(0.55), 18, 4))
-	return button
 
 
 func _pause_transparent_text_button(button_name: String, text: String, rect: Rect2, font_size: int) -> Button:
