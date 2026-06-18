@@ -600,3 +600,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_album_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_album_overlay_exit_animation.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/album_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed album overlay exit animation, album overlay, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 66 tests`.
+
+**Image2 Town Feature Overlay Exit Animations**
+- Backpack, achievements, and shop overlays now reuse `_animate_overlay_exit()` instead of hard-removing their full-screen Image2 panels.
+- Each exit state marks `image2_overlay_exit_animation`, disables the close hit area, and makes the overlay ignore mouse input while the panel fades, scales, and slides out.
+- Updated `/Users/zhaok/cat/tests/run_town_feature_overlay_tests.gd` to wait for the animated close on all three overlays.
+- Added `/Users/zhaok/cat/tests/run_town_feature_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_town_feature_overlay_exit_animations.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/backpack_overlay_exit_animation.png`, `/Users/zhaok/cat/artifacts/achievements_overlay_exit_animation.png`, and `/Users/zhaok/cat/artifacts/shop_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed town feature overlay exit animation, town feature overlay, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 67 tests`.

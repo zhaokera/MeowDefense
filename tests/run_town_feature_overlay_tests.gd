@@ -49,7 +49,8 @@ func _assert_main_menu_backpack(instance: Node) -> void:
 	var close_button: Button = _assert_button(instance, "CloseBackpackButton", "backpack should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "BackpackOverlay", "backpack should close")
 
 
@@ -65,7 +66,8 @@ func _assert_main_menu_achievements(instance: Node) -> void:
 	var close_button: Button = _assert_button(instance, "CloseAchievementsButton", "achievements should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "AchievementsOverlay", "achievements should close")
 
 
@@ -88,7 +90,8 @@ func _assert_main_menu_shop(instance: Node) -> void:
 	var close_button: Button = _assert_button(instance, "CloseShopButton", "shop should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "ShopOverlay", "shop should close")
 		shop_button.emit_signal("pressed")
 		await process_frame

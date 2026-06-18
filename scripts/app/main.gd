@@ -942,7 +942,7 @@ func _show_backpack_overlay(parent: Node) -> void:
 	)
 	content.add_child(organize)
 	var close_button: Button = _hotspot_button("CloseBackpackButton", Vector2(948, 130), Vector2(122, 114), "关闭")
-	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(content.get_parent() as Control, close_button))
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
 
@@ -956,7 +956,7 @@ func _show_achievements_overlay(parent: Node) -> void:
 	action.pressed.connect(_show_level_select)
 	content.add_child(action)
 	var close_button: Button = _hotspot_button("CloseAchievementsButton", Vector2(970, 122), Vector2(118, 112), "关闭")
-	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(content.get_parent() as Control, close_button))
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
 
@@ -995,7 +995,7 @@ func _show_shop_overlay(parent: Node) -> void:
 	_shop_yarn_trap_product(content, fish_counter, Vector2(744, 294), Vector2(214, 316))
 
 	var close_button: Button = _hotspot_button("CloseShopButton", Vector2(960, 112), Vector2(128, 116), "关闭")
-	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(content.get_parent() as Control, close_button))
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
 
