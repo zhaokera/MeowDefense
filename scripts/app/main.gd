@@ -119,6 +119,7 @@ var _max_energy: int = DEFAULT_MAX_ENERGY
 var _energy: int = DEFAULT_MAX_ENERGY
 var _energy_refilled_on: String = ""
 var _hotspot_feedback_index: int = 0
+var _settings_control_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -393,6 +394,7 @@ func _show_settings_overlay(parent: Node) -> void:
 	var music_frame: TextureRect = _ui_texture_rect("SettingsMusicToggleFrame", SETTINGS_TOGGLE_ON if _music_enabled else SETTINGS_TOGGLE_OFF, Vector2(680, 248), Vector2(216, 74))
 	overlay.add_child(music_frame)
 	var music_toggle: CheckButton = _invisible_toggle("MusicToggle", Rect2(music_frame.position, music_frame.size), _music_enabled)
+	_attach_settings_control_feedback(music_toggle, music_frame)
 	music_toggle.toggled.connect(func(enabled: bool) -> void:
 		_music_enabled = enabled
 		music_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
@@ -404,6 +406,7 @@ func _show_settings_overlay(parent: Node) -> void:
 	var effects_frame: TextureRect = _ui_texture_rect("SettingsEffectsToggleFrame", SETTINGS_TOGGLE_ON if _effects_enabled else SETTINGS_TOGGLE_OFF, Vector2(680, 344), Vector2(216, 74))
 	overlay.add_child(effects_frame)
 	var effects_toggle: CheckButton = _invisible_toggle("EffectsToggle", Rect2(effects_frame.position, effects_frame.size), _effects_enabled)
+	_attach_settings_control_feedback(effects_toggle, effects_frame)
 	effects_toggle.toggled.connect(func(enabled: bool) -> void:
 		_effects_enabled = enabled
 		effects_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
@@ -430,6 +433,7 @@ func _show_settings_overlay(parent: Node) -> void:
 		_position_settings_slider_knob(slider_knob, slider)
 		_save_progress()
 	)
+	_attach_settings_control_feedback(slider, slider_knob)
 	overlay.add_child(slider)
 
 	var close_frame: TextureRect = _ui_texture_rect("SettingsCloseFrame", SETTINGS_CLOSE_BUTTON, Vector2(474, 570), Vector2(332, 92))
@@ -1873,6 +1877,48 @@ func _show_hotspot_tap_feedback(button: Button, local_position: Vector2) -> void
 	feedback.pivot_offset = feedback.size * 0.5
 	feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	feedback.z_index = button.z_index + 20
+	feedback.scale = Vector2(0.72, 0.72)
+	(parent as Control).add_child(feedback)
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "scale", Vector2(1.10, 1.10), 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(feedback.queue_free)
+
+
+func _attach_settings_control_feedback(control: Control, target: Control) -> void:
+	control.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton:
+			var mouse: InputEventMouseButton = event as InputEventMouseButton
+			if mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT:
+				_show_settings_control_tap_feedback(control, mouse.position)
+				_pulse_control(target)
+		elif event is InputEventScreenTouch:
+			var touch: InputEventScreenTouch = event as InputEventScreenTouch
+			if touch.pressed:
+				_show_settings_control_tap_feedback(control, touch.position)
+				_pulse_control(target)
+	)
+
+
+func _show_settings_control_tap_feedback(control: Control, local_position: Vector2) -> void:
+	if control == null or not is_instance_valid(control) or control.get_parent() == null:
+		return
+	var parent: Node = control.get_parent()
+	if not parent is Control:
+		return
+	_settings_control_feedback_index += 1
+	var feedback: TextureRect = TextureRect.new()
+	feedback.name = "SettingsControlTapFeedback%d" % _settings_control_feedback_index
+	feedback.texture = UI_TAP_FEEDBACK_TEXTURE
+	feedback.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var edge: float = clamp(max(control.size.x, control.size.y) * 0.72, 72.0, 150.0)
+	feedback.size = Vector2(edge, edge)
+	feedback.position = control.position + local_position - feedback.size * 0.5
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.z_index = control.z_index + 24
 	feedback.scale = Vector2(0.72, 0.72)
 	(parent as Control).add_child(feedback)
 	var tween: Tween = feedback.create_tween()

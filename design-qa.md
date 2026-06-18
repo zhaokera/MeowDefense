@@ -570,3 +570,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_tap_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_tap_feedback.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/battle_tap_feedback.png`; GUI capture was required because headless viewport texture capture returned a null texture.
 - Passed battle tap, build input, battle speed/wave, pause menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite.
+
+**Image2 Settings Control Feedback**
+- Settings overlay toggle and slider hit areas now spawn Image2 tap feedback using `/Users/zhaok/cat/assets/generated/ui/ui_tap_feedback_paw_spark.png` while keeping the visible toggle, track, and knob art Image2-driven.
+- Music/effects toggles pulse their Image2 toggle frames on pointer/touch press; the volume slider pulses the Image2 knob and keeps the feedback centered on the pointer.
+- Added `/Users/zhaok/cat/tests/run_settings_control_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_settings_control_feedback.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/settings_control_feedback.png`; GUI capture was required because headless viewport texture capture returned a null texture.
+- Passed settings control feedback, hotspot feedback, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite.
