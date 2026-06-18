@@ -555,3 +555,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_overlay_dim_asset_tests.gd` and extended `/Users/zhaok/cat/tests/run_pause_menu_tests.gd` to prevent ColorRect dim regressions and pause overlay z-order regressions.
 - Regenerated `/Users/zhaok/cat/artifacts/settings_overlay.png`, `/Users/zhaok/cat/artifacts/pause_menu.png`, and `/Users/zhaok/cat/artifacts/pause_settings.png`; headless screenshots could not read the viewport texture, so GUI Godot capture was used for visual evidence.
 - Passed overlay dim, menu, pause menu, playthrough, scene smoke, and unit tests.
+
+**Image2 Hotspot Tap Feedback**
+- Added `/Users/zhaok/cat/assets/generated/ui/ui_tap_feedback_design_reference.png` and `/Users/zhaok/cat/assets/generated/ui/ui_tap_feedback_paw_spark.png` for lightweight paw sparkle feedback on transparent hit-area buttons.
+- Base `_hotspot_button()` controls now spawn a non-blocking Image2 `TextureRect` tap effect at the pointer position, with a center fallback for programmatic or keyboard-triggered button presses.
+- Added `/Users/zhaok/cat/tests/run_hotspot_feedback_tests.gd` to verify project-bound tap art, `UI_TAP_FEEDBACK_TEXTURE`, pointer-centered feedback, and non-blocking input.
+- Added `/Users/zhaok/cat/tests/capture_hotspot_feedback.gd` and regenerated `/Users/zhaok/cat/artifacts/hotspot_tap_feedback.png` for the main menu start-button press state.
+- Passed the hotspot feedback, menu, and scene smoke checks.

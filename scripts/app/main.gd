@@ -5,6 +5,7 @@ const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
 const COMMON_OVERLAY_DIM_TEXTURE := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
+const UI_TAP_FEEDBACK_TEXTURE := preload("res://assets/generated/ui/ui_tap_feedback_paw_spark.png")
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
 const LOCKED_LEVEL_FEEDBACK_DESIGN := preload("res://assets/generated/ui/locked_level_feedback_design_reference.png")
 const LOCKED_LEVEL_FEEDBACK_BURST := preload("res://assets/generated/ui/locked_level_feedback_burst.png")
@@ -117,6 +118,7 @@ var _backpack_organized: bool = false
 var _max_energy: int = DEFAULT_MAX_ENERGY
 var _energy: int = DEFAULT_MAX_ENERGY
 var _energy_refilled_on: String = ""
+var _hotspot_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -1799,6 +1801,23 @@ func _hotspot_button(button_name: String, position: Vector2, size: Vector2, tool
 	button.add_theme_stylebox_override("hover", _transparent_style())
 	button.add_theme_stylebox_override("pressed", _transparent_style())
 	button.add_theme_stylebox_override("disabled", _transparent_style())
+	button.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton:
+			var mouse: InputEventMouseButton = event as InputEventMouseButton
+			if mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT:
+				_show_hotspot_tap_feedback(button, mouse.position)
+				button.set_meta("hotspot_pointer_feedback_msec", Time.get_ticks_msec())
+		elif event is InputEventScreenTouch:
+			var touch: InputEventScreenTouch = event as InputEventScreenTouch
+			if touch.pressed:
+				_show_hotspot_tap_feedback(button, touch.position)
+				button.set_meta("hotspot_pointer_feedback_msec", Time.get_ticks_msec())
+	)
+	button.button_down.connect(func() -> void:
+		var last_pointer_msec: int = int(button.get_meta("hotspot_pointer_feedback_msec", -1000))
+		if Time.get_ticks_msec() - last_pointer_msec > 80:
+			_show_hotspot_tap_feedback(button, button.size * 0.5)
+	)
 	return button
 
 
@@ -1834,6 +1853,33 @@ func _attach_button_feedback(button: Button, target: Control) -> void:
 	button.mouse_exited.connect(func() -> void: _scale_control(target, 1.0, 0.10))
 	button.button_down.connect(func() -> void: _scale_control(target, 0.95, 0.05))
 	button.button_up.connect(func() -> void: _scale_control(target, 1.0, 0.08))
+
+
+func _show_hotspot_tap_feedback(button: Button, local_position: Vector2) -> void:
+	if button == null or not is_instance_valid(button) or button.get_parent() == null:
+		return
+	var parent: Node = button.get_parent()
+	if not parent is Control:
+		return
+	_hotspot_feedback_index += 1
+	var feedback: TextureRect = TextureRect.new()
+	feedback.name = "HotspotTapFeedback%d" % _hotspot_feedback_index
+	feedback.texture = UI_TAP_FEEDBACK_TEXTURE
+	feedback.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var edge: float = clamp(max(button.size.x, button.size.y) * 0.72, 72.0, 150.0)
+	feedback.size = Vector2(edge, edge)
+	feedback.position = button.position + local_position - feedback.size * 0.5
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.z_index = button.z_index + 20
+	feedback.scale = Vector2(0.72, 0.72)
+	(parent as Control).add_child(feedback)
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "scale", Vector2(1.10, 1.10), 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(feedback.queue_free)
 
 
 func _pulse_control(target: Control) -> void:

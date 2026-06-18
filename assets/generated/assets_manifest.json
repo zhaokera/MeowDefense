@@ -279,6 +279,16 @@
       "prompt_summary": "Reusable warm Image2-derived vignette texture with subtle paw and fish-bone details for modal dim layers."
     },
     {
+      "id": "ui_tap_feedback_design_reference",
+      "path": "res://assets/generated/ui/ui_tap_feedback_design_reference.png",
+      "prompt_summary": "Image2-first main menu design reference showing the lightweight paw sparkle tap feedback on a transparent hotspot button."
+    },
+    {
+      "id": "ui_tap_feedback_paw_spark",
+      "path": "res://assets/generated/ui/ui_tap_feedback_paw_spark.png",
+      "prompt_summary": "Transparent Image2-derived paw badge sparkle used for tactile feedback on transparent hotspot buttons."
+    },
+    {
       "id": "main_menu_design_reference",
       "path": "res://assets/generated/ui/main_menu_design_reference.png",
       "prompt_summary": "Image2 full-screen main menu design reference used directly as the high-fidelity menu background."
