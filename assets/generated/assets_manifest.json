@@ -914,6 +914,21 @@
       "prompt_summary": "Cropped Image2 fish reward chip used by the victory result reward pulse animation."
     },
     {
+      "id": "battle_wave_rush_feedback_design_reference",
+      "path": "res://assets/generated/ui/battle_wave_rush_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle feedback reference for accelerating the next wave from the wave preview chip."
+    },
+    {
+      "id": "battle_wave_rush_burst_source",
+      "path": "res://assets/generated/ui/battle_wave_rush_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art for the battle wave-rush feedback burst."
+    },
+    {
+      "id": "battle_wave_rush_burst",
+      "path": "res://assets/generated/ui/battle_wave_rush_burst.png",
+      "prompt_summary": "Transparent Image2 speed-fish burst used when the player taps the wave preview chip to start a wave early."
+    },
+    {
       "id": "level_001_thumb",
       "path": "res://assets/generated/ui/level_001_thumb.png",
       "prompt_summary": "Level 1 thumbnail copied from the Image2 meadow background."

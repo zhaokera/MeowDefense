@@ -16,6 +16,7 @@ const BattleHudBottomDockTexture := preload("res://assets/generated/ui/battle_hu
 const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_pause_button.png")
 const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
 const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
+const BattleWaveRushBurstTexture := preload("res://assets/generated/ui/battle_wave_rush_burst.png")
 const BattleSpeedButtonTexture := preload("res://assets/generated/ui/battle_speed_button.png")
 const BattlePauseMenuPanelTexture := preload("res://assets/generated/ui/battle_pause_menu_panel.png")
 const BattlePauseMenuGreenButtonTexture := preload("res://assets/generated/ui/battle_pause_button_green.png")
@@ -100,6 +101,7 @@ var _tower_sell_feedback_index: int = 0
 var _tower_fire_feedback_index: int = 0
 var _projectile_index: int = 0
 var _battle_tap_feedback_index: int = 0
+var _wave_rush_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -132,6 +134,7 @@ func start_level(path: String) -> void:
 	_tower_sell_feedback_index = 0
 	_tower_fire_feedback_index = 0
 	_projectile_index = 0
+	_wave_rush_feedback_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -291,6 +294,18 @@ func _build_hud() -> void:
 	_wave_preview_label.size = Vector2(350, 34)
 	_wave_preview_label.add_theme_font_size_override("font_size", 20)
 	_hud.add_child(_wave_preview_label)
+
+	var rush_wave_button: Button = Button.new()
+	rush_wave_button.name = "RushNextWaveButton"
+	rush_wave_button.text = ""
+	rush_wave_button.position = wave_preview_frame.position
+	rush_wave_button.size = wave_preview_frame.size
+	rush_wave_button.tooltip_text = "提前开波"
+	rush_wave_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	_make_button_transparent(rush_wave_button)
+	_attach_press_feedback(rush_wave_button, wave_preview_frame)
+	rush_wave_button.pressed.connect(_rush_next_wave)
+	_hud.add_child(rush_wave_button)
 
 	var bottom_frame: TextureRect = _hud_texture_rect("BattleHudBottomFrame", BattleHudBottomDockTexture, Vector2(14, 528), Vector2(920, 210))
 	_hud.add_child(bottom_frame)
@@ -1146,6 +1161,76 @@ func _toggle_battle_speed() -> void:
 		_animate_control_scale(_speed_control_frame, 1.08, 0.08)
 	if _tip_label != null:
 		_tip_label.text = "战斗速度已切换为 %dx。" % int(_battle_speed_multiplier)
+
+
+func _rush_next_wave() -> void:
+	if finished or level == null:
+		return
+	var state: Dictionary = _next_rushable_wave_state()
+	if state.is_empty():
+		if _tip_label != null:
+			_tip_label.text = "已经没有可提前的波次，守住清场。"
+		_show_wave_rush_feedback("没有可提前的波次")
+		_update_hud()
+		return
+
+	var wave_index: int = int(state.get("index", 1))
+	state["start_time"] = min(float(state.get("start_time", elapsed)), elapsed)
+	state["next_time"] = elapsed
+	_spawn_due_enemies()
+	_show_wave_rush_feedback("提前开波 第 %d/%d 波" % [wave_index, _wave_states.size()])
+	if _tip_label != null:
+		_tip_label.text = "已提前开波，马上补强猫爪位！"
+	_update_hud()
+
+
+func _next_rushable_wave_state() -> Dictionary:
+	for state: Dictionary in _wave_states:
+		if int(state.get("remaining", 0)) <= 0:
+			continue
+		var next_time: float = float(state.get("next_time", state.get("start_time", 0.0)))
+		if next_time > elapsed + 0.05:
+			return state
+	return {}
+
+
+func _show_wave_rush_feedback(message: String) -> void:
+	if _hud == null:
+		return
+	_wave_rush_feedback_index += 1
+	var feedback: TextureRect = _hud_texture_rect("BattleWaveRushFeedback%d" % _wave_rush_feedback_index, BattleWaveRushBurstTexture, Vector2(470, 42), Vector2(340, 192))
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 88
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.70, 0.70)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label(message)
+	label.name = "BattleWaveRushFeedbackLabel"
+	label.position = Vector2(38, 132)
+	label.size = Vector2(264, 44)
+	label.add_theme_font_size_override("font_size", 21)
+	label.add_theme_color_override("font_color", Color(0.35, 0.14, 0.04))
+	label.add_theme_constant_override("outline_size", 4)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var preview_frame: Control = _hud.find_child("WavePreviewFrame", true, false) as Control
+	if preview_frame != null:
+		_animate_control_scale(preview_frame, 1.07, 0.08)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -4.0, 0.07).set_delay(0.12).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 4.0, 0.08).set_delay(0.20).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.08).set_delay(0.30).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 18.0, 0.44).set_delay(0.42).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.28).set_delay(1.00).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.34)
 
 
 func _build_yarn_trap_hud() -> void:

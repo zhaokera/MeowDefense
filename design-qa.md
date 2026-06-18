@@ -711,3 +711,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_image2_screen_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_image2_screen_exit_animation.gd`; setup-only tests and capture scripts now use `_show_main_menu_now()` / `_show_level_select_now()` so they do not mask the player-facing transition test.
 - Regenerated `/Users/zhaok/cat/artifacts/main_menu_screen_exit_animation.png` and `/Users/zhaok/cat/artifacts/level_select_screen_exit_animation.png`; GUI capture was used for visual evidence.
 - Passed Image2 screen exit animation, Image2 screen entry animation, menu, energy flow, progression persistence, locked-level feedback, town feature overlay, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 80 tests`.
+
+**Image2 Battle Wave Rush**
+- Generated and archived `/Users/zhaok/cat/assets/generated/ui/battle_wave_rush_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_wave_rush_burst_source.png`, and transparent runtime `/Users/zhaok/cat/assets/generated/ui/battle_wave_rush_burst.png`.
+- The existing Image2 `WavePreviewFrame` now has a transparent `RushNextWaveButton`; pressing it keeps the visible chip art as the source of truth, advances the next pending wave to the current time, spawns the first enemy immediately, and updates the preview label to the active wave state.
+- Added `BattleWaveRushFeedback` with the generated Image2 burst, dynamic `提前开波` feedback text, wave-chip pulse, and bottom build-tip guidance so the action feels tactile instead of silently changing timers.
+- Added `/Users/zhaok/cat/tests/run_battle_wave_rush_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_rush.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_wave_rush_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed battle wave rush, battle speed/wave, battle tap feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 81 tests`.
