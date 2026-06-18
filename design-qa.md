@@ -727,3 +727,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_max_level_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_max_level.gd`.
 - Captured `/Users/zhaok/cat/artifacts/tower_max_level_overlay.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed tower max level, tower action, tower upgrade feedback, playthrough, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 82 tests`.
+
+**Image2 Battle Tower Affordability State**
+- Added battle-specific project asset `/Users/zhaok/cat/assets/generated/ui/battle_tower_card_insufficient_fish_stamp.png`, derived from the existing Image2 insufficient-fish stamp, so unaffordable tower cards use raster art instead of a code-drawn warning.
+- Each battle tower card now exposes `InsufficientFishState` and dynamic `InsufficientFishLabel` layers; `_update_hud()` refreshes them whenever fish changes.
+- When a tower card is unaffordable, the card dims, the Image2 stamp appears, and the label shows the missing fish amount, while the transparent tower-card hit area still handles selection feedback.
+- Added `/Users/zhaok/cat/tests/run_battle_tower_affordability_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_tower_affordability.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_tower_affordability.png`; GUI capture was used for visual evidence.
+- Passed battle tower affordability, tower selector card, build input, battle resource feedback, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 83 tests`.

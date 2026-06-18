@@ -804,6 +804,11 @@
       "prompt_summary": "Transparent Image2 golden paw selected-state overlay for battle tower selector cards."
     },
     {
+      "id": "battle_tower_card_insufficient_fish_stamp",
+      "path": "res://assets/generated/ui/battle_tower_card_insufficient_fish_stamp.png",
+      "prompt_summary": "Feature-specific Image2 red paw and empty-pouch stamp layered over unaffordable battle tower selector cards."
+    },
+    {
       "id": "shop_overlay_design_reference",
       "path": "res://assets/generated/ui/shop_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen shop overlay design used directly as the market popup background."

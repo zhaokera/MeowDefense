@@ -38,6 +38,7 @@ const BattleYarnTrapEmptyBurstTexture := preload("res://assets/generated/ui/batt
 const BattleTowerCardOrangeTexture := preload("res://assets/generated/ui/battle_tower_card_orange_cat.png")
 const BattleTowerCardTabbyTexture := preload("res://assets/generated/ui/battle_tower_card_tabby_slow_cat.png")
 const BattleTowerCardSelectedBadgeTexture := preload("res://assets/generated/ui/battle_tower_card_selected_badge.png")
+const BattleTowerCardInsufficientFishStampTexture := preload("res://assets/generated/ui/battle_tower_card_insufficient_fish_stamp.png")
 const TowerMaxLevelStampTexture := preload("res://assets/generated/ui/tower_max_level_stamp.png")
 const TowerMaxLevelBurstTexture := preload("res://assets/generated/ui/tower_max_level_burst.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
@@ -1191,6 +1192,13 @@ func _tower_select_card(tower_id: String) -> Control:
 	selected_state.visible = tower_id == _selected_tower_id
 	card.add_child(selected_state)
 
+	var insufficient_state: TextureRect = _hud_texture_rect(_tower_insufficient_state_name(tower_id), BattleTowerCardInsufficientFishStampTexture, Vector2(92, 8), Vector2(76, 76))
+	insufficient_state.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	insufficient_state.z_index = 5
+	insufficient_state.visible = false
+	insufficient_state.modulate = Color(1.0, 1.0, 1.0, 0.94)
+	card.add_child(insufficient_state)
+
 	var name_label: Label = _hud_label(str(stats.get("name", tower_id)))
 	name_label.name = _tower_label_name(tower_id, "NameLabel")
 	name_label.position = Vector2(22, 106)
@@ -1212,6 +1220,20 @@ func _tower_select_card(tower_id: String) -> Control:
 	cost_label.add_theme_constant_override("outline_size", 2)
 	card.add_child(cost_label)
 
+	var insufficient_label: Label = _hud_label("")
+	insufficient_label.name = _tower_insufficient_label_name(tower_id)
+	insufficient_label.position = Vector2(101, 72)
+	insufficient_label.size = Vector2(68, 24)
+	insufficient_label.z_index = 6
+	insufficient_label.visible = false
+	insufficient_label.add_theme_font_size_override("font_size", 13)
+	insufficient_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.56))
+	insufficient_label.add_theme_color_override("font_outline_color", Color(0.58, 0.10, 0.04, 0.95))
+	insufficient_label.add_theme_constant_override("outline_size", 3)
+	insufficient_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	insufficient_label.clip_text = true
+	card.add_child(insufficient_label)
+
 	var button: Button = Button.new()
 	button.name = _tower_button_name(tower_id)
 	button.text = ""
@@ -1231,7 +1253,11 @@ func _select_tower(tower_id: String) -> void:
 		return
 	_selected_tower_id = tower_id
 	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
-	_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
+	var cost: int = int(stats.get("cost", 0))
+	if coins < cost:
+		_tip_label.text = "已选择：%s，还差 %d 小鱼干。" % [str(stats.get("name", tower_id)), max(1, cost - coins)]
+	else:
+		_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
 	_update_tower_selector_state()
 	_show_tower_card_selection_feedback(tower_id)
 
@@ -1241,12 +1267,26 @@ func _update_tower_selector_state() -> void:
 		return
 	for tower_id: String in level.allowed_towers:
 		var selected: bool = tower_id == _selected_tower_id
+		var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
+		var cost: int = int(stats.get("cost", 0))
+		var insufficient: bool = coins < cost
 		var selected_state: TextureRect = _hud.find_child(_tower_selected_state_name(tower_id), true, false) as TextureRect
 		if selected_state != null:
 			selected_state.visible = selected
+		var insufficient_state: TextureRect = _hud.find_child(_tower_insufficient_state_name(tower_id), true, false) as TextureRect
+		if insufficient_state != null:
+			insufficient_state.visible = insufficient
+		var insufficient_label: Label = _hud.find_child(_tower_insufficient_label_name(tower_id), true, false) as Label
+		if insufficient_label != null:
+			insufficient_label.visible = insufficient
+			if insufficient:
+				insufficient_label.text = "差 %d" % max(1, cost - coins)
 		var frame: TextureRect = _hud.find_child(_tower_card_frame_name(tower_id), true, false) as TextureRect
 		if frame != null:
-			frame.modulate = Color.WHITE if selected else Color(0.82, 0.78, 0.70, 0.88)
+			if insufficient:
+				frame.modulate = Color(0.70, 0.64, 0.57, 0.78)
+			else:
+				frame.modulate = Color.WHITE if selected else Color(0.82, 0.78, 0.70, 0.88)
 
 
 func _show_tower_card_selection_feedback(tower_id: String) -> void:
@@ -1501,6 +1541,14 @@ func _tower_card_frame_name(tower_id: String) -> String:
 
 func _tower_selected_state_name(tower_id: String) -> String:
 	return "%sSelectedState" % _tower_card_container_name(tower_id)
+
+
+func _tower_insufficient_state_name(tower_id: String) -> String:
+	return "%sInsufficientFishState" % _tower_card_container_name(tower_id)
+
+
+func _tower_insufficient_label_name(tower_id: String) -> String:
+	return "%sInsufficientFishLabel" % _tower_card_container_name(tower_id)
 
 
 func _tower_label_name(tower_id: String, suffix: String) -> String:
@@ -1856,6 +1904,7 @@ func _update_hud() -> void:
 	if _wave_preview_label != null:
 		_wave_preview_label.text = _wave_preview_text()
 	_update_yarn_trap_hud()
+	_update_tower_selector_state()
 
 
 func _wave_preview_text() -> String:
