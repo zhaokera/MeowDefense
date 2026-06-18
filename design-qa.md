@@ -768,3 +768,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_build_slot_affordability_preview_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_affordability_preview.gd`.
 - Captured `/Users/zhaok/cat/artifacts/build_slot_affordability_preview.png`; GUI capture was used for visual evidence.
 - Passed build slot affordability preview, build slot tower ghost, build slot range preview, battle tower affordability, battle resource feedback, build input, tower selector card, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 87 tests`.
+
+**Image2 Build Slot Affordability Feedback**
+- Tapping an unaffordable empty build slot now pulses the local Image2 insufficient-fish stamp, so the failure feedback happens at the exact slot the player touched instead of only in the HUD.
+- The tap still keeps the existing global `BattleResourceFeedback`, does not create a tower, and does not spend fish.
+- The local stamp marks `image2_slot_affordability_feedback` during the pop animation and restores its texture-scaled badge size afterward.
+- Added `/Users/zhaok/cat/tests/run_build_slot_affordability_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_affordability_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/build_slot_affordability_feedback.png`; GUI capture was used for visual evidence.
+- Passed build slot affordability feedback, build slot affordability preview, battle resource feedback, build slot tower ghost, build slot range preview, build input, tower selector card, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 88 tests`.

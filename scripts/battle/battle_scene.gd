@@ -542,6 +542,8 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	var cost: int = int(stats.get("cost", 60))
 	if coins < cost:
 		_tip_label.text = "小鱼干不够，先挡住下一波小老鼠。"
+		_update_build_slot_tower_ghosts()
+		_show_build_slot_affordability_press_feedback(slot)
 		_show_resource_shortage_feedback("小鱼干不够  还差 %d" % max(1, cost - coins), slot.position)
 		return
 	coins -= cost
@@ -775,8 +777,48 @@ func _create_build_slot_affordability_stamp(index: int) -> Sprite2D:
 	var texture_size: Vector2 = BattleTowerCardInsufficientFishStampTexture.get_size()
 	var ratio: float = 58.0 / max(1.0, max(texture_size.x, texture_size.y))
 	stamp.scale = Vector2(ratio, ratio)
+	stamp.set_meta("image2_slot_affordability_base_scale", stamp.scale)
 	stamp.modulate = Color(1.0, 1.0, 1.0, 0.96)
 	return stamp
+
+
+func _show_build_slot_affordability_press_feedback(slot: Node2D) -> void:
+	var index: int = _build_slot_index(slot)
+	if index <= 0:
+		return
+	var stamp: Sprite2D = slot.get_node_or_null(NodePath(_build_slot_affordability_stamp_name(index))) as Sprite2D
+	if stamp == null:
+		stamp = _create_build_slot_affordability_stamp(index)
+		slot.add_child(stamp)
+	stamp.visible = true
+	stamp.set_meta("image2_slot_affordability_feedback", true)
+	var base_scale: Vector2 = stamp.get_meta("image2_slot_affordability_base_scale", stamp.scale) as Vector2
+	stamp.scale = base_scale * 1.34
+	stamp.rotation = -0.14
+	stamp.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	var tween: Tween = stamp.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(stamp, "scale", base_scale * 1.08, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(stamp, "rotation", 0.08, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(stamp, "modulate:a", 0.96, 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_property(stamp, "scale", base_scale, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(stamp, "rotation", 0.0, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(func() -> void:
+		if stamp != null and is_instance_valid(stamp):
+			stamp.set_meta("image2_slot_affordability_feedback", false)
+	)
+
+
+func _build_slot_index(slot: Node2D) -> int:
+	if _slot_layer == null or slot == null:
+		return -1
+	var index: int = 1
+	for child: Node in _slot_layer.get_children():
+		if child == slot:
+			return index
+		if child is Node2D:
+			index += 1
+	return -1
 
 
 func _update_build_slot_affordability_states() -> void:
