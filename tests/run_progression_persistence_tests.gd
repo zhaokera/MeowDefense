@@ -24,7 +24,7 @@ func _run() -> void:
 	root.add_child(first_instance)
 	await process_frame
 
-	first_instance.call("_show_level_select")
+	first_instance.call("_show_level_select_now")
 	await process_frame
 	_assert_button_enabled(first_instance, "StartLevel1Button", true, "fresh progress should unlock level one")
 	_assert_button_enabled(first_instance, "StartLevel2Button", false, "fresh progress should lock level two")
@@ -41,7 +41,7 @@ func _run() -> void:
 	second_instance.set("_save_path", TEST_SAVE_PATH)
 	root.add_child(second_instance)
 	await process_frame
-	second_instance.call("_show_level_select")
+	second_instance.call("_show_level_select_now")
 	await process_frame
 
 	_assert_true(int(second_instance.call("_level_stars", 1)) == 3, "saved progress should restore best stars for level one")

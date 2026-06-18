@@ -23,7 +23,7 @@ func _capture() -> void:
 
 	instance.set("_energy", 0)
 	instance.set("_max_energy", 15)
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var start_button: Button = instance.find_child("StartLevel1Button", true, false) as Button
 	if start_button == null:

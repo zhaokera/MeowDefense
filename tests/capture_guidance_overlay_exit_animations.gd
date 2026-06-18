@@ -39,7 +39,7 @@ func _capture() -> void:
 
 
 func _capture_locked_level_exit(instance: Node) -> bool:
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var locked_info: Button = instance.find_child("LockedLevel2InfoButton", true, false) as Button
 	if locked_info == null:
@@ -60,7 +60,7 @@ func _capture_locked_level_exit(instance: Node) -> bool:
 func _capture_energy_empty_exit(instance: Node) -> bool:
 	instance.set("_energy", 0)
 	instance.set("_max_energy", 15)
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var start_level: Button = instance.find_child("StartLevel1Button", true, false) as Button
 	if start_level == null:
@@ -79,7 +79,7 @@ func _capture_energy_empty_exit(instance: Node) -> bool:
 
 
 func _capture_daily_task_exit(instance: Node) -> bool:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	var task_button: Button = instance.find_child("DailyTaskButton", true, false) as Button
 	if task_button == null:

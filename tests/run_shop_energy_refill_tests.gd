@@ -70,7 +70,7 @@ func _run() -> void:
 	await process_frame
 	_assert_true(_int_property(reloaded, "_total_fish") == 15, "fish total should persist after energy refill")
 	_assert_true(_int_property(reloaded, "_energy") == 5, "energy refill should persist after reload")
-	reloaded.call("_show_level_select")
+	reloaded.call("_show_level_select_now")
 	await process_frame
 	var start_level: Button = _assert_button(reloaded, "StartLevel1Button", "refilled energy should allow selecting level one")
 	if start_level != null:

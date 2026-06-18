@@ -65,17 +65,20 @@ func _run() -> void:
 
 	if start_button != null:
 		start_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_exists(instance, "LevelSelectScreen", "start button should show level select")
 		var back_button: Button = _assert_button(instance, "BackToMainButton", "level select should return to main menu")
 		if back_button != null:
 			back_button.emit_signal("pressed")
-			await process_frame
+			for _frame: int in range(45):
+				await process_frame
 			_assert_exists(instance, "MainMenuScreen", "back button should return to main menu")
 			start_button = _assert_button(instance, "StartLevelSelectButton", "main menu start should still exist after returning")
 			if start_button != null:
 				start_button.emit_signal("pressed")
-				await process_frame
+				for _frame: int in range(45):
+					await process_frame
 		var level_button: Button = _assert_button(instance, "StartLevel1Button", "level select should start level one")
 		for level_index: int in range(1, 6):
 			_assert_button(instance, "StartLevel%dButton" % level_index, "level select should expose level %d" % level_index)
@@ -111,7 +114,7 @@ func _run() -> void:
 						_assert_true(level_two_button.disabled, "level two should stay locked until level one is cleared")
 						_assert_exists(instance, "Level2LockedBadge", "locked level two should show a lock badge")
 						instance.set("_unlocked_level", 2)
-						instance.call("_show_level_select")
+						instance.call("_show_level_select_now")
 						await process_frame
 						level_two_button = _assert_button(instance, "StartLevel2Button", "unlocked level two should be playable")
 						_assert_missing(instance, "Level2LockedBadge", "unlocked level two should hide the lock badge")

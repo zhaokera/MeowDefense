@@ -18,7 +18,7 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	await process_frame
 	await process_frame

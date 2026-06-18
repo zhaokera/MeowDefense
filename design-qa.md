@@ -704,3 +704,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_sell_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_sell_action_exit_animation.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/tower_sell_action_exit_animation.png`; GUI capture was used for visual evidence.
 - Passed tower sell action exit animation, tower action, battle overlay exit animation, tower sell feedback, tower upgrade feedback, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 79 tests`.
+
+**Image2 Screen Exit Animation**
+- Main menu and level-select transitions now run an Image2 full-screen exit animation before the next screen is built, so start, back, and bottom-navigation flows no longer hard-cut between static Image2 pages.
+- The outgoing screen marks `image2_screen_exit_animation`, disables all buttons under the exiting screen, ignores input, then fades, scales, and slides out before the target Image2 page runs its existing entry animation.
+- Added `/Users/zhaok/cat/tests/run_image2_screen_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_image2_screen_exit_animation.gd`; setup-only tests and capture scripts now use `_show_main_menu_now()` / `_show_level_select_now()` so they do not mask the player-facing transition test.
+- Regenerated `/Users/zhaok/cat/artifacts/main_menu_screen_exit_animation.png` and `/Users/zhaok/cat/artifacts/level_select_screen_exit_animation.png`; GUI capture was used for visual evidence.
+- Passed Image2 screen exit animation, Image2 screen entry animation, menu, energy flow, progression persistence, locked-level feedback, town feature overlay, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 80 tests`.

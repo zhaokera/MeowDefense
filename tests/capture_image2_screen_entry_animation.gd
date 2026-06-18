@@ -24,7 +24,7 @@ func _capture() -> void:
 	root.add_child(instance)
 	await process_frame
 
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var level_screen: Control = instance.find_child("LevelSelectScreen", true, false) as Control
 	if level_screen == null:

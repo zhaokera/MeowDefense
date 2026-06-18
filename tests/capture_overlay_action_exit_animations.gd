@@ -27,7 +27,7 @@ func _capture() -> void:
 
 func _capture_locked_level_action() -> void:
 	var instance: Node = await _main_instance()
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var locked_info: Button = instance.find_child("LockedLevel2InfoButton", true, false) as Button
 	if locked_info == null:

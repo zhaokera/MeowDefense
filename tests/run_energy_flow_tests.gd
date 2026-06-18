@@ -23,7 +23,7 @@ func _run() -> void:
 	first_day.set("_max_energy", 15)
 	_assert_true(_as_int(first_day.get("_energy")) == 1, "test setup should be able to set current energy")
 	_assert_true(_as_int(first_day.get("_max_energy")) == 15, "test setup should be able to set max energy")
-	first_day.call("_show_level_select")
+	first_day.call("_show_level_select_now")
 	await process_frame
 	var start_level: Button = _assert_button(first_day, "StartLevel1Button", "level one should be selectable")
 	if start_level != null:
@@ -32,7 +32,7 @@ func _run() -> void:
 	_assert_exists(first_day, "BattleScene", "starting a level with energy should enter battle")
 	_assert_true(_as_int(first_day.get("_energy")) == 0, "starting a level should consume one energy")
 
-	first_day.call("_show_level_select")
+	first_day.call("_show_level_select_now")
 	await process_frame
 	start_level = _assert_button(first_day, "StartLevel1Button", "level one should remain visible after returning")
 	if start_level != null:

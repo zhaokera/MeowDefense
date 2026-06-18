@@ -22,7 +22,7 @@ func _assert_locked_level_action_exits_before_starting_battle() -> void:
 	var instance: Node = await _main_instance()
 	if instance == null:
 		return
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var locked_info: Button = _find_by_name(instance, "LockedLevel2InfoButton") as Button
 	if locked_info != null:

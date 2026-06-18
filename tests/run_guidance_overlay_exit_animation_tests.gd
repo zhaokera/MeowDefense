@@ -39,7 +39,7 @@ func _run() -> void:
 
 
 func _open_locked_level_feedback(instance: Node) -> void:
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var locked_info: Button = _find_by_name(instance, "LockedLevel2InfoButton") as Button
 	if locked_info == null:
@@ -53,7 +53,7 @@ func _open_locked_level_feedback(instance: Node) -> void:
 func _open_energy_empty_overlay(instance: Node) -> void:
 	instance.set("_energy", 0)
 	instance.set("_max_energy", 15)
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var start_level: Button = _find_by_name(instance, "StartLevel1Button") as Button
 	if start_level == null:
@@ -65,7 +65,7 @@ func _open_energy_empty_overlay(instance: Node) -> void:
 
 
 func _open_daily_task_overlay(instance: Node) -> void:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	var task_button: Button = _find_by_name(instance, "DailyTaskButton") as Button
 	if task_button == null:

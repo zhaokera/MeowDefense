@@ -41,7 +41,7 @@ func _capture() -> void:
 
 
 func _capture_backpack_organize_reward_exit(instance: Node) -> bool:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	await process_frame
 	instance.set("_total_fish", 10)
@@ -71,7 +71,7 @@ func _capture_backpack_organize_reward_exit(instance: Node) -> bool:
 
 
 func _capture_achievement_claim_reward_exit(instance: Node) -> bool:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	await process_frame
 	instance.set("_best_stars_by_level", {1: 3})
@@ -100,7 +100,7 @@ func _capture_achievement_claim_reward_exit(instance: Node) -> bool:
 
 
 func _capture_shop_purchase_reward_exit(instance: Node) -> bool:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	await process_frame
 	instance.set("_total_fish", 110)
@@ -131,7 +131,7 @@ func _capture_shop_purchase_reward_exit(instance: Node) -> bool:
 
 
 func _capture_shop_insufficient_fish_exit(instance: Node) -> bool:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	await process_frame
 	instance.set("_shop_starter_claimed", true)

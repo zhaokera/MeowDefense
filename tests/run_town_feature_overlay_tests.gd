@@ -105,7 +105,8 @@ func _assert_level_select_shop(instance: Node) -> void:
 	if start_button == null:
 		return
 	start_button.emit_signal("pressed")
-	await process_frame
+	for _frame: int in range(45):
+		await process_frame
 	_assert_exists(instance, "LevelSelectScreen", "start should show level select")
 	var shop_button: Button = _assert_button(instance, "BottomShopButton", "level select should expose shop")
 	if shop_button == null:

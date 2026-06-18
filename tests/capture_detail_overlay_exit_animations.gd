@@ -62,7 +62,7 @@ func _capture_album_entry_detail_exit(instance: Node) -> bool:
 
 
 func _capture_backpack_item_detail_exit(instance: Node) -> bool:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	await process_frame
 	instance.set("_total_fish", 60)
@@ -92,7 +92,7 @@ func _capture_backpack_item_detail_exit(instance: Node) -> bool:
 
 
 func _capture_achievement_progress_guidance_exit(instance: Node) -> bool:
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	await process_frame
 	await process_frame
 	var achievements_button: Button = instance.find_child("BottomAchievementsButton", true, false) as Button

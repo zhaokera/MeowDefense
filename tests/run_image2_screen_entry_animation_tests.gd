@@ -25,7 +25,7 @@ func _run() -> void:
 	root.add_child(instance)
 	await process_frame
 
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	var level_screen: Control = _find_by_name(instance, "LevelSelectScreen") as Control
 	if level_screen == null:
 		_failures.append("level select screen should exist")
@@ -35,7 +35,7 @@ func _run() -> void:
 		await process_frame
 		_assert_true(level_screen.modulate.a > 0.0, "level select entry animation should start fading in after frames")
 
-	instance.call("_show_main_menu")
+	instance.call("_show_main_menu_now")
 	var main_screen: Control = _find_by_name(instance, "MainMenuScreen") as Control
 	if main_screen == null:
 		_failures.append("main menu screen should exist after returning")

@@ -136,7 +136,36 @@ func _clear_current() -> void:
 		_current = null
 
 
+func _begin_image2_screen_transition(target_screen_name: String, exit_offset: Vector2, finish_callback: Callable) -> bool:
+	if _current == null or not is_instance_valid(_current):
+		return false
+	if _current.name == target_screen_name:
+		return false
+	if not _current is Control:
+		return false
+	var outgoing: Control = _current as Control
+	if outgoing.name != "MainMenuScreen" and outgoing.name != "LevelSelectScreen":
+		return false
+	if bool(outgoing.get_meta("image2_screen_exit_animation", false)):
+		return true
+	var outgoing_ref: WeakRef = weakref(outgoing)
+	_animate_image2_screen_exit(outgoing, exit_offset, func() -> void:
+		var resolved: Object = outgoing_ref.get_ref()
+		if resolved is Control and _current == resolved:
+			_current = null
+		if finish_callback.is_valid():
+			finish_callback.call()
+	)
+	return true
+
+
 func _show_main_menu() -> void:
+	if _begin_image2_screen_transition("MainMenuScreen", Vector2(32, 0), Callable(self, "_show_main_menu_now")):
+		return
+	_show_main_menu_now()
+
+
+func _show_main_menu_now() -> void:
 	_clear_current()
 	_sync_energy_for_today()
 	var screen: Control = _image_design_screen("MainMenuScreen", MAIN_MENU_DESIGN)
@@ -187,6 +216,12 @@ func _show_main_menu() -> void:
 
 
 func _show_level_select() -> void:
+	if _begin_image2_screen_transition("LevelSelectScreen", Vector2(-32, 0), Callable(self, "_show_level_select_now")):
+		return
+	_show_level_select_now()
+
+
+func _show_level_select_now() -> void:
 	_clear_current()
 	_sync_energy_for_today()
 	var screen: Control = _image_design_screen("LevelSelectScreen", LEVEL_SELECT_DESIGN, "LevelSelectDesignBackground")
@@ -1823,6 +1858,31 @@ func _animate_image2_screen_entry(screen: Control, slide_offset: Vector2) -> voi
 	tween.tween_property(screen, "position", Vector2.ZERO, 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(screen, "scale", Vector2.ONE, 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(screen, "modulate:a", 1.0, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _animate_image2_screen_exit(screen: Control, slide_offset: Vector2, finish_callback: Callable = Callable()) -> void:
+	if screen == null or not is_instance_valid(screen):
+		if finish_callback.is_valid():
+			finish_callback.call()
+		return
+	if bool(screen.get_meta("image2_screen_exit_animation", false)):
+		return
+	screen.set_meta("image2_screen_exit_animation", true)
+	screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen.pivot_offset = VIEW_SIZE * 0.5
+	screen.modulate.a = min(screen.modulate.a, 0.96)
+	_disable_buttons_under(screen)
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(screen, "position", screen.position + slide_offset, 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_property(screen, "scale", Vector2(0.975, 0.975), 0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	tween.tween_property(screen, "modulate:a", 0.0, 0.13).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.chain().tween_callback(func() -> void:
+		if is_instance_valid(screen):
+			screen.queue_free()
+		if finish_callback.is_valid():
+			finish_callback.call()
+	)
 
 
 func _animate_result_screen_entry(screen: Control) -> void:

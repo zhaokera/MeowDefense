@@ -25,7 +25,7 @@ func _run() -> void:
 	root.add_child(instance)
 	await process_frame
 
-	instance.call("_show_level_select")
+	instance.call("_show_level_select_now")
 	await process_frame
 	var locked_start: Button = _assert_button(instance, "StartLevel2Button", "level two start button should exist")
 	if locked_start != null:
