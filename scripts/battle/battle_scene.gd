@@ -35,6 +35,7 @@ const SettingsCloseButtonTexture := preload("res://assets/generated/ui/settings_
 const YarnTrapItemIconTexture := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const YarnTrapFieldEffectTexture := preload("res://assets/generated/ui/yarn_trap_field_effect.png")
 const BattleYarnTrapEmptyBurstTexture := preload("res://assets/generated/ui/battle_yarn_trap_empty_burst.png")
+const BattleYarnTrapReadyBurstTexture := preload("res://assets/generated/ui/battle_yarn_trap_ready_burst.png")
 const BattleTowerCardOrangeTexture := preload("res://assets/generated/ui/battle_tower_card_orange_cat.png")
 const BattleTowerCardTabbyTexture := preload("res://assets/generated/ui/battle_tower_card_tabby_slow_cat.png")
 const BattleTowerCardSelectedBadgeTexture := preload("res://assets/generated/ui/battle_tower_card_selected_badge.png")
@@ -94,6 +95,7 @@ var yarn_traps_available: int = 0
 var _yarn_trap_count_label: Label
 var _yarn_trap_hud_icon: TextureRect
 var _yarn_trap_effect_index: int = 0
+var _yarn_trap_armed: bool = false
 var _enemy_reward_feedback_index: int = 0
 var _enemy_hit_feedback_index: int = 0
 var _enemy_defeat_feedback_index: int = 0
@@ -129,6 +131,7 @@ func start_level(path: String) -> void:
 	_selected_tower_id = level.allowed_towers[0] if not level.allowed_towers.is_empty() else "orange_cat"
 	_battle_speed_multiplier = 1.0
 	_yarn_trap_effect_index = 0
+	_yarn_trap_armed = false
 	_enemy_reward_feedback_index = 0
 	_enemy_hit_feedback_index = 0
 	_enemy_defeat_feedback_index = 0
@@ -176,6 +179,7 @@ func simulate_step(delta: float) -> void:
 		return
 	elapsed += delta
 	_spawn_due_enemies()
+	_try_fire_armed_yarn_trap()
 	for enemy: Node2D in enemies.duplicate():
 		if enemy != null and is_instance_valid(enemy) and enemy.has_method("advance_along_path"):
 			enemy.advance_along_path(delta)
@@ -1420,15 +1424,109 @@ func _use_yarn_trap() -> void:
 		return
 	var target: Node2D = _first_active_enemy()
 	if target == null:
-		if _tip_label != null:
-			_tip_label.text = "等小老鼠出现后再放毛线陷阱。"
+		_arm_yarn_trap()
+		return
+	_deploy_yarn_trap_on_target(target, false)
+
+
+func _arm_yarn_trap() -> void:
+	_yarn_trap_armed = true
+	if _tip_label != null:
+		_tip_label.text = "毛线陷阱已待机，等小老鼠出现就自动缠住。"
+	_show_yarn_trap_ready_feedback("毛线待机中")
+	_show_yarn_trap_ready_hud_glow()
+	_update_yarn_trap_hud()
+
+
+func _try_fire_armed_yarn_trap() -> void:
+	if not _yarn_trap_armed or yarn_traps_available <= 0:
+		if _yarn_trap_armed and yarn_traps_available <= 0:
+			_clear_yarn_trap_ready_state()
+		return
+	var target: Node2D = _first_active_enemy()
+	if target == null:
+		return
+	_deploy_yarn_trap_on_target(target, true)
+
+
+func _deploy_yarn_trap_on_target(target: Node2D, from_ready_state: bool) -> void:
+	if target == null or not is_instance_valid(target) or yarn_traps_available <= 0:
 		return
 	yarn_traps_available = max(0, yarn_traps_available - 1)
 	_apply_yarn_trap_at(target.global_position)
+	_clear_yarn_trap_ready_state()
 	_update_yarn_trap_hud()
 	yarn_traps_changed.emit(yarn_traps_available)
 	if _tip_label != null:
-		_tip_label.text = "毛线陷阱缠住了小老鼠！"
+		_tip_label.text = "待机毛线触发！" if from_ready_state else "毛线陷阱缠住了小老鼠！"
+
+
+func _clear_yarn_trap_ready_state() -> void:
+	_yarn_trap_armed = false
+	if _hud == null:
+		return
+	var ready_feedback: Node = _hud.find_child("BattleYarnTrapReadyFeedback", true, false)
+	if ready_feedback != null:
+		ready_feedback.queue_free()
+	var hud_glow: Node = _hud.find_child("YarnTrapReadyHudGlow", true, false)
+	if hud_glow != null:
+		hud_glow.queue_free()
+
+
+func _show_yarn_trap_ready_feedback(message: String) -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("BattleYarnTrapReadyFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+
+	var feedback: TextureRect = _hud_texture_rect("BattleYarnTrapReadyFeedback", BattleYarnTrapReadyBurstTexture, Vector2(808, 336), Vector2(300, 238))
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 85
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.72, 0.72)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label(message)
+	label.name = "BattleYarnTrapReadyFeedbackLabel"
+	label.position = Vector2(58, 158)
+	label.size = Vector2(188, 42)
+	label.add_theme_font_size_override("font_size", 21)
+	label.add_theme_color_override("font_color", Color(0.36, 0.16, 0.05))
+	label.add_theme_constant_override("outline_size", 4)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 0.92, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 10.0, 0.46).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _show_yarn_trap_ready_hud_glow() -> void:
+	if _hud == null or _yarn_trap_hud_icon == null:
+		return
+	var existing: Node = _hud.find_child("YarnTrapReadyHudGlow", true, false)
+	if existing != null:
+		existing.queue_free()
+	var glow: TextureRect = _hud_texture_rect("YarnTrapReadyHudGlow", BattleYarnTrapReadyBurstTexture, _yarn_trap_hud_icon.position - Vector2(28, 30), Vector2(154, 154))
+	glow.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	glow.z_index = _yarn_trap_hud_icon.z_index - 1
+	glow.process_mode = Node.PROCESS_MODE_ALWAYS
+	glow.pivot_offset = glow.size * 0.5
+	glow.modulate = Color(1.0, 0.96, 0.74, 0.78)
+	_hud.add_child(glow)
+
+	var tween: Tween = glow.create_tween()
+	tween.set_loops()
+	tween.set_parallel(true)
+	tween.tween_property(glow, "scale", Vector2(1.08, 1.08), 0.44).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(glow, "modulate:a", 0.48, 0.44).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.chain().tween_property(glow, "scale", Vector2.ONE, 0.44).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.parallel().tween_property(glow, "modulate:a", 0.78, 0.44).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _show_yarn_trap_empty_feedback() -> void:
@@ -1511,7 +1609,10 @@ func _update_yarn_trap_hud() -> void:
 	if _yarn_trap_count_label != null:
 		_yarn_trap_count_label.text = "x%d" % yarn_traps_available
 	if _yarn_trap_hud_icon != null:
-		_yarn_trap_hud_icon.modulate = Color.WHITE if yarn_traps_available > 0 else Color(0.70, 0.70, 0.70, 0.62)
+		if _yarn_trap_armed:
+			_yarn_trap_hud_icon.modulate = Color(1.0, 0.92, 0.56, 1.0)
+		else:
+			_yarn_trap_hud_icon.modulate = Color.WHITE if yarn_traps_available > 0 else Color(0.70, 0.70, 0.70, 0.62)
 	var trap_button: Button = null
 	if _hud != null:
 		trap_button = _hud.find_child("UseYarnTrapButton", true, false) as Button

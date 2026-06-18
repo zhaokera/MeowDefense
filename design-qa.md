@@ -735,3 +735,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_tower_affordability_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_tower_affordability.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_tower_affordability.png`; GUI capture was used for visual evidence.
 - Passed battle tower affordability, tower selector card, build input, battle resource feedback, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 83 tests`.
+
+**Image2 Battle Yarn Trap Ready State**
+- Added battle-specific project asset `/Users/zhaok/cat/assets/generated/ui/battle_yarn_trap_ready_burst.png`, derived from existing Image2 tap feedback artwork, for the armed yarn-trap state.
+- Pressing the yarn trap with inventory but no active enemies now arms the trap instead of silently doing nothing; it does not spend inventory until an enemy appears.
+- The armed state shows `BattleYarnTrapReadyFeedback` and `YarnTrapReadyHudGlow` using the Image2 ready burst, colors the yarn item icon, and updates the bottom guidance text.
+- When the next enemy appears, the armed trap auto-fires, consumes one trap, emits the inventory update, clears the HUD glow, and places the existing Image2 battlefield yarn effect.
+- Added `/Users/zhaok/cat/tests/run_battle_yarn_trap_ready_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_yarn_trap_ready.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_yarn_trap_ready.png`; GUI capture was used for visual evidence.
+- Passed battle yarn trap ready, yarn trap, yarn inventory flow, yarn empty feedback, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 84 tests`.

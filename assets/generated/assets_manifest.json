@@ -769,6 +769,11 @@
       "prompt_summary": "Transparent Image2 empty basket and yarn restock burst shown when the player taps the yarn trap button with zero inventory."
     },
     {
+      "id": "battle_yarn_trap_ready_burst",
+      "path": "res://assets/generated/ui/battle_yarn_trap_ready_burst.png",
+      "prompt_summary": "Feature-specific Image2 golden ready burst layered over the battle HUD when a yarn trap is armed before enemies appear."
+    },
+    {
       "id": "battle_tower_selector_cards_design_reference",
       "path": "res://assets/generated/ui/battle_tower_selector_cards_design_reference.png",
       "prompt_summary": "Image2 full-screen battle HUD design reference replacing text tower selectors with tactile tower cards and selected-state treatment."
