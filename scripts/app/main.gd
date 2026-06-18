@@ -357,10 +357,14 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 		_add_result_reward_celebration(screen, earned_stars, fish_reward)
 
 	var retry_button: Button = _result_action_button(screen, "RetryButton", "ResultRetryFrame", RESULT_BUTTON_ORANGE, "再来一次", Vector2(272, 562), Vector2(242, 92), 25)
-	retry_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(_current_level_id)))
+	retry_button.pressed.connect(func() -> void:
+		_start_level_from_result(screen, retry_button, _level_info_by_id(_current_level_id))
+	)
 
 	var levels_button: Button = _result_action_button(screen, "ResultLevelsButton", "ResultLevelsFrame", RESULT_BUTTON_BLUE, "关卡地图", Vector2(512, 560), Vector2(258, 96), 25)
-	levels_button.pressed.connect(_show_level_select)
+	levels_button.pressed.connect(func() -> void:
+		_animate_result_screen_exit(screen, levels_button, _show_level_select)
+	)
 
 	var next_level_id: int = _current_level_id + 1
 	var next_disabled: bool = _current_level_id >= LEVELS.size() or not _is_level_unlocked(next_level_id)
@@ -378,7 +382,20 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 			next_label.text = "已通关" if _current_level_id >= LEVELS.size() else "未解锁"
 	else:
 		next_button = _result_action_button(screen, "NextLevelButton", "ResultNextFrame", RESULT_BUTTON_GREEN, "下一关", Vector2(774, 560), Vector2(258, 98), 25)
-		next_button.pressed.connect(func() -> void: _start_level(_level_info_by_id(next_level_id)))
+		next_button.pressed.connect(func() -> void:
+			_start_level_from_result(screen, next_button, _level_info_by_id(next_level_id))
+		)
+
+
+func _start_level_from_result(screen: Control, trigger_button: Button, level_info: Dictionary) -> void:
+	var requested_level_id: int = int(level_info.get("id", 1))
+	_sync_energy_for_today()
+	if not _is_level_unlocked(requested_level_id) or _energy <= 0:
+		_start_level(level_info)
+		return
+	_animate_result_screen_exit(screen, trigger_button, func() -> void:
+		_start_level(level_info)
+	)
 
 
 func _show_settings_overlay(parent: Node) -> void:
@@ -1793,6 +1810,38 @@ func _animate_image2_screen_entry(screen: Control, slide_offset: Vector2) -> voi
 	tween.tween_property(screen, "position", Vector2.ZERO, 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(screen, "scale", Vector2.ONE, 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(screen, "modulate:a", 1.0, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _animate_result_screen_exit(screen: Control, trigger_button: Button = null, finish_callback: Callable = Callable()) -> void:
+	if screen == null or not is_instance_valid(screen):
+		if finish_callback.is_valid():
+			finish_callback.call()
+		return
+	if bool(screen.get_meta("image2_result_exit_animation", false)):
+		return
+	screen.set_meta("image2_result_exit_animation", true)
+	screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen.pivot_offset = VIEW_SIZE * 0.5
+	screen.modulate.a = min(screen.modulate.a, 0.96)
+	_disable_buttons_under(screen)
+	if trigger_button != null and is_instance_valid(trigger_button):
+		trigger_button.disabled = true
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(screen, "scale", Vector2(0.97, 0.97), 0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	tween.tween_property(screen, "position:y", screen.position.y + 18.0, 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_property(screen, "modulate:a", 0.0, 0.13).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.chain().tween_callback(func() -> void:
+		if finish_callback.is_valid():
+			finish_callback.call()
+	)
+
+
+func _disable_buttons_under(node: Node) -> void:
+	for child: Node in node.get_children():
+		if child is Button:
+			(child as Button).disabled = true
+		_disable_buttons_under(child)
 
 
 func _ui_texture_rect(node_name: String, texture: Texture2D, position: Vector2, size: Vector2) -> TextureRect:

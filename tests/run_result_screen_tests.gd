@@ -76,7 +76,8 @@ func _run() -> void:
 	_assert_button(instance, "NextLevelButton", "result screen should expose next level")
 	if levels_button != null:
 		levels_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_exists(instance, "LevelSelectScreen", "result level-map button should return to level select")
 
 	instance.queue_free()

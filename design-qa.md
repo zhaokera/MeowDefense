@@ -656,3 +656,12 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/run_pause_menu_tests.gd` and `/Users/zhaok/cat/tests/run_menu_tests.gd` to wait for animated pause overlay cleanup.
 - Regenerated `/Users/zhaok/cat/artifacts/tower_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/pause_settings_exit_animation.png`, and `/Users/zhaok/cat/artifacts/pause_menu_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed battle overlay exit animation, pause menu, tower action, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 73 tests`.
+
+**Image2 Result Screen Exit Animation**
+- Result screen actions now use `_animate_result_screen_exit()` before routing away, so retry, level-map, and next-level taps fade/scale/slide the full Image2 result screen instead of hard-cutting.
+- The exit state marks `image2_result_exit_animation`, disables all result action buttons, ignores input on the result screen, and preserves the existing Image2 victory/defeat designs as the visual source.
+- Retry and next-level actions keep the current energy/lock checks before animating; if a level cannot start, the existing guidance flow stays on the result screen.
+- Added `/Users/zhaok/cat/tests/run_result_screen_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_result_screen_exit_animation.gd`.
+- Updated `/Users/zhaok/cat/tests/run_result_screen_tests.gd` to wait for the animated level-map transition.
+- Regenerated `/Users/zhaok/cat/artifacts/result_screen_exit_animation.png`; GUI capture was required because headless capture stalled waiting for a rendered frame.
+- Passed result screen exit animation, result screen, defeat result, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 74 tests`.
