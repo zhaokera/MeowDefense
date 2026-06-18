@@ -641,7 +641,7 @@ func _show_tower_action_overlay(slot: Node2D) -> void:
 	var sell_button: Button = _pause_transparent_text_button("SellTowerButton", "", Rect2(Vector2(652, 442), Vector2(244, 82)), 24)
 	_attach_press_feedback(sell_button, panel)
 	sell_button.pressed.connect(func() -> void:
-		_sell_tower_from_overlay(tower, slot, overlay)
+		_sell_tower_from_overlay(tower, slot, overlay, sell_button)
 	)
 	overlay.add_child(sell_button)
 
@@ -669,7 +669,7 @@ func _upgrade_tower_from_overlay(tower: Node2D, feedback_target: Control) -> voi
 	_update_hud()
 
 
-func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control) -> void:
+func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control, trigger_button: Button = null) -> void:
 	if tower == null or not is_instance_valid(tower):
 		return
 	var refund: int = _tower_sell_refund(tower)
@@ -682,7 +682,7 @@ func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control) -> 
 	_show_tower_sell_feedback(feedback_anchor)
 	tower.queue_free()
 	if overlay != null and is_instance_valid(overlay):
-		overlay.queue_free()
+		_animate_hud_overlay_exit(overlay, trigger_button)
 	_tip_label.text = "已收回猫塔，返还小鱼干 %d。" % refund
 	_update_hud()
 

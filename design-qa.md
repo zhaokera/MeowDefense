@@ -697,3 +697,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_pause_menu_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_menu_action_exit_animations.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/pause_restart_action_exit_animation.png` and `/Users/zhaok/cat/artifacts/pause_quit_action_exit_animation.png`; GUI capture was used for visual evidence.
 - Passed pause menu action exit animation, menu, pause menu, battle overlay exit animation, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 78 tests`.
+
+**Image2 Tower Sell Action Exit Animation**
+- Selling a tower from the Image2 tower action panel now applies the sale immediately, keeps the refund and slot-restore feedback responsive, and runs the management panel through `_animate_hud_overlay_exit()` instead of hard-removing it.
+- The sell exit state marks `image2_overlay_exit_animation`, disables `SellTowerButton`, makes `TowerActionOverlay` ignore input, and leaves the Image2 panel visible long enough to fade, scale, and slide out over the sell feedback.
+- Added `/Users/zhaok/cat/tests/run_tower_sell_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_sell_action_exit_animation.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/tower_sell_action_exit_animation.png`; GUI capture was used for visual evidence.
+- Passed tower sell action exit animation, tower action, battle overlay exit animation, tower sell feedback, tower upgrade feedback, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 79 tests`.
