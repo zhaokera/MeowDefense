@@ -641,3 +641,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_reward_shop_feedback_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_shop_feedback_exit_animations.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/backpack_organize_reward_exit_animation.png`, `/Users/zhaok/cat/artifacts/achievement_claim_reward_exit_animation.png`, `/Users/zhaok/cat/artifacts/shop_purchase_reward_exit_animation.png`, and `/Users/zhaok/cat/artifacts/shop_insufficient_fish_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed reward/shop feedback exit animation, backpack organize reward, achievement claim, shop purchase feedback, shop insufficient-fish feedback, scene smoke, unit tests, all exit-animation tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 71 tests`.
+
+**Image2 Reward Overlay Exit Animation**
+- The base daily reward overlay close button now reuses `_animate_overlay_exit()` instead of hard-removing the Image2 reward panel.
+- The close state marks `image2_overlay_exit_animation`, disables `CloseRewardButton`, makes the overlay ignore input, and starts the fade immediately before cleanup.
+- Added `/Users/zhaok/cat/tests/run_reward_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_overlay_exit_animation.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/reward_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed reward overlay exit animation, reward overlay, reward feedback exit animation, daily reward reset, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 72 tests`.

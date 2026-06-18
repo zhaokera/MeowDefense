@@ -584,7 +584,7 @@ func _show_reward_overlay(parent: Node) -> void:
 	)
 	content.add_child(claim)
 	var close_button: Button = _hotspot_button("CloseRewardButton", Vector2(846, 92), Vector2(88, 88), "关闭")
-	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
 
