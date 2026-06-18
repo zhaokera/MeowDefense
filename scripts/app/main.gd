@@ -142,6 +142,7 @@ func _show_main_menu() -> void:
 	var screen: Control = _image_design_screen("MainMenuScreen", MAIN_MENU_DESIGN)
 	_current = screen
 	add_child(screen)
+	_animate_image2_screen_entry(screen, Vector2(-32, 0))
 	screen.add_child(_label("MainEnergyCounter", _energy_text(), Vector2(1044, 28), Vector2(112, 42), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var start_button: Button = _hotspot_button("StartLevelSelectButton", Vector2(115, 263), Vector2(408, 100), "开始闯关")
@@ -191,6 +192,7 @@ func _show_level_select() -> void:
 	var screen: Control = _image_design_screen("LevelSelectScreen", LEVEL_SELECT_DESIGN, "LevelSelectDesignBackground")
 	_current = screen
 	add_child(screen)
+	_animate_image2_screen_entry(screen, Vector2(32, 0))
 	screen.add_child(_label("LevelEnergyCounter", _energy_text(), Vector2(1044, 28), Vector2(112, 42), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var back_button: Button = _hotspot_button("BackToMainButton", Vector2(330, 580), Vector2(118, 120), "返回主城")
@@ -1778,6 +1780,19 @@ func _image_design_screen(screen_name: String, texture: Texture2D, background_na
 	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	screen.add_child(background)
 	return screen
+
+
+func _animate_image2_screen_entry(screen: Control, slide_offset: Vector2) -> void:
+	screen.set_meta("image2_screen_entry_animation", true)
+	screen.pivot_offset = VIEW_SIZE * 0.5
+	screen.position = slide_offset
+	screen.scale = Vector2(1.025, 1.025)
+	screen.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(screen, "position", Vector2.ZERO, 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(screen, "scale", Vector2.ONE, 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(screen, "modulate:a", 1.0, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func _ui_texture_rect(node_name: String, texture: Texture2D, position: Vector2, size: Vector2) -> TextureRect:

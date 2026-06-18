@@ -577,3 +577,10 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_settings_control_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_settings_control_feedback.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/settings_control_feedback.png`; GUI capture was required because headless viewport texture capture returned a null texture.
 - Passed settings control feedback, hotspot feedback, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite.
+
+**Image2 Screen Entry Animation**
+- Main menu and level select now animate their full-screen Image2 designs with a short fade, slide, and tactile zoom settle instead of hard-cutting between static screens.
+- The animation is applied to the full Image2 screen container, not by rebuilding or layering visible UI panels in code.
+- Added `/Users/zhaok/cat/tests/run_image2_screen_entry_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_image2_screen_entry_animation.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/image2_screen_entry_animation.png`; GUI capture was required because headless viewport texture capture returned a null texture.
+- Passed Image2 screen entry animation, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite.
