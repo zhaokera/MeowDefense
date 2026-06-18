@@ -584,6 +584,7 @@ func _build_slot_buttons() -> void:
 		_slot_buttons.add_child(button)
 		index += 1
 	_update_build_slot_range_previews()
+	_update_build_slot_tower_ghosts()
 
 
 func _mark_slot_button_occupied(slot: Node2D) -> void:
@@ -602,6 +603,7 @@ func _mark_slot_button_occupied(slot: Node2D) -> void:
 				visual.modulate = Color(0.55, 0.47, 0.36, 0.55)
 				visual.scale = Vector2(0.82, 0.82)
 			_update_build_slot_range_previews()
+			_update_build_slot_tower_ghosts()
 			return
 
 
@@ -621,6 +623,7 @@ func _mark_slot_button_empty(slot: Node2D) -> void:
 				visual.modulate = Color.WHITE
 				visual.scale = Vector2.ONE
 			_update_build_slot_range_previews(true)
+			_update_build_slot_tower_ghosts(true)
 			return
 
 
@@ -682,6 +685,78 @@ func _show_build_slot_range_preview_refresh(preview: Sprite2D) -> void:
 	var tween: Tween = preview.create_tween()
 	tween.tween_property(preview, "rotation", 0.035, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(preview, "rotation", 0.0, 0.10).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _update_build_slot_tower_ghosts(animated: bool = false) -> void:
+	if _slot_layer == null:
+		return
+	var index: int = 1
+	for child: Node in _slot_layer.get_children():
+		var slot: Node2D = child as Node2D
+		if slot == null:
+			continue
+		var ghost: Sprite2D = slot.get_node_or_null(NodePath(_build_slot_tower_ghost_name(index))) as Sprite2D
+		if ghost == null:
+			ghost = _create_build_slot_tower_ghost(index)
+			slot.add_child(ghost)
+		_configure_build_slot_tower_ghost(ghost, _selected_tower_id)
+		var occupied: bool = bool(slot.get("occupied"))
+		ghost.visible = not occupied and ghost.texture != null
+		if ghost.visible and animated:
+			_show_build_slot_tower_ghost_refresh(ghost)
+		index += 1
+
+
+func _create_build_slot_tower_ghost(index: int) -> Sprite2D:
+	var ghost: Sprite2D = Sprite2D.new()
+	ghost.name = _build_slot_tower_ghost_name(index)
+	ghost.centered = true
+	ghost.position = Vector2(0.0, -54.0)
+	ghost.z_index = -1
+	ghost.modulate = Color(1.0, 1.0, 1.0, 0.44)
+	_start_build_slot_tower_ghost_breath(ghost)
+	return ghost
+
+
+func _build_slot_tower_ghost_name(index: int) -> String:
+	return "BuildSlot%dTowerGhost" % index
+
+
+func _configure_build_slot_tower_ghost(ghost: Sprite2D, tower_id: String) -> void:
+	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
+	var texture_path: String = str(stats.get("texture", ""))
+	if texture_path.is_empty() or not ResourceLoader.exists(texture_path):
+		ghost.texture = null
+		return
+	if ghost.texture == null or ghost.texture.resource_path != texture_path:
+		ghost.texture = load(texture_path) as Texture2D
+	if ghost.texture == null:
+		return
+	var texture_size: Vector2 = ghost.texture.get_size()
+	var frame_size: Vector2 = texture_size
+	if texture_path.ends_with("_sheet.png"):
+		frame_size = texture_size / 2.0
+		ghost.region_enabled = true
+		ghost.region_rect = Rect2(Vector2.ZERO, frame_size)
+	else:
+		ghost.region_enabled = false
+	var ratio: float = 72.0 / max(1.0, frame_size.y)
+	ghost.scale = Vector2(ratio, ratio)
+	ghost.modulate = Color(1.0, 1.0, 1.0, 0.44)
+
+
+func _start_build_slot_tower_ghost_breath(ghost: Sprite2D) -> void:
+	var tween: Tween = ghost.create_tween()
+	tween.set_loops()
+	tween.tween_property(ghost, "modulate:a", 0.54, 0.80).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(ghost, "modulate:a", 0.34, 0.80).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _show_build_slot_tower_ghost_refresh(ghost: Sprite2D) -> void:
+	ghost.rotation = -0.03
+	var tween: Tween = ghost.create_tween()
+	tween.tween_property(ghost, "rotation", 0.03, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ghost, "rotation", 0.0, 0.10).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _show_tower_action_overlay(slot: Node2D) -> void:
@@ -1328,6 +1403,7 @@ func _select_tower(tower_id: String) -> void:
 		_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
 	_update_tower_selector_state()
 	_update_build_slot_range_previews(true)
+	_update_build_slot_tower_ghosts(true)
 	_show_tower_card_selection_feedback(tower_id)
 
 

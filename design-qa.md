@@ -752,3 +752,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_build_slot_range_preview_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_range_preview.gd`.
 - Captured `/Users/zhaok/cat/artifacts/build_slot_range_preview.png`; GUI capture was used for visual evidence.
 - Passed build slot range preview, build input, tower selector card, tower range aura, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 85 tests`.
+
+**Image2 Build Slot Tower Ghost Preview**
+- Empty build slots now show a translucent Image2 tower ghost above the cat-paw marker, using the idle frame from the currently selected tower sprite sheet.
+- Selecting a different tower card swaps every empty slot ghost to the selected cat and plays a small rotation feedback; occupied slots hide the ghost while other empty slots keep showing it.
+- This slice reuses `/Users/zhaok/cat/assets/generated/towers/orange_cat_tower_sheet.png` and `/Users/zhaok/cat/assets/generated/towers/tabby_slow_cat_sheet.png`, so the pre-build affordance uses the same generated character art as real towers.
+- Added `/Users/zhaok/cat/tests/run_build_slot_tower_ghost_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_tower_ghost.gd`.
+- Captured `/Users/zhaok/cat/artifacts/build_slot_tower_ghost.png`; GUI capture was used for visual evidence.
+- Passed build slot tower ghost, build slot range preview, build input, tower selector card, battle tower affordability, tower range aura, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 86 tests`.
