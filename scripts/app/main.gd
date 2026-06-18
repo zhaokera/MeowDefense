@@ -313,8 +313,9 @@ func _show_locked_level_feedback(parent: Node, level_info: Dictionary) -> void:
 	var action: Button = _transparent_text_button("PlayPreviousLevelButton", "挑战第 %d 关" % previous_level_id, Rect2(Vector2(462, 574), Vector2(356, 78)), 27)
 	action.z_index = 3
 	action.pressed.connect(func() -> void:
-		overlay.queue_free()
-		_start_level(previous_level)
+		_animate_overlay_exit(overlay, action, func() -> void:
+			_start_level(previous_level)
+		)
 	)
 	_attach_button_feedback(action, burst)
 	overlay.add_child(action)
@@ -1115,7 +1116,9 @@ func _show_album_entry_detail(parent: Control, texture: Texture2D, title: String
 	detail.add_child(copy)
 
 	var action: Button = _transparent_text_button("AlbumEntryDetailActionButton", "去关卡", Rect2(Vector2(464, 590), Vector2(352, 78)), 27)
-	action.pressed.connect(_show_level_select)
+	action.pressed.connect(func() -> void:
+		_animate_overlay_exit(detail, action, _show_level_select)
+	)
 	detail.add_child(action)
 	var close_button: Button = _hotspot_button("CloseAlbumEntryDetailButton", Vector2(952, 132), Vector2(88, 88), "关闭")
 	close_button.pressed.connect(func() -> void: _animate_overlay_exit(detail, close_button))
@@ -1197,7 +1200,9 @@ func _show_backpack_item_detail(
 
 	var action_button: Button = _transparent_text_button("BackpackItemDetailActionButton", action_text, Rect2(Vector2(464, 544), Vector2(352, 82)), 27)
 	action_button.pressed.connect(func() -> void:
-		_run_backpack_item_action(parent, host, action_name)
+		_animate_overlay_exit(detail, action_button, func() -> void:
+			_run_backpack_item_action(parent, host, action_name)
+		)
 	)
 	detail.add_child(action_button)
 	var close_button: Button = _hotspot_button("CloseBackpackItemDetailButton", Vector2(952, 132), Vector2(88, 88), "关闭")
@@ -1420,7 +1425,9 @@ func _show_achievement_progress_guidance(parent: Control, achievement: Dictionar
 
 	var go_button: Button = _transparent_text_button("GoLevelsFromAchievementProgressButton", "去关卡", Rect2(Vector2(488, 590), Vector2(304, 76)), 27)
 	go_button.z_index = 3
-	go_button.pressed.connect(_show_level_select)
+	go_button.pressed.connect(func() -> void:
+		_animate_overlay_exit(guidance, go_button, _show_level_select)
+	)
 	_attach_button_feedback(go_button, burst)
 	guidance.add_child(go_button)
 	var close_button: Button = _hotspot_button("CloseAchievementProgressGuidanceButton", Vector2(1076, 90), Vector2(96, 96), "关闭")
@@ -1628,7 +1635,9 @@ func _show_shop_insufficient_fish_feedback(parent: Control, product_title: Strin
 	var tasks_button: Button = _transparent_text_button("GoDailyTaskFromShopShortageButton", "去今日任务", Rect2(Vector2(428, 556), Vector2(424, 82)), 28)
 	tasks_button.z_index = 3
 	tasks_button.pressed.connect(func() -> void:
-		_show_daily_task_overlay(self)
+		_animate_overlay_exit(overlay, tasks_button, func() -> void:
+			_show_daily_task_overlay(self)
+		)
 	)
 	_attach_button_feedback(tasks_button, burst)
 	overlay.add_child(tasks_button)
@@ -2034,8 +2043,10 @@ func _animate_overlay_entry(target: Control) -> void:
 	tween.tween_property(target, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
-func _animate_overlay_exit(target: Control, trigger_button: Button = null) -> void:
+func _animate_overlay_exit(target: Control, trigger_button: Button = null, finish_callback: Callable = Callable()) -> void:
 	if target == null or not is_instance_valid(target):
+		if finish_callback.is_valid():
+			finish_callback.call()
 		return
 	if bool(target.get_meta("image2_overlay_exit_animation", false)):
 		return
@@ -2050,12 +2061,19 @@ func _animate_overlay_exit(target: Control, trigger_button: Button = null) -> vo
 	target.modulate.a = min(target.modulate.a, 0.96)
 	if trigger_button != null and is_instance_valid(trigger_button):
 		trigger_button.disabled = true
+	var target_ref: WeakRef = weakref(target)
 	var tween: Tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(target, "scale", Vector2(0.96, 0.96), 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	tween.tween_property(target, "position:y", target.position.y + 14.0, 0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_property(target, "modulate:a", 0.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	tween.chain().tween_callback(target.queue_free)
+	tween.chain().tween_callback(func() -> void:
+		var resolved: Object = target_ref.get_ref()
+		if resolved is Control:
+			(resolved as Control).queue_free()
+		if finish_callback.is_valid():
+			finish_callback.call()
+	)
 
 
 func _scale_control(target: Control, scale_value: float, duration: float) -> void:

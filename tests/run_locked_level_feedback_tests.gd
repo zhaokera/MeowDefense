@@ -75,7 +75,8 @@ func _run() -> void:
 	var action_button: Button = _assert_button(instance, "PlayPreviousLevelButton", "locked level feedback should offer the previous level")
 	if action_button != null:
 		action_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_exists(instance, "BattleScene", "locked level guidance should start the previous level")
 		_assert_true(_as_int(instance.get("_current_level_id")) == 1, "locked level guidance should target level one for level two")
 

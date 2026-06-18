@@ -63,7 +63,8 @@ func _run() -> void:
 	var go_tasks: Button = _assert_button(instance, "GoDailyTaskFromShopShortageButton", "shop shortage feedback should offer a daily-task route")
 	if go_tasks != null:
 		go_tasks.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_exists(instance, "DailyTaskOverlay", "shortage route should open daily tasks")
 
 	instance.call("_show_shop_overlay", instance.find_child("MainMenuScreen", true, false))

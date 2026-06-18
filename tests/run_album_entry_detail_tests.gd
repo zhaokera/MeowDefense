@@ -51,7 +51,8 @@ func _run() -> void:
 	if action_button != null:
 		_assert_true(action_button.text == "去关卡", "album detail action should route to level select")
 		action_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "AlbumOverlay", "album detail action should close the album overlay")
 		_assert_exists(instance, "LevelSelectScreen", "album detail action should take the player to level select")
 

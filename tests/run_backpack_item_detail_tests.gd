@@ -63,7 +63,8 @@ func _run() -> void:
 	if action != null:
 		_assert_true(action.text == "去战斗", "yarn trap detail should guide the player to battle")
 		action.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "BackpackOverlay", "item detail action should close the backpack overlay")
 		_assert_exists(instance, "LevelSelectScreen", "yarn trap detail action should take the player to level select")
 

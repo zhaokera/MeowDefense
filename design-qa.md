@@ -673,3 +673,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_screen_entry_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_result_screen_entry_animation.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/result_screen_entry_animation.png`; GUI capture was used for visual evidence.
 - Passed result screen entry animation, result screen, defeat result, result screen exit animation, playthrough, scene smoke, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 75 tests`.
+
+**Image2 Overlay Action Exit Animations**
+- Overlay action buttons now route through the Image2 exit animation before navigating away: locked-level challenge, album detail go-to-levels, backpack item action, achievement progress go-to-levels, and shop shortage go-to-daily-tasks.
+- `_animate_overlay_exit()` now accepts an optional completion callback while preserving the existing close-button behavior. The exit state still marks `image2_overlay_exit_animation`, disables the pressed action, ignores input, and fades/scales/slides the Image2 overlay before running the route.
+- Existing action-flow tests were updated to wait for the animated transition instead of expecting a one-frame hard cut.
+- Added `/Users/zhaok/cat/tests/run_overlay_action_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_overlay_action_exit_animations.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/locked_level_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/album_detail_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/backpack_detail_action_exit_animation.png`, `/Users/zhaok/cat/artifacts/achievement_guidance_action_exit_animation.png`, and `/Users/zhaok/cat/artifacts/shop_shortage_action_exit_animation.png`; GUI capture was used for visual evidence.
+- Passed overlay action exit animation, locked-level feedback, album entry detail, backpack item detail, achievement progress guidance, shop insufficient-fish feedback, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 76 tests`.

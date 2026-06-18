@@ -81,7 +81,7 @@ func _run() -> void:
 	var levels_button: Button = _assert_button(instance, "GoLevelsFromAchievementProgressButton", "achievement progress guidance should expose a go-to-levels action")
 	if levels_button != null:
 		levels_button.emit_signal("pressed")
-		for i: int in range(3):
+		for i: int in range(45):
 			await process_frame
 		_assert_exists(instance, "LevelSelectScreen", "achievement progress guidance action should open level select")
 		_assert_missing(instance, "AchievementsOverlay", "achievement progress guidance action should leave the achievements overlay")
