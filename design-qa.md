@@ -616,3 +616,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_reward_feedback_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_feedback_exit_animations.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/daily_reward_claim_success_exit_animation.png` and `/Users/zhaok/cat/artifacts/daily_task_claim_reward_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed reward feedback exit animation, reward overlay, daily task overlay, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 68 tests`.
+
+**Image2 Guidance Overlay Exit Animations**
+- Locked-level feedback, energy-empty feedback, and the daily-task overlay now reuse `_animate_overlay_exit()` instead of hard-removing their Image2 guidance panels.
+- `_animate_overlay_exit()` now cancels any active `image2_overlay_entry_tween` and applies an immediate small alpha change before tweening out, so fast close taps still give visible exit feedback instead of fighting the entry animation.
+- Updated `/Users/zhaok/cat/tests/run_locked_level_feedback_tests.gd` to wait for the animated close; energy and daily-task behavior are covered by the new exit animation test.
+- Added `/Users/zhaok/cat/tests/run_guidance_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_guidance_overlay_exit_animations.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/locked_level_feedback_exit_animation.png`, `/Users/zhaok/cat/artifacts/energy_empty_overlay_exit_animation.png`, and `/Users/zhaok/cat/artifacts/daily_task_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed guidance overlay exit animation, locked-level feedback, energy flow, daily task overlay, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 69 tests`.

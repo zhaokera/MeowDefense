@@ -65,7 +65,8 @@ func _run() -> void:
 	var close_button: Button = _assert_button(instance, "CloseLockedLevelFeedbackButton", "locked level feedback should be closable")
 	if close_button != null:
 		close_button.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "LockedLevelFeedbackOverlay", "closing locked level feedback should remove it")
 
 	if locked_info != null:

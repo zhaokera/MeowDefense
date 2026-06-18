@@ -320,7 +320,7 @@ func _show_locked_level_feedback(parent: Node, level_info: Dictionary) -> void:
 	overlay.add_child(action)
 	var close_button: Button = _hotspot_button("CloseLockedLevelFeedbackButton", Vector2(988, 84), Vector2(92, 92), "关闭")
 	close_button.z_index = 3
-	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	overlay.add_child(close_button)
 	_animate_overlay_entry(overlay)
 	_pulse_control(burst)
@@ -709,7 +709,7 @@ func _show_energy_empty_overlay(parent: Node) -> void:
 	overlay.add_child(_label("EnergyEmptyTitle", "体力不足", Vector2(450, 118), Vector2(380, 60), 40, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	overlay.add_child(_label("EnergyEmptyStatus", "当前体力 %s" % _energy_text(), Vector2(482, 446), Vector2(316, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	var close_button: Button = _transparent_text_button("CloseEnergyEmptyButton", "知道了", Rect2(Vector2(420, 505), Vector2(440, 92)), 30)
-	close_button.pressed.connect(func() -> void: overlay.queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	overlay.add_child(close_button)
 	_animate_overlay_entry(overlay)
 
@@ -721,7 +721,7 @@ func _show_daily_task_overlay(parent: Node) -> void:
 	for task: Dictionary in DAILY_TASKS:
 		_daily_task_row(content, task)
 	var close_button: Button = _hotspot_button("CloseDailyTaskButton", Vector2(958, 84), Vector2(92, 92), "关闭")
-	close_button.pressed.connect(func() -> void: content.get_parent().queue_free())
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(content.get_parent() as Control, close_button))
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
 
@@ -1954,6 +1954,7 @@ func _animate_overlay_entry(target: Control) -> void:
 	target.scale = Vector2(0.94, 0.94)
 	target.modulate = Color(1.0, 1.0, 1.0, 0.0)
 	var tween: Tween = create_tween()
+	target.set_meta("image2_overlay_entry_tween", tween)
 	tween.set_parallel(true)
 	tween.tween_property(target, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(target, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
@@ -1964,9 +1965,15 @@ func _animate_overlay_exit(target: Control, trigger_button: Button = null) -> vo
 		return
 	if bool(target.get_meta("image2_overlay_exit_animation", false)):
 		return
+	if target.has_meta("image2_overlay_entry_tween"):
+		var entry_tween: Tween = target.get_meta("image2_overlay_entry_tween") as Tween
+		if entry_tween != null:
+			entry_tween.kill()
+		target.remove_meta("image2_overlay_entry_tween")
 	target.set_meta("image2_overlay_exit_animation", true)
 	target.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	target.pivot_offset = VIEW_SIZE * 0.5
+	target.modulate.a = min(target.modulate.a, 0.96)
 	if trigger_button != null and is_instance_valid(trigger_button):
 		trigger_button.disabled = true
 	var tween: Tween = create_tween()
