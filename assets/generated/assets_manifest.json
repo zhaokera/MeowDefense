@@ -977,6 +977,21 @@
       "id": "level_005_thumb",
       "path": "res://assets/generated/ui/level_005_thumb.png",
       "prompt_summary": "Level 5 thumbnail copied from the Image2 final pantry background."
+    },
+    {
+      "id": "battle_speed_feedback_design_reference",
+      "path": "res://assets/generated/ui/battle_speed_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing the speed button with a blue-gold cat-paw burst when toggling battle speed."
+    },
+    {
+      "id": "battle_speed_feedback_burst_source",
+      "path": "res://assets/generated/ui/battle_speed_feedback_burst_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 battle feedback art for the speed-toggle burst."
+    },
+    {
+      "id": "battle_speed_feedback_burst",
+      "path": "res://assets/generated/ui/battle_speed_feedback_burst.png",
+      "prompt_summary": "Project-bound transparent Image2-derived blue-gold burst used when the player toggles battle speed."
     }
   ]
 }

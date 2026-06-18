@@ -18,6 +18,7 @@ const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_
 const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
 const BattleWaveRushBurstTexture := preload("res://assets/generated/ui/battle_wave_rush_burst.png")
 const BattleSpeedButtonTexture := preload("res://assets/generated/ui/battle_speed_button.png")
+const BattleSpeedFeedbackBurstTexture := preload("res://assets/generated/ui/battle_speed_feedback_burst.png")
 const BattlePauseMenuPanelTexture := preload("res://assets/generated/ui/battle_pause_menu_panel.png")
 const BattlePauseMenuGreenButtonTexture := preload("res://assets/generated/ui/battle_pause_button_green.png")
 const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/battle_pause_button_orange.png")
@@ -110,6 +111,7 @@ var _tower_fire_feedback_index: int = 0
 var _projectile_index: int = 0
 var _battle_tap_feedback_index: int = 0
 var _wave_rush_feedback_index: int = 0
+var _battle_speed_feedback_index: int = 0
 
 
 func _ready() -> void:
@@ -145,6 +147,7 @@ func start_level(path: String) -> void:
 	_tower_fire_feedback_index = 0
 	_projectile_index = 0
 	_wave_rush_feedback_index = 0
+	_battle_speed_feedback_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -1601,8 +1604,49 @@ func _toggle_battle_speed() -> void:
 	if _speed_control_frame != null:
 		_speed_control_frame.modulate = Color(1.0, 0.90, 0.66) if _battle_speed_multiplier > 1.0 else Color.WHITE
 		_animate_control_scale(_speed_control_frame, 1.08, 0.08)
+		_speed_control_frame.set_meta("image2_speed_feedback", true)
 	if _tip_label != null:
 		_tip_label.text = "战斗速度已切换为 %dx。" % int(_battle_speed_multiplier)
+	_show_battle_speed_feedback()
+
+
+func _show_battle_speed_feedback() -> void:
+	if _hud == null or _speed_control_frame == null:
+		return
+	_battle_speed_feedback_index += 1
+	var feedback_position: Vector2 = _speed_control_frame.position - Vector2(64, 62)
+	var feedback: TextureRect = _hud_texture_rect("BattleSpeedFeedback%d" % _battle_speed_feedback_index, BattleSpeedFeedbackBurstTexture, feedback_position, Vector2(224, 224))
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 89
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.64, 0.64)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("%dx" % int(_battle_speed_multiplier))
+	label.name = "BattleSpeedFeedbackLabel"
+	label.position = Vector2(82, 86)
+	label.size = Vector2(68, 42)
+	label.add_theme_font_size_override("font_size", 27)
+	label.add_theme_color_override("font_color", Color(0.34, 0.13, 0.02))
+	label.add_theme_constant_override("outline_size", 5)
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 0.96, 0.07).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -4.0 if _battle_speed_feedback_index % 2 == 0 else 4.0, 0.12).set_delay(0.10).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.16).set_delay(0.24).set_trans(Tween.TRANS_BACK)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 12.0, 0.38).set_delay(0.34).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.22).set_delay(0.86).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.12)
+	tween.tween_callback(func() -> void:
+		if _speed_control_frame != null and is_instance_valid(_speed_control_frame):
+			_speed_control_frame.set_meta("image2_speed_feedback", false)
+	).set_delay(0.48)
 
 
 func _rush_next_wave() -> void:

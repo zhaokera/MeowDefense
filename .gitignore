@@ -3,3 +3,5 @@
 /android/
 .agents/
 .DS_Store
+tests/*.gd.uid
+artifacts/*.png.import

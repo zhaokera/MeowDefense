@@ -784,3 +784,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_build_slot_manage_badge_tests.gd` and `/Users/zhaok/cat/tests/capture_build_slot_manage_badge.gd`.
 - Captured `/Users/zhaok/cat/artifacts/build_slot_manage_badge.png`; GUI capture was used for visual evidence.
 - Passed build slot manage badge, tower action, tower sell action exit animation, build input, build slot affordability feedback, build slot affordability preview, build slot tower ghost, build slot range preview, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 89 tests`.
+
+**Image2 Battle Speed Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_speed_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_speed_feedback_burst_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_speed_feedback_burst.png`, assembled from the existing Image2 battle HUD, tap feedback, and wave-rush art.
+- Pressing the Image2 speed button now creates `BattleSpeedFeedback#` near the top-right HUD, shows a dynamic `1x` or `2x` label, and marks the speed frame with `image2_speed_feedback` while the burst pops.
+- The visible speed control still comes from `/Users/zhaok/cat/assets/generated/ui/battle_speed_button.png`; Godot only adds the transparent hit area, dynamic label, and tweened feedback.
+- Added `/Users/zhaok/cat/tests/run_battle_speed_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_speed_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_speed_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed battle speed feedback, battle speed/wave, battle wave rush, battle tap feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 90 tests`.
