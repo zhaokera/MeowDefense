@@ -82,7 +82,8 @@ func _run() -> void:
 	var reward_close: Button = _assert_button(instance, "CloseDailyTaskClaimRewardButton", "daily task reward overlay should be closable")
 	if reward_close != null:
 		reward_close.emit_signal("pressed")
-		await process_frame
+		for _frame: int in range(45):
+			await process_frame
 		_assert_missing(instance, "DailyTaskClaimRewardOverlay", "closing daily task reward overlay should remove it")
 
 	_assert_manifest_entry("daily_task_claim_reward_design_reference", DAILY_TASK_CLAIM_REWARD_DESIGN_PATH)

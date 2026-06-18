@@ -636,12 +636,12 @@ func _show_daily_reward_claim_success_overlay(parent: Node) -> void:
 	reward.add_child(copy)
 	var done_button: Button = _transparent_text_button("CloseDailyRewardClaimSuccessButton", "收好奖励", Rect2(Vector2(420, 574), Vector2(440, 78)), 27)
 	done_button.z_index = 3
-	done_button.pressed.connect(func() -> void: reward.queue_free())
+	done_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, done_button))
 	_attach_button_feedback(done_button, burst)
 	reward.add_child(done_button)
 	var dismiss_button: Button = _hotspot_button("DismissDailyRewardClaimSuccessButton", Vector2(994, 78), Vector2(92, 92), "关闭")
 	dismiss_button.z_index = 3
-	dismiss_button.pressed.connect(func() -> void: reward.queue_free())
+	dismiss_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, dismiss_button))
 	reward.add_child(dismiss_button)
 	_animate_overlay_entry(reward)
 	_pulse_control(burst)
@@ -849,12 +849,12 @@ func _show_daily_task_claim_reward_overlay(parent: Control, task: Dictionary) ->
 	reward.add_child(amount)
 	var done_button: Button = _transparent_text_button("CloseDailyTaskClaimRewardButton", "收好奖励", Rect2(Vector2(522, 552), Vector2(486, 82)), 27)
 	done_button.z_index = 3
-	done_button.pressed.connect(func() -> void: reward.queue_free())
+	done_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, done_button))
 	_attach_button_feedback(done_button, burst)
 	reward.add_child(done_button)
 	var dismiss_button: Button = _hotspot_button("DismissDailyTaskClaimRewardButton", Vector2(1014, 82), Vector2(92, 92), "关闭")
 	dismiss_button.z_index = 3
-	dismiss_button.pressed.connect(func() -> void: reward.queue_free())
+	dismiss_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, dismiss_button))
 	reward.add_child(dismiss_button)
 	_animate_overlay_entry(reward)
 	_pulse_control(burst)

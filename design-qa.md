@@ -608,3 +608,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_town_feature_overlay_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_town_feature_overlay_exit_animations.gd`.
 - Regenerated `/Users/zhaok/cat/artifacts/backpack_overlay_exit_animation.png`, `/Users/zhaok/cat/artifacts/achievements_overlay_exit_animation.png`, and `/Users/zhaok/cat/artifacts/shop_overlay_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed town feature overlay exit animation, town feature overlay, menu, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 67 tests`.
+
+**Image2 Reward Feedback Exit Animations**
+- Daily reward success and daily task claim reward overlays now reuse `_animate_overlay_exit()` instead of hard-removing the full-screen Image2 reward feedback art.
+- Their primary close and dismiss controls both mark `image2_overlay_exit_animation`, disable the pressed control, and make the overlay ignore mouse input while fading, scaling, and sliding out.
+- Updated `/Users/zhaok/cat/tests/run_reward_overlay_tests.gd` and `/Users/zhaok/cat/tests/run_daily_task_overlay_tests.gd` to wait for the animated close.
+- Added `/Users/zhaok/cat/tests/run_reward_feedback_exit_animation_tests.gd` and `/Users/zhaok/cat/tests/capture_reward_feedback_exit_animations.gd`.
+- Regenerated `/Users/zhaok/cat/artifacts/daily_reward_claim_success_exit_animation.png` and `/Users/zhaok/cat/artifacts/daily_task_claim_reward_exit_animation.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed reward feedback exit animation, reward overlay, daily task overlay, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 68 tests`.
