@@ -884,3 +884,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_level_select_energy_ready_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_level_select_energy_ready_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/level_select_energy_ready_guidance.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed level select energy-ready guidance, shop energy refill return, level select new unlock hint, shop energy refill, energy flow, menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 101 tests`.
+
+**Image2 Tower Action Cancel Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/tower_action_cancel_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/tower_action_cancel_feedback_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/tower_action_cancel_feedback_badge.png`, assembled from existing Image2 tower action, paw, fish, play-button, and tap-burst art.
+- Closing the tower management panel now shows `TowerActionCancelFeedback` near the managed tower with dynamic `继续建造` copy, while preserving the existing Image2 overlay exit animation.
+- Canceling tower management does not remove the tower, spend fish, or refund fish; it only updates the guidance copy so the player can continue building.
+- Added `/Users/zhaok/cat/tests/run_tower_action_cancel_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_action_cancel_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/tower_action_cancel_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed tower action cancel feedback, tower action, battle overlay exit animation, tower sell action exit animation, build input, build slot manage badge, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 102 tests`.

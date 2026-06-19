@@ -32,6 +32,7 @@ const BattlePauseMenuRedButtonTexture := preload("res://assets/generated/ui/batt
 const CommonOverlayDimTexture := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
 const BattleTapFeedbackTexture := preload("res://assets/generated/ui/battle_tap_feedback_starburst.png")
 const TowerActionPanelTexture := preload("res://assets/generated/ui/tower_action_panel.png")
+const TowerActionCancelFeedbackTexture := preload("res://assets/generated/ui/tower_action_cancel_feedback_badge.png")
 const SettingsOverlayPanelTexture := preload("res://assets/generated/ui/settings_overlay_panel.png")
 const SettingsToggleOnTexture := preload("res://assets/generated/ui/settings_toggle_on.png")
 const SettingsToggleOffTexture := preload("res://assets/generated/ui/settings_toggle_off.png")
@@ -1074,7 +1075,10 @@ func _show_tower_action_overlay(slot: Node2D) -> void:
 
 	var close_button: Button = _pause_transparent_text_button("CloseTowerActionButton", "", Rect2(Vector2(842, 206), Vector2(106, 92)), 22)
 	_attach_press_feedback(close_button, panel)
-	close_button.pressed.connect(func() -> void: _animate_hud_overlay_exit(overlay, close_button))
+	close_button.pressed.connect(func() -> void:
+		_show_tower_action_cancel_feedback(tower.global_position)
+		_animate_hud_overlay_exit(overlay, close_button)
+	)
 	overlay.add_child(close_button)
 	_pop_in_control(panel)
 
@@ -1541,6 +1545,54 @@ func _show_tower_sell_feedback(world_anchor: Vector2) -> void:
 	tween.tween_property(effect, "position", effect.position + Vector2(-62.0, -86.0), 0.52).set_delay(0.10).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(effect, "modulate:a", 0.0, 0.22).set_delay(0.48).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.76)
+
+
+func _show_tower_action_cancel_feedback(world_anchor: Vector2) -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("TowerActionCancelFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+	var feedback_size := Vector2(360, 176)
+	var target_center := Vector2(
+		clampf(world_anchor.x + 180.0, 300.0, 740.0),
+		clampf(world_anchor.y - 10.0, 230.0, 450.0)
+	)
+	var feedback: TextureRect = _hud_texture_rect("TowerActionCancelFeedback", TowerActionCancelFeedbackTexture, target_center - feedback_size * 0.5, feedback_size)
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 88
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.70, 0.70)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	feedback.set_meta("image2_tower_action_cancel_feedback", true)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("继续建造")
+	label.name = "TowerActionCancelFeedbackLabel"
+	label.position = Vector2(130, 74)
+	label.size = Vector2(128, 44)
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_color", Color(0.36, 0.16, 0.05))
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.90))
+	label.add_theme_constant_override("outline_size", 4)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.clip_text = true
+	feedback.add_child(label)
+
+	if _tip_label != null:
+		_tip_label.text = "已取消管理，继续点击猫爪位布防。"
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", -3.0, 0.07).set_delay(0.12).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 3.0, 0.08).set_delay(0.20).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.09).set_delay(0.30).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 18.0, 0.42).set_delay(0.42).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.26).set_delay(1.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.40)
 
 
 func _pop_in_control(target: Control) -> void:
