@@ -876,3 +876,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_energy_refill_return_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_energy_refill_return.gd`.
 - Captured `/Users/zhaok/cat/artifacts/shop_energy_refill_return.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed shop energy refill return, shop energy refill, shop purchase feedback, reward/shop feedback exit animation, energy empty refill guidance, menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 100 tests`.
+
+**Image2 Level Select Energy-Ready Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/level_select_energy_ready_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/level_select_energy_ready_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/level_select_energy_ready_badge.png`, assembled from existing Image2 level-select, energy, play-button, paw, and tap-burst art.
+- Returning to level select from a successful energy refill now sets a one-time `Level1EnergyReadyGuidance` hint near the first playable level, with dynamic `点这里开局` copy and `mouse_filter` ignored so `StartLevel1Button` remains the real hit target.
+- Normal level-select visits do not show the post-refill guidance. Pressing the guided level enters battle and consumes one purchased energy.
+- Added `/Users/zhaok/cat/tests/run_level_select_energy_ready_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_level_select_energy_ready_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/level_select_energy_ready_guidance.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed level select energy-ready guidance, shop energy refill return, level select new unlock hint, shop energy refill, energy flow, menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 101 tests`.

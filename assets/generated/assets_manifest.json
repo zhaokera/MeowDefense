@@ -1157,6 +1157,21 @@
       "id": "level_select_new_unlock_hint",
       "path": "res://assets/generated/ui/level_select_new_unlock_hint.png",
       "prompt_summary": "Project-bound transparent Image2-derived badge used to call out the highest newly unlocked uncleared level."
+    },
+    {
+      "id": "level_select_energy_ready_design_reference",
+      "path": "res://assets/generated/ui/level_select_energy_ready_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen level-select reference showing a post-refill start guidance badge near the first playable level."
+    },
+    {
+      "id": "level_select_energy_ready_badge_source",
+      "path": "res://assets/generated/ui/level_select_energy_ready_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 energy, level-select, play-button, paw, and tap-burst art for post-refill start guidance."
+    },
+    {
+      "id": "level_select_energy_ready_badge",
+      "path": "res://assets/generated/ui/level_select_energy_ready_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after buying energy and returning from the shop."
     }
   ]
 }

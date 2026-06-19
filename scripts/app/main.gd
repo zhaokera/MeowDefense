@@ -8,6 +8,7 @@ const COMMON_OVERLAY_DIM_TEXTURE := preload("res://assets/generated/ui/common_ov
 const UI_TAP_FEEDBACK_TEXTURE := preload("res://assets/generated/ui/ui_tap_feedback_paw_spark.png")
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
 const LEVEL_SELECT_NEW_UNLOCK_HINT := preload("res://assets/generated/ui/level_select_new_unlock_hint.png")
+const LEVEL_SELECT_ENERGY_READY_BADGE := preload("res://assets/generated/ui/level_select_energy_ready_badge.png")
 const LOCKED_LEVEL_FEEDBACK_DESIGN := preload("res://assets/generated/ui/locked_level_feedback_design_reference.png")
 const LOCKED_LEVEL_FEEDBACK_BURST := preload("res://assets/generated/ui/locked_level_feedback_burst.png")
 const RESULT_SCREEN_DESIGN := preload("res://assets/generated/ui/result_screen_design_reference.png")
@@ -124,6 +125,7 @@ var _backpack_organized: bool = false
 var _max_energy: int = DEFAULT_MAX_ENERGY
 var _energy: int = DEFAULT_MAX_ENERGY
 var _energy_refilled_on: String = ""
+var _show_energy_ready_level_guidance: bool = false
 var _hotspot_feedback_index: int = 0
 var _settings_control_feedback_index: int = 0
 
@@ -270,6 +272,10 @@ func _show_level_select_now() -> void:
 			var locked_info_button: Button = _hotspot_button("LockedLevel%dInfoButton" % level_id, rect.position, rect.size, "查看解锁条件")
 			locked_info_button.pressed.connect(func() -> void: _show_locked_level_feedback(screen, level_info))
 			screen.add_child(locked_info_button)
+	if _show_energy_ready_level_guidance:
+		_show_energy_ready_level_guidance = false
+		if _energy > 0 and _is_level_unlocked(1):
+			_add_level_energy_ready_guidance(screen, 1, level_hotspots[0]["rect"] as Rect2)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(330, 580), Vector2(118, 120), "主城")
 	bottom_home.pressed.connect(_show_main_menu)
@@ -1760,6 +1766,7 @@ func _add_shop_energy_refill_return_guidance(reward: Control, feedback_target: C
 	var return_button: Button = _hotspot_button("ShopEnergyRefillReturnButton", Vector2(645, 582), Vector2(284, 94), "去闯关")
 	return_button.z_index = 5
 	return_button.pressed.connect(func() -> void:
+		_show_energy_ready_level_guidance = true
 		_animate_overlay_exit(reward, return_button, _show_level_select)
 	)
 	_attach_button_feedback(return_button, badge)
@@ -1975,6 +1982,54 @@ func _add_level_new_unlock_hint(parent: Control, level_id: int, rect: Rect2) -> 
 		var resolved_group: Control = resolved as Control
 		resolved_group.rotation_degrees = 0.0
 		var base_y: float = hint_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
+
+
+func _add_level_energy_ready_guidance(parent: Control, level_id: int, rect: Rect2) -> void:
+	var guidance_size := Vector2(286, 116)
+	var guidance_position: Vector2 = rect.position + Vector2(-38.0, 104.0)
+	var group: Control = Control.new()
+	group.name = "Level%dEnergyReadyGuidance" % level_id
+	group.position = guidance_position
+	group.size = guidance_size
+	group.z_index = 8
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.set_meta("image2_energy_ready_guidance", true)
+	parent.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("Level%dEnergyReadyBadge" % level_id, LEVEL_SELECT_ENERGY_READY_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	group.add_child(badge)
+
+	var label: Label = _label("Level%dEnergyReadyLabel" % level_id, "点这里开局", Vector2(100.0, 50.0), Vector2(132.0, 34.0), 18, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.96))
+	label.add_theme_constant_override("outline_size", 3)
+	group.add_child(label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -2.5, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 2.0, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = guidance_position.y
 		var float_tween: Tween = resolved_group.create_tween()
 		float_tween.set_loops()
 		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
