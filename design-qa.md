@@ -892,3 +892,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_action_cancel_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_action_cancel_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/tower_action_cancel_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed tower action cancel feedback, tower action, battle overlay exit animation, tower sell action exit animation, build input, build slot manage badge, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 102 tests`.
+
+**Image2 Battle Tower Selection Placement Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_tower_selection_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_tower_selection_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_tower_selection_guidance_badge.png`, assembled from existing Image2 battle HUD, tower card, selected-state, build-slot, and tap-burst art.
+- Selecting an affordable tower card now shows `BattleTowerSelectionGuidance` near the first empty cat-paw build slot with dynamic `点猫爪放置` copy.
+- The guidance uses `mouse_filter = IGNORE`, so the real transparent `BuildSlot#Button` remains the tappable target; successfully building the selected tower removes the guidance.
+- Added `/Users/zhaok/cat/tests/run_battle_tower_selection_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_tower_selection_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_tower_selection_guidance.png`; GUI capture was used for visual evidence.
+- Passed battle tower selection guidance, tower selector card, build slot tower ghost, build slot range preview, tower affordability, build input, battle build guidance, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 103 tests`.

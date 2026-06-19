@@ -389,6 +389,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived first-build guidance badge shown above the opening build slot."
     },
     {
+      "id": "battle_tower_selection_guidance_design_reference",
+      "path": "res://assets/generated/ui/battle_tower_selection_guidance_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing a selected tower card prompting placement on the first open paw build slot."
+    },
+    {
+      "id": "battle_tower_selection_guidance_badge_source",
+      "path": "res://assets/generated/ui/battle_tower_selection_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 tower card, build-slot, selected-state, tabby tower, and tap-burst art for selected-tower placement guidance."
+    },
+    {
+      "id": "battle_tower_selection_guidance_badge",
+      "path": "res://assets/generated/ui/battle_tower_selection_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown after selecting a tower card to guide placement on an open paw build slot."
+    },
+    {
       "id": "battle_wave_preview_chip",
       "path": "res://assets/generated/ui/battle_wave_preview_chip.png",
       "prompt_summary": "Image2 transparent wave preview chip used by the battle HUD for incoming enemy and countdown text."
