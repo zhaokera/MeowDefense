@@ -16,6 +16,8 @@ const BattleHudBottomDockTexture := preload("res://assets/generated/ui/battle_hu
 const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_pause_button.png")
 const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
 const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
+const BattleWavePreviewDetailPanelTexture := preload("res://assets/generated/ui/battle_wave_preview_detail_panel.png")
+const BattleWavePreviewInfoBadgeTexture := preload("res://assets/generated/ui/battle_wave_preview_info_badge.png")
 const BattleWaveRushBurstTexture := preload("res://assets/generated/ui/battle_wave_rush_burst.png")
 const BattleWaveClearBurstTexture := preload("res://assets/generated/ui/battle_wave_clear_burst.png")
 const BattleWaveIncomingBurstTexture := preload("res://assets/generated/ui/battle_wave_incoming_burst.png")
@@ -330,6 +332,23 @@ func _build_hud() -> void:
 	_attach_press_feedback(rush_wave_button, wave_preview_frame)
 	rush_wave_button.pressed.connect(_rush_next_wave)
 	_hud.add_child(rush_wave_button)
+
+	var wave_info_badge: TextureRect = _hud_texture_rect("WavePreviewInfoBadge", BattleWavePreviewInfoBadgeTexture, Vector2(326, 104), Vector2(88, 82))
+	wave_info_badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	wave_info_badge.z_index = 3
+	_hud.add_child(wave_info_badge)
+
+	var wave_info_button: Button = Button.new()
+	wave_info_button.name = "WavePreviewInfoButton"
+	wave_info_button.text = ""
+	wave_info_button.position = wave_info_badge.position
+	wave_info_button.size = wave_info_badge.size
+	wave_info_button.tooltip_text = "查看下一波"
+	wave_info_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	_make_button_transparent(wave_info_button)
+	_attach_press_feedback(wave_info_button, wave_info_badge)
+	wave_info_button.pressed.connect(_show_wave_preview_detail)
+	_hud.add_child(wave_info_button)
 
 	var bottom_frame: TextureRect = _hud_texture_rect("BattleHudBottomFrame", BattleHudBottomDockTexture, Vector2(14, 528), Vector2(920, 210))
 	_hud.add_child(bottom_frame)
@@ -1697,6 +1716,131 @@ func _next_rushable_wave_state() -> Dictionary:
 		if next_time > elapsed + 0.05:
 			return state
 	return {}
+
+
+func _next_wave_preview_state() -> Dictionary:
+	for state: Dictionary in _wave_states:
+		if int(state.get("remaining", 0)) > 0:
+			return state
+	return {}
+
+
+func _show_wave_preview_detail() -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.get_node_or_null("BattleWavePreviewDetailOverlay")
+	if existing != null:
+		existing.queue_free()
+	var state: Dictionary = _next_wave_preview_state()
+	if state.is_empty():
+		_show_wave_rush_feedback("最后一波清场中")
+		return
+
+	var enemy_id: String = str(state.get("enemy", "mouse_basic"))
+	var enemy_data: Dictionary = TowerStatsScript.get_enemy(enemy_id)
+	var enemy_name: String = str(enemy_data.get("name", enemy_id))
+	var remaining: int = int(state.get("remaining", 0))
+	var wave_index: int = int(state.get("index", 1))
+	var countdown: float = _wave_preview_countdown(state)
+	var total_reward: int = max(0, remaining * int(enemy_data.get("reward", 0)))
+
+	var overlay: Control = Control.new()
+	overlay.name = "BattleWavePreviewDetailOverlay"
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.z_index = 160
+	overlay.set_meta("image2_wave_preview_detail", true)
+	_hud.add_child(overlay)
+
+	var panel_position := Vector2(315, 140)
+	var panel_size := Vector2(650, 360)
+	var panel: TextureRect = _hud_texture_rect("BattleWavePreviewDetailPanel", BattleWavePreviewDetailPanelTexture, panel_position, panel_size)
+	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	panel.z_index = 1
+	overlay.add_child(panel)
+
+	var icon: TextureRect = _hud_texture_rect("WavePreviewEnemyIcon", _enemy_preview_icon_texture(enemy_id), panel_position + Vector2(78, 142), Vector2(116, 116))
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.z_index = 2
+	overlay.add_child(icon)
+
+	var title: Label = _pause_label("第 %d/%d 波 情报" % [wave_index, _wave_states.size()], panel_position + Vector2(170, 70), Vector2(320, 44), 25, Color(0.28, 0.13, 0.06), HORIZONTAL_ALIGNMENT_CENTER)
+	title.name = "WavePreviewDetailTitle"
+	title.z_index = 3
+	overlay.add_child(title)
+
+	var enemy_label: Label = _pause_label(enemy_name, panel_position + Vector2(68, 258), Vector2(146, 36), 20, Color(0.34, 0.16, 0.06), HORIZONTAL_ALIGNMENT_CENTER)
+	enemy_label.name = "WavePreviewEnemyName"
+	enemy_label.z_index = 3
+	overlay.add_child(enemy_label)
+
+	var count_label: Label = _pause_label("%s  x%d" % [enemy_name, remaining], panel_position + Vector2(250, 148), Vector2(290, 34), 21, Color(0.96, 0.94, 0.78), HORIZONTAL_ALIGNMENT_CENTER)
+	count_label.name = "WavePreviewEnemyCount"
+	count_label.add_theme_color_override("font_outline_color", Color(0.06, 0.25, 0.48, 0.9))
+	count_label.add_theme_constant_override("outline_size", 3)
+	count_label.z_index = 3
+	overlay.add_child(count_label)
+
+	var timer_label: Label = _pause_label("约 %.1f 秒后到达" % countdown, panel_position + Vector2(250, 218), Vector2(290, 34), 21, Color(0.96, 0.94, 0.78), HORIZONTAL_ALIGNMENT_CENTER)
+	timer_label.name = "WavePreviewTimerLabel"
+	timer_label.add_theme_color_override("font_outline_color", Color(0.06, 0.25, 0.48, 0.9))
+	timer_label.add_theme_constant_override("outline_size", 3)
+	timer_label.z_index = 3
+	overlay.add_child(timer_label)
+
+	var reward_label: Label = _pause_label("清理约 +%d 小鱼干" % total_reward, panel_position + Vector2(248, 286), Vector2(220, 42), 19, Color(0.36, 0.16, 0.05), HORIZONTAL_ALIGNMENT_CENTER)
+	reward_label.name = "WavePreviewRewardLabel"
+	reward_label.z_index = 3
+	overlay.add_child(reward_label)
+
+	var start_button: Button = _pause_transparent_text_button("StartWaveFromPreviewButton", "提前开波", Rect2(panel_position + Vector2(406, 264), Vector2(210, 74)), 24)
+	start_button.z_index = 4
+	_attach_press_feedback(start_button, panel)
+	start_button.pressed.connect(func() -> void:
+		_rush_next_wave()
+		_animate_hud_overlay_exit(overlay, start_button)
+	)
+	overlay.add_child(start_button)
+
+	var close_button: Button = _pause_transparent_text_button("CloseWavePreviewDetailButton", "", Rect2(panel_position + Vector2(482, 18), Vector2(150, 58)), 20)
+	close_button.z_index = 4
+	_attach_press_feedback(close_button, panel)
+	close_button.pressed.connect(func() -> void: _animate_hud_overlay_exit(overlay, close_button))
+	overlay.add_child(close_button)
+
+	if _tip_label != null:
+		_tip_label.text = "下一波：%s x%d，先补足关键猫爪位。" % [enemy_name, remaining]
+	_pop_in_control(panel)
+
+
+func _wave_preview_countdown(state: Dictionary) -> float:
+	if state.is_empty():
+		return 0.0
+	var start_time: float = float(state.get("start_time", 0.0))
+	var next_time: float = float(state.get("next_time", start_time))
+	var target_time: float = start_time if elapsed < start_time else next_time
+	return max(0.0, target_time - elapsed)
+
+
+func _enemy_preview_icon_texture(enemy_id: String) -> Texture2D:
+	var path: String = _enemy_preview_icon_path(enemy_id)
+	var texture: Texture2D = load(path) as Texture2D
+	if texture == null:
+		return load("res://assets/generated/enemies/mouse_basic.png") as Texture2D
+	return texture
+
+
+func _enemy_preview_icon_path(enemy_id: String) -> String:
+	match enemy_id:
+		"mouse_fast":
+			return "res://assets/generated/enemies/mouse_fast.png"
+		"rat_tank":
+			return "res://assets/generated/enemies/rat_tank.png"
+		"hamster_runner":
+			return "res://assets/generated/enemies/hamster_runner.png"
+		_:
+			return "res://assets/generated/enemies/mouse_basic.png"
 
 
 func _show_wave_rush_feedback(message: String) -> void:

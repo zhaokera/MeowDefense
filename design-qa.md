@@ -833,3 +833,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_level_select_new_unlock_hint_tests.gd` and `/Users/zhaok/cat/tests/capture_level_select_new_unlock_hint.gd`.
 - Captured `/Users/zhaok/cat/artifacts/level_select_new_unlock_hint.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed level select new unlock hint, progression persistence, menu, locked level feedback, result next-level unlock feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 95 tests`.
+
+**Image2 Battle Wave Preview Detail**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_detail_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_detail_panel_source.png`, `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_detail_panel.png`, `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_info_badge.png`, `/Users/zhaok/cat/assets/generated/enemies/rat_tank.png`, and `/Users/zhaok/cat/assets/generated/enemies/hamster_runner.png`, assembled or extracted from existing Image2 battle HUD, album panel, card, chip, button, and enemy sprite-sheet art.
+- The battle HUD now shows `WavePreviewInfoBadge` on the Image2 wave chip with a separate transparent `WavePreviewInfoButton`, leaving the existing `RushNextWaveButton` behavior intact.
+- Tapping the info badge opens `BattleWavePreviewDetailOverlay` with the Image2 panel, next enemy icon, dynamic wave title, enemy count, countdown, fish reward guidance, close action, and `StartWaveFromPreviewButton`.
+- Starting a wave from the detail panel triggers the existing early-wave logic, spawns the next enemy immediately, and closes the panel with the HUD overlay exit animation.
+- Added `/Users/zhaok/cat/tests/run_battle_wave_preview_detail_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_preview_detail.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_wave_preview_detail.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed battle wave preview detail, battle wave rush, battle wave incoming feedback, battle wave clear feedback, battle speed/wave, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 96 tests`.

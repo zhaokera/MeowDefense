@@ -108,6 +108,11 @@
       "prompt_summary": "Image2 chroma-key source art for the tank rat enemy sprite sheet."
     },
     {
+      "id": "rat_tank_preview_icon",
+      "path": "res://assets/generated/enemies/rat_tank.png",
+      "prompt_summary": "Image2-derived single-frame tank rat icon extracted from the sprite sheet for wave preview UI."
+    },
+    {
       "id": "hamster_runner",
       "path": "res://assets/generated/enemies/hamster_runner_sheet.png",
       "prompt_summary": "Tiny fast hamster runner sprite sheet with sprint, turn, hit, and tumble poses."
@@ -121,6 +126,11 @@
       "id": "hamster_runner_sheet_source",
       "path": "res://assets/generated/enemies/hamster_runner_sheet_source.png",
       "prompt_summary": "Image2 chroma-key source art for the fast hamster runner enemy sprite sheet."
+    },
+    {
+      "id": "hamster_runner_preview_icon",
+      "path": "res://assets/generated/enemies/hamster_runner.png",
+      "prompt_summary": "Image2-derived single-frame hamster runner icon extracted from the sprite sheet for wave preview UI."
     }
   ],
   "bases": [
@@ -367,6 +377,26 @@
       "id": "battle_wave_preview_chip",
       "path": "res://assets/generated/ui/battle_wave_preview_chip.png",
       "prompt_summary": "Image2 transparent wave preview chip used by the battle HUD for incoming enemy and countdown text."
+    },
+    {
+      "id": "battle_wave_preview_detail_design_reference",
+      "path": "res://assets/generated/ui/battle_wave_preview_detail_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing the next-wave enemy intel panel opened from the wave preview chip."
+    },
+    {
+      "id": "battle_wave_preview_detail_panel_source",
+      "path": "res://assets/generated/ui/battle_wave_preview_detail_panel_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 HUD chip, album panel, card, and button art for next-wave preview details."
+    },
+    {
+      "id": "battle_wave_preview_detail_panel",
+      "path": "res://assets/generated/ui/battle_wave_preview_detail_panel.png",
+      "prompt_summary": "Project-bound transparent Image2-derived panel used for next-wave enemy, count, timer, and reward preview."
+    },
+    {
+      "id": "battle_wave_preview_info_badge",
+      "path": "res://assets/generated/ui/battle_wave_preview_info_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived paw badge used as the wave-preview info hotspot."
     },
     {
       "id": "battle_speed_button",
