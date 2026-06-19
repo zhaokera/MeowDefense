@@ -824,3 +824,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_reward_fly_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_result_reward_fly_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/result_reward_fly_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed result reward fly feedback, result screen, result next-level unlock feedback, result defeat screen, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 94 tests`.
+
+**Image2 Level Select New Unlock Hint**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/level_select_new_unlock_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/level_select_new_unlock_hint_source.png`, and `/Users/zhaok/cat/assets/generated/ui/level_select_new_unlock_hint.png`, assembled from existing Image2 level-select, lock, paw, thumbnail, and star art.
+- The level-select screen now marks the highest unlocked uncleared level with `Level#NewUnlockHint` and dynamic `新关卡` label, while cleared unlocked levels do not keep the hint.
+- Locked levels still show `Level#LockedBadge`, and the highlighted newly unlocked level remains playable through the existing transparent hotspot.
+- The hint enters with a pop and settles into a subtle floating loop; the animation uses a weak reference so fast screen transitions do not leave freed-node callback errors.
+- Added `/Users/zhaok/cat/tests/run_level_select_new_unlock_hint_tests.gd` and `/Users/zhaok/cat/tests/capture_level_select_new_unlock_hint.gd`.
+- Captured `/Users/zhaok/cat/artifacts/level_select_new_unlock_hint.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed level select new unlock hint, progression persistence, menu, locked level feedback, result next-level unlock feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 95 tests`.

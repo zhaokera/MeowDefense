@@ -7,6 +7,7 @@ const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_des
 const COMMON_OVERLAY_DIM_TEXTURE := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
 const UI_TAP_FEEDBACK_TEXTURE := preload("res://assets/generated/ui/ui_tap_feedback_paw_spark.png")
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
+const LEVEL_SELECT_NEW_UNLOCK_HINT := preload("res://assets/generated/ui/level_select_new_unlock_hint.png")
 const LOCKED_LEVEL_FEEDBACK_DESIGN := preload("res://assets/generated/ui/locked_level_feedback_design_reference.png")
 const LOCKED_LEVEL_FEEDBACK_BURST := preload("res://assets/generated/ui/locked_level_feedback_burst.png")
 const RESULT_SCREEN_DESIGN := preload("res://assets/generated/ui/result_screen_design_reference.png")
@@ -257,6 +258,8 @@ func _show_level_select_now() -> void:
 		if unlocked:
 			button.pressed.connect(func() -> void: _start_level(level_info))
 			screen.add_child(button)
+			if _should_show_level_new_unlock_hint(level_id):
+				_add_level_new_unlock_hint(screen, level_id, rect)
 		else:
 			button.tooltip_text = "通关前一关解锁"
 			_add_level_lock_badge(screen, level_id, rect)
@@ -1786,6 +1789,58 @@ func _show_shop_insufficient_fish_feedback(parent: Control, product_title: Strin
 
 func _is_level_unlocked(level_id: int) -> bool:
 	return level_id >= 1 and level_id <= max(1, min(LEVELS.size(), _unlocked_level))
+
+
+func _should_show_level_new_unlock_hint(level_id: int) -> bool:
+	return level_id > 1 and level_id == _unlocked_level and _level_stars(level_id) <= 0
+
+
+func _add_level_new_unlock_hint(parent: Control, level_id: int, rect: Rect2) -> void:
+	var hint_size := Vector2(156, 104)
+	var hint_position: Vector2 = rect.position + Vector2(rect.size.x * 0.5 - hint_size.x * 0.5, -22.0)
+	var group: Control = Control.new()
+	group.name = "Level%dNewUnlockGroup" % level_id
+	group.position = hint_position
+	group.size = hint_size
+	group.z_index = 7
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(group)
+
+	var hint: TextureRect = _ui_texture_rect("Level%dNewUnlockHint" % level_id, LEVEL_SELECT_NEW_UNLOCK_HINT, Vector2.ZERO, hint_size)
+	hint.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	hint.z_index = 1
+	hint.set_meta("image2_new_unlock_hint", true)
+	group.add_child(hint)
+
+	var label: Label = _label("Level%dNewUnlockLabel" % level_id, "新关卡", Vector2(32.0, 67.0), Vector2(92.0, 28.0), 18, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.90, 0.58, 0.95))
+	label.add_theme_constant_override("outline_size", 3)
+	group.add_child(label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -3.0, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 2.0, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = hint_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
 
 
 func _add_level_lock_badge(parent: Control, level_id: int, rect: Rect2) -> void:
