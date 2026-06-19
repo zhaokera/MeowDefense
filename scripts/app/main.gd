@@ -58,6 +58,7 @@ const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blu
 const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
 const RESULT_STAR_BADGE := preload("res://assets/generated/ui/result_star_badge.png")
 const RESULT_REWARD_FISH_CHIP := preload("res://assets/generated/ui/result_fish_chip.png")
+const RESULT_REWARD_FLY_FISH_CHIP := preload("res://assets/generated/ui/result_reward_fly_fish_chip.png")
 const RESULT_NEXT_LEVEL_UNLOCK_BURST := preload("res://assets/generated/ui/result_next_level_unlock_burst.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
@@ -548,6 +549,56 @@ func _add_result_reward_celebration(parent: Control, earned_stars: int, fish_rew
 	layer.add_child(count_label)
 	_animate_result_reward_piece(count_label, 0.30, Vector2.ONE)
 	_pulse_result_reward_label(count_label)
+	_add_result_reward_fly_feedback(parent, fish_reward)
+
+
+func _add_result_reward_fly_feedback(parent: Control, fish_reward: int) -> void:
+	if fish_reward <= 0:
+		return
+	var target_counter: Control = parent.find_child("FishCounter", true, false) as Control
+	var target_center := Vector2(896, 60)
+	if target_counter != null:
+		target_counter.set_meta("image2_reward_fly_target", true)
+		target_center = target_counter.position + target_counter.size * 0.5
+		_pulse_control(target_counter)
+
+	var fly_layer: Control = Control.new()
+	fly_layer.name = "ResultRewardFlyLayer"
+	fly_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	fly_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fly_layer.z_index = 11
+	parent.add_child(fly_layer)
+
+	var start_positions: Array[Vector2] = [
+		Vector2(492, 414),
+		Vector2(548, 382),
+		Vector2(598, 426)
+	]
+	for index: int in range(start_positions.size()):
+		var chip: TextureRect = _ui_texture_rect("ResultRewardFlyFish%d" % (index + 1), RESULT_REWARD_FLY_FISH_CHIP, start_positions[index], Vector2(72, 72))
+		chip.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		chip.z_index = 1 + index
+		chip.process_mode = Node.PROCESS_MODE_ALWAYS
+		chip.pivot_offset = chip.size * 0.5
+		chip.scale = Vector2(0.74, 0.74)
+		chip.modulate = Color(1.0, 1.0, 1.0, 0.98)
+		chip.set_meta("image2_reward_fly_feedback", true)
+		fly_layer.add_child(chip)
+		_animate_result_reward_fly_chip(chip, target_center, 0.22 + float(index) * 0.10)
+
+
+func _animate_result_reward_fly_chip(chip: TextureRect, target_center: Vector2, delay: float) -> void:
+	var target_position: Vector2 = target_center - chip.size * 0.5
+	var mid_position: Vector2 = chip.position.lerp(target_position, 0.45) + Vector2(-36.0, -82.0)
+	var tween: Tween = chip.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(chip, "scale", Vector2(1.02, 1.02), 0.16).set_delay(delay).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(chip, "rotation_degrees", -10.0 + delay * 16.0, 0.18).set_delay(delay).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(chip, "position", mid_position, 0.28).set_delay(delay + 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(chip, "position", target_position, 0.42).set_delay(delay + 0.34).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tween.tween_property(chip, "scale", Vector2(0.40, 0.40), 0.32).set_delay(delay + 0.52).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_property(chip, "modulate:a", 0.0, 0.18).set_delay(delay + 0.84).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(Callable(chip, "queue_free")).set_delay(delay + 1.06)
 
 
 func _add_result_next_level_unlock_feedback(parent: Control, level_id: int) -> void:

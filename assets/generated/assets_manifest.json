@@ -1037,6 +1037,21 @@
       "id": "result_next_level_unlock_burst",
       "path": "res://assets/generated/ui/result_next_level_unlock_burst.png",
       "prompt_summary": "Project-bound transparent Image2-derived unlock burst used when victory opens the next level."
+    },
+    {
+      "id": "result_reward_fly_feedback_design_reference",
+      "path": "res://assets/generated/ui/result_reward_fly_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen result reference showing fish reward chips flying from the reward area to the top fish counter."
+    },
+    {
+      "id": "result_reward_fly_fish_chip_source",
+      "path": "res://assets/generated/ui/result_reward_fly_fish_chip_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 result fish chip, paw, and star art for reward fly feedback."
+    },
+    {
+      "id": "result_reward_fly_fish_chip",
+      "path": "res://assets/generated/ui/result_reward_fly_fish_chip.png",
+      "prompt_summary": "Project-bound transparent Image2-derived fish reward chip used for result reward fly-to-counter feedback."
     }
   ]
 }

@@ -816,3 +816,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_next_level_unlock_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_result_next_level_unlock_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/result_next_level_unlock_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed result next-level unlock feedback, result screen, result screen exit animation, progression persistence, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 93 tests`.
+
+**Image2 Result Reward Fly Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/result_reward_fly_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/result_reward_fly_fish_chip_source.png`, and `/Users/zhaok/cat/assets/generated/ui/result_reward_fly_fish_chip.png`, assembled from existing Image2 result fish chip, paw, and star art.
+- The victory result screen now creates `ResultRewardFlyLayer` with three `ResultRewardFlyFish#` chips that launch from the reward area toward the top `FishCounter`.
+- The fish counter marks `image2_reward_fly_target` and pulses when the reward fly feedback starts; defeat results and zero-reward results do not show the fly layer.
+- Added `/Users/zhaok/cat/tests/run_result_reward_fly_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_result_reward_fly_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/result_reward_fly_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed result reward fly feedback, result screen, result next-level unlock feedback, result defeat screen, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 94 tests`.
