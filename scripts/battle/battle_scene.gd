@@ -56,6 +56,7 @@ const TowerRangeAuraTexture := preload("res://assets/generated/effects/tower_ran
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
 const EnemyRewardFishBurstTexture := preload("res://assets/generated/ui/enemy_reward_fish_burst.png")
+const BattleRewardFlyFishChipTexture := preload("res://assets/generated/ui/battle_reward_fly_fish_chip.png")
 const EnemyHitFishSparkTexture := preload("res://assets/generated/effects/enemy_hit_fish_spark.png")
 const EnemyDefeatMousePuffTexture := preload("res://assets/generated/effects/enemy_defeat_mouse_puff.png")
 const EnemySpawnMouseDustTexture := preload("res://assets/generated/effects/enemy_spawn_mouse_dust.png")
@@ -124,6 +125,7 @@ var _wave_rush_feedback_index: int = 0
 var _wave_clear_feedback_index: int = 0
 var _wave_incoming_feedback_index: int = 0
 var _battle_speed_feedback_index: int = 0
+var _battle_reward_fly_index: int = 0
 
 
 func _ready() -> void:
@@ -164,6 +166,7 @@ func start_level(path: String) -> void:
 	_wave_clear_feedback_index = 0
 	_wave_incoming_feedback_index = 0
 	_battle_speed_feedback_index = 0
+	_battle_reward_fly_index = 0
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -1512,6 +1515,72 @@ func _show_enemy_reward_feedback(reward: int, world_anchor: Vector2) -> void:
 	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.42)
 
 
+func _show_battle_reward_fly_feedback(reward: int, world_anchor: Vector2) -> void:
+	if _hud == null or _coins_label == null or reward <= 0:
+		return
+	_battle_reward_fly_index += 1
+	_coins_label.set_meta("image2_battle_reward_fly_target", true)
+
+	var chip_size := Vector2(76, 76)
+	var start_center := Vector2(
+		clampf(world_anchor.x + 96.0, 94.0, 1120.0),
+		clampf(world_anchor.y - 84.0, 116.0, 610.0)
+	)
+	var target_center: Vector2 = _coins_label.position + _coins_label.size * 0.5
+	var arc_center := Vector2(
+		(start_center.x + target_center.x) * 0.5,
+		maxf(84.0, min(start_center.y, target_center.y) - 32.0)
+	)
+
+	var chip: TextureRect = _hud_texture_rect("BattleRewardFlyFish%d" % _battle_reward_fly_index, BattleRewardFlyFishChipTexture, start_center - chip_size * 0.5, chip_size)
+	chip.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	chip.z_index = 90
+	chip.process_mode = Node.PROCESS_MODE_ALWAYS
+	chip.pivot_offset = chip.size * 0.5
+	chip.scale = Vector2(0.62, 0.62)
+	chip.rotation_degrees = -9.0
+	chip.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	chip.set_meta("image2_battle_reward_fly_feedback", true)
+	chip.set_meta("reward", reward)
+	_hud.add_child(chip)
+
+	var amount: Label = _hud_label("+%d" % reward)
+	amount.name = "BattleRewardFlyAmountLabel"
+	amount.position = Vector2(16, 48)
+	amount.size = Vector2(44, 22)
+	amount.add_theme_font_size_override("font_size", 14)
+	amount.add_theme_color_override("font_color", Color(0.36, 0.16, 0.05))
+	amount.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.90))
+	amount.add_theme_constant_override("outline_size", 3)
+	amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	amount.clip_text = true
+	chip.add_child(amount)
+
+	var chip_ref: WeakRef = weakref(chip)
+	var coins_ref: WeakRef = weakref(_coins_label)
+	var move_tween: Tween = chip.create_tween()
+	move_tween.tween_property(chip, "position", arc_center - chip_size * 0.5, 0.26).set_delay(0.04).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	move_tween.tween_property(chip, "position", target_center - chip_size * 0.5, 0.34).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+
+	var visual_tween: Tween = chip.create_tween()
+	visual_tween.set_parallel(true)
+	visual_tween.tween_property(chip, "modulate:a", 1.0, 0.07).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	visual_tween.tween_property(chip, "scale", Vector2(0.88, 0.88), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	visual_tween.tween_property(chip, "scale", Vector2(0.42, 0.42), 0.28).set_delay(0.36).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	visual_tween.tween_property(chip, "rotation_degrees", 14.0, 0.58).set_delay(0.04).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	visual_tween.tween_property(chip, "modulate:a", 0.0, 0.12).set_delay(0.66).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	visual_tween.tween_callback(func() -> void:
+		var coins_target: Object = coins_ref.get_ref()
+		if coins_target is Control:
+			_animate_control_scale(coins_target as Control, 1.16, 0.08)
+	).set_delay(0.63)
+	visual_tween.tween_callback(func() -> void:
+		var resolved: Object = chip_ref.get_ref()
+		if resolved is Node:
+			(resolved as Node).queue_free()
+	).set_delay(0.84)
+
+
 func _show_enemy_hit_feedback(world_anchor: Vector2) -> void:
 	if _world == null:
 		return
@@ -2565,6 +2634,7 @@ func _on_enemy_defeated(enemy: Node2D) -> void:
 	_update_hud()
 	_show_enemy_defeat_feedback(reward_anchor)
 	_show_enemy_reward_feedback(reward, reward_anchor)
+	_show_battle_reward_fly_feedback(reward, reward_anchor)
 	_maybe_show_wave_clear_feedback(wave_index)
 	enemy.queue_free()
 

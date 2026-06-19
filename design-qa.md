@@ -908,3 +908,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_post_build_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_post_build_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_post_build_guidance.png`; GUI capture was used for visual evidence.
 - Passed battle post-build guidance, battle build guidance, battle tower selection guidance, build input, build success feedback, build slot manage badge, tower selector card, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 104 tests`.
+
+**Image2 Battle Reward Fly Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_reward_fly_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_reward_fly_fish_chip_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_reward_fly_fish_chip.png`, assembled from existing Image2 fish chip, reward burst, and tap sparkle art.
+- Defeating an enemy now keeps the existing local `EnemyRewardFeedback#` burst and also creates `BattleRewardFlyFish#`, a non-blocking fish chip that flies toward the top fish counter.
+- The top `CoinsLabel` is marked as `image2_battle_reward_fly_target` and pulses as the fly chip arrives, making the reward-to-resource transfer clearer.
+- Added `/Users/zhaok/cat/tests/run_battle_reward_fly_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_reward_fly_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_reward_fly_feedback.png`; GUI capture was used for visual evidence.
+- Passed battle reward fly feedback, enemy reward feedback, enemy defeat feedback, battle wave clear feedback, battle wave incoming feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 105 tests`.

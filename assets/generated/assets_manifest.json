@@ -514,6 +514,21 @@
       "prompt_summary": "Image2 transparent fish reward burst used when defeated enemies grant fish snacks."
     },
     {
+      "id": "battle_reward_fly_feedback_design_reference",
+      "path": "res://assets/generated/ui/battle_reward_fly_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing defeated-enemy fish rewards flying into the top fish counter."
+    },
+    {
+      "id": "battle_reward_fly_fish_chip_source",
+      "path": "res://assets/generated/ui/battle_reward_fly_fish_chip_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 fish chip, reward burst, and tap sparkle art for battle reward fly feedback."
+    },
+    {
+      "id": "battle_reward_fly_fish_chip",
+      "path": "res://assets/generated/ui/battle_reward_fly_fish_chip.png",
+      "prompt_summary": "Project-bound transparent Image2-derived fish chip that flies from defeated enemies into the battle fish counter."
+    },
+    {
       "id": "enemy_health_bar_design_reference",
       "path": "res://assets/generated/ui/enemy_health_bar_design_reference.png",
       "prompt_summary": "Image2 full-screen battle design reference showing object-like enemy health bars above moving enemies."
