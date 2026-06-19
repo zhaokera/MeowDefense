@@ -900,3 +900,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_tower_selection_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_tower_selection_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_tower_selection_guidance.png`; GUI capture was used for visual evidence.
 - Passed battle tower selection guidance, tower selector card, build slot tower ghost, build slot range preview, tower affordability, build input, battle build guidance, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 103 tests`.
+
+**Image2 Battle Post-Build Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_post_build_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_post_build_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_post_build_guidance_badge.png`, assembled from existing Image2 battle guidance, paw, tower, and tap-burst art.
+- Building the first tower now shows `BattlePostBuildGuidance` near the next empty cat-paw build slot with dynamic `继续补防` copy, making the second build step visible on the map.
+- The guidance uses `mouse_filter = IGNORE`, so the real transparent `BuildSlot#Button` remains the tappable target; building the next tower or opening tower management removes the guidance.
+- Added `/Users/zhaok/cat/tests/run_battle_post_build_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_post_build_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_post_build_guidance.png`; GUI capture was used for visual evidence.
+- Passed battle post-build guidance, battle build guidance, battle tower selection guidance, build input, build success feedback, build slot manage badge, tower selector card, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 104 tests`.

@@ -17,6 +17,7 @@ const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_paus
 const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
 const BattleBuildGuidanceBadgeTexture := preload("res://assets/generated/ui/battle_build_guidance_badge.png")
 const BattleTowerSelectionGuidanceTexture := preload("res://assets/generated/ui/battle_tower_selection_guidance_badge.png")
+const BattlePostBuildGuidanceTexture := preload("res://assets/generated/ui/battle_post_build_guidance_badge.png")
 const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
 const BattleWavePreviewDetailPanelTexture := preload("res://assets/generated/ui/battle_wave_preview_detail_panel.png")
 const BattleWavePreviewInfoBadgeTexture := preload("res://assets/generated/ui/battle_wave_preview_info_badge.png")
@@ -578,6 +579,7 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	if finished:
 		return
 	if slot.occupied:
+		_hide_post_build_guidance()
 		_show_build_slot_manage_badge_feedback(slot)
 		_show_tower_action_overlay(slot)
 		return
@@ -604,6 +606,10 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	_tower_layer.add_child(tower)
 	_hide_build_guidance_hint()
 	_hide_tower_selection_guidance()
+	if towers.size() == 1:
+		_show_post_build_guidance()
+	else:
+		_hide_post_build_guidance()
 	_show_build_success_feedback(slot.position)
 	_tip_label.text = "%s 上岗！继续点击空猫爪位补防。" % str(stats.get("name", "猫塔"))
 	_update_hud()
@@ -716,6 +722,7 @@ func _hide_build_guidance_hint() -> void:
 func _show_tower_selection_guidance(tower_id: String) -> void:
 	if _slot_buttons == null or _slot_layer == null:
 		return
+	_hide_post_build_guidance()
 	_hide_tower_selection_guidance()
 	for child: Node in _slot_layer.get_children():
 		var slot: Node2D = child as Node2D
@@ -784,6 +791,81 @@ func _hide_tower_selection_guidance() -> void:
 	if _slot_buttons == null:
 		return
 	var guidance: Control = _slot_buttons.find_child("BattleTowerSelectionGuidance", true, false) as Control
+	if guidance != null:
+		guidance.queue_free()
+
+
+func _show_post_build_guidance() -> void:
+	if _slot_buttons == null or _slot_layer == null:
+		return
+	_hide_post_build_guidance()
+	for child: Node in _slot_layer.get_children():
+		var slot: Node2D = child as Node2D
+		if slot == null or bool(slot.get("occupied")):
+			continue
+		var guidance_size := Vector2(340, 162)
+		var guidance_position := slot.position + Vector2(-118, 54) if slot.position.y < 240.0 else slot.position + Vector2(-124, -146)
+		guidance_position.x = clampf(guidance_position.x, 12.0, 1280.0 - guidance_size.x - 12.0)
+		guidance_position.y = clampf(guidance_position.y, 108.0, 720.0 - guidance_size.y - 14.0)
+
+		var guidance: Control = Control.new()
+		guidance.name = "BattlePostBuildGuidance"
+		guidance.position = guidance_position
+		guidance.size = guidance_size
+		guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		guidance.z_index = 23
+		guidance.set_meta("image2_post_build_guidance", true)
+		guidance.set_meta("built_tower_count", towers.size())
+		_slot_buttons.add_child(guidance)
+
+		var badge: TextureRect = _hud_texture_rect("BattlePostBuildGuidanceBadge", BattlePostBuildGuidanceTexture, Vector2.ZERO, guidance_size)
+		badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		badge.z_index = 1
+		guidance.add_child(badge)
+
+		var label: Label = _hud_label("继续补防")
+		label.name = "BattlePostBuildGuidanceLabel"
+		label.position = Vector2(112, 62)
+		label.size = Vector2(132, 38)
+		label.add_theme_font_size_override("font_size", 21)
+		label.add_theme_color_override("font_color", Color(0.36, 0.16, 0.05))
+		label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.90))
+		label.add_theme_constant_override("outline_size", 4)
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label.clip_text = true
+		label.z_index = 2
+		guidance.add_child(label)
+
+		guidance.pivot_offset = guidance.size * 0.5
+		guidance.scale = Vector2(0.76, 0.76)
+		guidance.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		var guidance_ref: WeakRef = weakref(guidance)
+		var intro: Tween = guidance.create_tween()
+		intro.set_parallel(true)
+		intro.tween_property(guidance, "modulate:a", 1.0, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		intro.tween_property(guidance, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		intro.tween_callback(func() -> void:
+			var resolved: Object = guidance_ref.get_ref()
+			if resolved is Control:
+				_start_post_build_guidance_float(resolved as Control)
+		).set_delay(0.22)
+		return
+
+
+func _start_post_build_guidance_float(guidance: Control) -> void:
+	if guidance == null or not is_instance_valid(guidance):
+		return
+	var base_position: Vector2 = guidance.position
+	var tween: Tween = guidance.create_tween()
+	tween.set_loops()
+	tween.tween_property(guidance, "position:y", base_position.y - 7.0, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(guidance, "position:y", base_position.y, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _hide_post_build_guidance() -> void:
+	if _slot_buttons == null:
+		return
+	var guidance: Control = _slot_buttons.find_child("BattlePostBuildGuidance", true, false) as Control
 	if guidance != null:
 		guidance.queue_free()
 
@@ -1786,6 +1868,7 @@ func _select_tower(tower_id: String) -> void:
 	var cost: int = int(stats.get("cost", 0))
 	if coins < cost:
 		_tip_label.text = "已选择：%s，还差 %d 小鱼干。" % [str(stats.get("name", tower_id)), max(1, cost - coins)]
+		_hide_post_build_guidance()
 		_hide_tower_selection_guidance()
 	else:
 		_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
