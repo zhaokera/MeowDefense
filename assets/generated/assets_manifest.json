@@ -944,6 +944,21 @@
       "prompt_summary": "Image2 full-screen defeat result design used directly as the high-fidelity failed-level result screen."
     },
     {
+      "id": "result_defeat_guidance_design_reference",
+      "path": "res://assets/generated/ui/result_defeat_guidance_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen defeat result reference showing a retry guidance badge above the orange retry action."
+    },
+    {
+      "id": "result_defeat_guidance_badge_source",
+      "path": "res://assets/generated/ui/result_defeat_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 result button, paw, fish, star, and tap burst art for defeat retry guidance."
+    },
+    {
+      "id": "result_defeat_guidance_badge",
+      "path": "res://assets/generated/ui/result_defeat_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived retry guidance badge shown only on failed-level result screens."
+    },
+    {
       "id": "result_screen_asset_sheet_source",
       "path": "res://assets/generated/ui/result_screen_asset_sheet_source.png",
       "prompt_summary": "Image2 chroma-key result screen asset sheet used to derive button, strip, star, and reward textures."

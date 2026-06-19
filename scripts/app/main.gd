@@ -61,6 +61,7 @@ const RESULT_STAR_BADGE := preload("res://assets/generated/ui/result_star_badge.
 const RESULT_REWARD_FISH_CHIP := preload("res://assets/generated/ui/result_fish_chip.png")
 const RESULT_REWARD_FLY_FISH_CHIP := preload("res://assets/generated/ui/result_reward_fly_fish_chip.png")
 const RESULT_NEXT_LEVEL_UNLOCK_BURST := preload("res://assets/generated/ui/result_next_level_unlock_burst.png")
+const RESULT_DEFEAT_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_defeat_guidance_badge.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -431,6 +432,8 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 		next_button.pressed.connect(func() -> void:
 			_start_level_from_result(screen, next_button, _level_info_by_id(next_level_id))
 		)
+	if not won:
+		_add_result_defeat_guidance(screen)
 	if won and newly_unlocked_level_id > _current_level_id:
 		_add_result_next_level_unlock_feedback(screen, newly_unlocked_level_id)
 	_animate_result_screen_entry(screen)
@@ -640,6 +643,58 @@ func _add_result_next_level_unlock_feedback(parent: Control, level_id: int) -> v
 	tween.tween_property(feedback, "rotation_degrees", 4.0, 0.08).set_delay(0.38).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(feedback, "rotation_degrees", -2.0, 0.08).set_delay(0.48).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.10).set_delay(0.58).set_trans(Tween.TRANS_BACK)
+
+
+func _add_result_defeat_guidance(parent: Control) -> void:
+	var guidance_size := Vector2(392, 150)
+	var guidance: Control = Control.new()
+	guidance.name = "ResultDefeatGuidance"
+	guidance.position = Vector2(228, 420)
+	guidance.size = guidance_size
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 10
+	guidance.set_meta("image2_defeat_guidance", true)
+	parent.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("ResultDefeatGuidanceBadge", RESULT_DEFEAT_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("ResultDefeatGuidanceLabel", "再试一次守住", Vector2(124, 54), Vector2(154, 46), 22, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	guidance.add_child(label)
+
+	guidance.pivot_offset = guidance.size * 0.5
+	guidance.scale = Vector2(0.78, 0.78)
+	guidance.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var retry_frame: Control = parent.find_child("ResultRetryFrame", true, false) as Control
+	if retry_frame != null:
+		_pulse_control(retry_frame)
+
+	var guidance_ref: WeakRef = weakref(guidance)
+	var intro: Tween = guidance.create_tween()
+	intro.set_parallel(true)
+	intro.tween_property(guidance, "modulate:a", 1.0, 0.12).set_delay(0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	intro.tween_property(guidance, "scale", Vector2.ONE, 0.22).set_delay(0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	intro.chain().tween_callback(func() -> void:
+		var resolved: Object = guidance_ref.get_ref()
+		if resolved is Control:
+			_start_result_defeat_guidance_float(resolved as Control)
+	)
+
+
+func _start_result_defeat_guidance_float(guidance: Control) -> void:
+	if guidance == null or not is_instance_valid(guidance):
+		return
+	var base_position: Vector2 = guidance.position
+	var tween: Tween = guidance.create_tween()
+	tween.set_loops()
+	tween.tween_property(guidance, "position:y", base_position.y - 6.0, 0.78).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(guidance, "position:y", base_position.y, 0.78).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _animate_result_reward_piece(target: Control, delay: float, final_scale: Vector2) -> void:

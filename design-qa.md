@@ -850,3 +850,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_build_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_build_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_build_guidance.png`; GUI capture was used for visual evidence.
 - Passed battle build guidance, build input, build success feedback, build slot range preview, build slot tower ghost, build slot affordability preview, battle tap feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 97 tests`.
+
+**Image2 Result Defeat Retry Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/result_defeat_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/result_defeat_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/result_defeat_guidance_badge.png`, assembled from existing Image2 result button, paw, fish, star, and tap-burst art.
+- Failed-level results now show `ResultDefeatGuidance` above the orange retry action with dynamic `再试一次守住` copy, while victory results do not show the defeat-only guidance.
+- The guidance is a transparent, non-blocking Image2 badge with pop-in and subtle floating motion; it pulses the existing retry frame and leaves the retry, level-map, and disabled next-level actions intact.
+- Added `/Users/zhaok/cat/tests/run_result_defeat_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_defeat_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/result_defeat_guidance.png`; GUI capture was used for visual evidence.
+- Passed result defeat guidance, result defeat screen, result screen, result screen entry animation, result screen exit animation, result next-level unlock feedback, result reward fly feedback, menu, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 98 tests`.
