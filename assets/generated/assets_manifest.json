@@ -469,6 +469,21 @@
       "prompt_summary": "Feature-specific Image2 golden burst used when the player taps upgrade on an already max-level tower."
     },
     {
+      "id": "tower_upgrade_spend_feedback_design_reference",
+      "path": "res://assets/generated/ui/tower_upgrade_spend_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing fish currency flying from the top counter into a tower upgrade."
+    },
+    {
+      "id": "tower_upgrade_spend_fish_chip_source",
+      "path": "res://assets/generated/ui/tower_upgrade_spend_fish_chip_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 fish chip art for tower upgrade spend feedback."
+    },
+    {
+      "id": "tower_upgrade_spend_fish_chip",
+      "path": "res://assets/generated/ui/tower_upgrade_spend_fish_chip.png",
+      "prompt_summary": "Project-bound transparent Image2-derived fish chip with a spend badge used when upgrades deduct fish."
+    },
+    {
       "id": "battle_resource_shortage_design_reference",
       "path": "res://assets/generated/ui/battle_resource_shortage_design_reference.png",
       "prompt_summary": "Image2 full-screen battle feedback design reference showing the not-enough-fish burst over the battle HUD."

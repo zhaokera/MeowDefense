@@ -916,3 +916,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_reward_fly_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_reward_fly_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_reward_fly_feedback.png`; GUI capture was used for visual evidence.
 - Passed battle reward fly feedback, enemy reward feedback, enemy defeat feedback, battle wave clear feedback, battle wave incoming feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 105 tests`.
+
+**Image2 Tower Upgrade Spend Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/tower_upgrade_spend_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/tower_upgrade_spend_fish_chip_source.png`, and `/Users/zhaok/cat/assets/generated/ui/tower_upgrade_spend_fish_chip.png`, assembled from existing Image2 battle, fish chip, and upgrade art.
+- Successful tower upgrades now create `TowerUpgradeSpendFish#`, a non-blocking fish chip with dynamic `-N` text that travels from the top fish counter toward the upgraded tower before fading.
+- The top `CoinsLabel` is marked as `image2_tower_upgrade_spend_source`, updates to the post-upgrade fish total before the chip launches, and pulses during the spend motion.
+- Added `/Users/zhaok/cat/tests/run_tower_upgrade_spend_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_upgrade_spend_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/tower_upgrade_spend_feedback.png`; GUI capture was used for visual evidence.
+- Passed tower upgrade spend feedback, tower upgrade feedback, tower action, tower max level, battle tower affordability, battle resource feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 106 tests`.
