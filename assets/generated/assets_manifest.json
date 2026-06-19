@@ -634,6 +634,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived restart badge shown after restarting a battle from pause."
     },
     {
+      "id": "pause_resume_feedback_design_reference",
+      "path": "res://assets/generated/ui/pause_resume_feedback_design_reference.png",
+      "prompt_summary": "Image2 full-screen battle reference showing the non-blocking feedback after resuming from pause."
+    },
+    {
+      "id": "pause_resume_feedback_badge_source",
+      "path": "res://assets/generated/ui/pause_resume_feedback_badge_source.png",
+      "prompt_summary": "Image2 chroma source combined with existing pause art for the pause resume feedback badge."
+    },
+    {
+      "id": "pause_resume_feedback_badge",
+      "path": "res://assets/generated/ui/pause_resume_feedback_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived continue badge shown after resuming a paused battle."
+    },
+    {
       "id": "battle_pause_button_blue",
       "path": "res://assets/generated/ui/battle_pause_button_blue.png",
       "prompt_summary": "Cropped Image2 blue settings button frame with transparent background."

@@ -32,6 +32,7 @@ const BattlePauseMenuOrangeButtonTexture := preload("res://assets/generated/ui/b
 const BattlePauseMenuBlueButtonTexture := preload("res://assets/generated/ui/battle_pause_button_blue.png")
 const BattlePauseMenuRedButtonTexture := preload("res://assets/generated/ui/battle_pause_button_red.png")
 const PauseRestartFeedbackBadgeTexture := preload("res://assets/generated/ui/pause_restart_feedback_badge.png")
+const PauseResumeFeedbackBadgeTexture := preload("res://assets/generated/ui/pause_resume_feedback_badge.png")
 const CommonOverlayDimTexture := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
 const BattleTapFeedbackTexture := preload("res://assets/generated/ui/battle_tap_feedback_starburst.png")
 const TowerActionPanelTexture := preload("res://assets/generated/ui/tower_action_panel.png")
@@ -2880,9 +2881,11 @@ func _resume_from_pause() -> void:
 	if _pause_overlay != null and is_instance_valid(_pause_overlay):
 		_animate_hud_overlay_exit(_pause_overlay, _pause_overlay.find_child("ResumeButton", true, false) as Button, func() -> void:
 			_pause_overlay = null
+			_show_pause_resume_feedback()
 		)
 	else:
 		_pause_overlay = null
+		_show_pause_resume_feedback()
 
 
 func _restart_from_pause() -> void:
@@ -2964,6 +2967,61 @@ func _show_pause_restart_feedback() -> void:
 		if resolved is Node:
 			(resolved as Node).queue_free()
 	).set_delay(1.64)
+
+
+func _show_pause_resume_feedback() -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("PauseResumeFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+
+	var feedback_size := Vector2(420, 196)
+	var feedback: TextureRect = _hud_texture_rect("PauseResumeFeedback", PauseResumeFeedbackBadgeTexture, Vector2(430, 126), feedback_size)
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 94
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.64, 0.64)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	feedback.set_meta("image2_pause_resume_feedback", true)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("继续守卫")
+	label.name = "PauseResumeFeedbackLabel"
+	label.position = Vector2(160, 70)
+	label.size = Vector2(220, 52)
+	label.add_theme_font_size_override("font_size", 32)
+	label.add_theme_color_override("font_color", Color(0.35, 0.16, 0.04))
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.93, 0.64, 0.94))
+	label.add_theme_constant_override("outline_size", 4)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var sub_label: Label = _hud_label("战斗继续")
+	sub_label.name = "PauseResumeFeedbackSubLabel"
+	sub_label.position = Vector2(174, 116)
+	sub_label.size = Vector2(184, 34)
+	sub_label.add_theme_font_size_override("font_size", 18)
+	sub_label.add_theme_color_override("font_color", Color(0.42, 0.21, 0.06))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.add_child(sub_label)
+
+	var feedback_ref: WeakRef = weakref(feedback)
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.10).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 9.0, 0.46).set_delay(0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 3.0, 0.46).set_delay(0.66).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.24).set_delay(1.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(func() -> void:
+		var resolved: Object = feedback_ref.get_ref()
+		if resolved is Node:
+			(resolved as Node).queue_free()
+	).set_delay(1.50)
 
 
 func _pause_menu_button(button_name: String, frame_name: String, texture: Texture2D, text: String, position: Vector2, size: Vector2) -> Button:

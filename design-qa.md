@@ -940,3 +940,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_pause_restart_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_restart_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/pause_restart_feedback.png`; GUI capture was used for visual evidence.
 - Passed pause restart feedback, pause menu action exit animation, pause menu, battle overlay exit animation, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 108 tests`.
+
+**Image2 Pause Resume Feedback**
+- Added project-bound Image2 assets `/Users/zhaok/cat/assets/generated/ui/pause_resume_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/pause_resume_feedback_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/pause_resume_feedback_badge.png`, combining a fresh Image2 pause-resume reference/source with existing Image2 pause, tap-burst, and battle art.
+- Resuming from the pause menu still unpauses immediately and waits for the Image2 pause panel exit animation before creating `PauseResumeFeedback`, a non-blocking continue badge with dynamic `继续守卫` copy.
+- The resumed battle keeps build controls usable while the green continue badge pops in, floats briefly, and fades out.
+- Added `/Users/zhaok/cat/tests/run_pause_resume_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_resume_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/pause_resume_feedback.png`; GUI capture was used for visual evidence.
+- Passed pause resume feedback, pause restart feedback, pause menu action exit animation, pause menu, battle overlay exit animation, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 109 tests`.
