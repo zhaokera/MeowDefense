@@ -15,6 +15,7 @@ const BattleHudTopBarTexture := preload("res://assets/generated/ui/battle_hud_to
 const BattleHudBottomDockTexture := preload("res://assets/generated/ui/battle_hud_bottom_dock.png")
 const BattlePauseButtonTexture := preload("res://assets/generated/ui/battle_pause_button.png")
 const BattleBuildSlotMarkerTexture := preload("res://assets/generated/ui/battle_build_slot_marker.png")
+const BattleBuildGuidanceBadgeTexture := preload("res://assets/generated/ui/battle_build_guidance_badge.png")
 const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
 const BattleWavePreviewDetailPanelTexture := preload("res://assets/generated/ui/battle_wave_preview_detail_panel.png")
 const BattleWavePreviewInfoBadgeTexture := preload("res://assets/generated/ui/battle_wave_preview_info_badge.png")
@@ -599,6 +600,7 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	towers.append(tower)
 	_tower_by_slot[slot] = tower
 	_tower_layer.add_child(tower)
+	_hide_build_guidance_hint()
 	_show_build_success_feedback(slot.position)
 	_tip_label.text = "%s 上岗！继续点击空猫爪位补防。" % str(stats.get("name", "猫塔"))
 	_update_hud()
@@ -636,6 +638,76 @@ func _build_slot_buttons() -> void:
 		index += 1
 	_update_build_slot_range_previews()
 	_update_build_slot_tower_ghosts()
+	_show_build_guidance_hint()
+
+
+func _show_build_guidance_hint() -> void:
+	if _slot_buttons == null or _slot_layer == null or not towers.is_empty():
+		return
+	if _slot_buttons.find_child("BattleBuildGuidanceHint", true, false) != null:
+		return
+	for child: Node in _slot_layer.get_children():
+		var slot: Node2D = child as Node2D
+		if slot == null or bool(slot.get("occupied")):
+			continue
+		var hint_size := Vector2(360, 170)
+		var hint_position := slot.position + Vector2(-146, -134)
+		hint_position.x = clampf(hint_position.x, 12.0, 1280.0 - hint_size.x - 12.0)
+		hint_position.y = clampf(hint_position.y, 114.0, 720.0 - hint_size.y - 14.0)
+
+		var hint: Control = Control.new()
+		hint.name = "BattleBuildGuidanceHint"
+		hint.position = hint_position
+		hint.size = hint_size
+		hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hint.z_index = 20
+		hint.set_meta("image2_build_guidance", true)
+		_slot_buttons.add_child(hint)
+
+		var badge: TextureRect = _hud_texture_rect("BattleBuildGuidanceBadge", BattleBuildGuidanceBadgeTexture, Vector2.ZERO, hint_size)
+		badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		badge.z_index = 1
+		hint.add_child(badge)
+
+		var label: Label = _hud_label("点猫爪建造")
+		label.name = "BattleBuildGuidanceLabel"
+		label.position = Vector2(108, 72)
+		label.size = Vector2(152, 40)
+		label.add_theme_font_size_override("font_size", 21)
+		label.add_theme_color_override("font_color", Color(0.35, 0.16, 0.05))
+		label.add_theme_color_override("font_outline_color", Color(1.0, 0.91, 0.62, 0.78))
+		label.add_theme_constant_override("outline_size", 3)
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label.z_index = 2
+		hint.add_child(label)
+
+		hint.pivot_offset = hint.size * 0.5
+		hint.scale = Vector2(0.82, 0.82)
+		hint.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		var intro: Tween = hint.create_tween()
+		intro.set_parallel(true)
+		intro.tween_property(hint, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		intro.tween_property(hint, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		intro.tween_callback(func() -> void: _start_build_guidance_float(hint)).set_delay(0.20)
+		return
+
+
+func _start_build_guidance_float(hint: Control) -> void:
+	if hint == null or not is_instance_valid(hint):
+		return
+	var base_position: Vector2 = hint.position
+	var tween: Tween = hint.create_tween()
+	tween.set_loops()
+	tween.tween_property(hint, "position:y", base_position.y - 7.0, 0.74).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(hint, "position:y", base_position.y, 0.74).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _hide_build_guidance_hint() -> void:
+	if _slot_buttons == null:
+		return
+	var hint: Control = _slot_buttons.find_child("BattleBuildGuidanceHint", true, false) as Control
+	if hint != null:
+		hint.queue_free()
 
 
 func _mark_slot_button_occupied(slot: Node2D) -> void:

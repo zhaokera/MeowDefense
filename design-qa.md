@@ -842,3 +842,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_wave_preview_detail_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_preview_detail.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_wave_preview_detail.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed battle wave preview detail, battle wave rush, battle wave incoming feedback, battle wave clear feedback, battle speed/wave, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 96 tests`.
+
+**Image2 Battle First-Build Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_build_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_build_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_build_guidance_badge.png`, assembled from existing Image2 battle HUD, build marker, tap burst, paw badge, and orange cat tower art.
+- The battle HUD now shows `BattleBuildGuidanceHint` near the first empty cat-paw build slot before any tower is built, with `mouse_filter` ignored so `BuildSlot1Button` remains tappable.
+- The guidance enters with a pop and settles into a subtle floating loop; successfully building the first tower removes the hint immediately while the existing Image2 build-success feedback plays.
+- Added `/Users/zhaok/cat/tests/run_battle_build_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_build_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_build_guidance.png`; GUI capture was used for visual evidence.
+- Passed battle build guidance, build input, build success feedback, build slot range preview, build slot tower ghost, build slot affordability preview, battle tap feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 97 tests`.
