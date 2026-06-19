@@ -619,6 +619,21 @@
       "prompt_summary": "Cropped Image2 orange restart button frame with transparent background."
     },
     {
+      "id": "pause_restart_feedback_design_reference",
+      "path": "res://assets/generated/ui/pause_restart_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing the non-blocking feedback after restarting from pause."
+    },
+    {
+      "id": "pause_restart_feedback_badge_source",
+      "path": "res://assets/generated/ui/pause_restart_feedback_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 pause, fish, and tap-burst art for pause restart feedback."
+    },
+    {
+      "id": "pause_restart_feedback_badge",
+      "path": "res://assets/generated/ui/pause_restart_feedback_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived restart badge shown after restarting a battle from pause."
+    },
+    {
       "id": "battle_pause_button_blue",
       "path": "res://assets/generated/ui/battle_pause_button_blue.png",
       "prompt_summary": "Cropped Image2 blue settings button frame with transparent background."

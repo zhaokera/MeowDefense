@@ -932,3 +932,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_sell_refund_fly_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_sell_refund_fly_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/tower_sell_refund_fly_feedback.png`; GUI capture was used for visual evidence.
 - Passed tower sell refund fly feedback, tower sell feedback, tower sell action exit animation, tower action, build slot manage badge, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 107 tests`.
+
+**Image2 Pause Restart Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/pause_restart_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/pause_restart_feedback_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/pause_restart_feedback_badge.png`, assembled from existing Image2 battle, pause, fish, and tap-burst art.
+- Restarting from the pause menu still waits for the Image2 pause panel exit animation, then resets the level and creates `PauseRestartFeedback`, a non-blocking restart badge with dynamic `重新开局` copy.
+- The restarted battle keeps build controls usable while the badge pops in, floats briefly, and fades out.
+- Added `/Users/zhaok/cat/tests/run_pause_restart_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_restart_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/pause_restart_feedback.png`; GUI capture was used for visual evidence.
+- Passed pause restart feedback, pause menu action exit animation, pause menu, battle overlay exit animation, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 108 tests`.
