@@ -924,3 +924,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_tower_upgrade_spend_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_upgrade_spend_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/tower_upgrade_spend_feedback.png`; GUI capture was used for visual evidence.
 - Passed tower upgrade spend feedback, tower upgrade feedback, tower action, tower max level, battle tower affordability, battle resource feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 106 tests`.
+
+**Image2 Tower Sell Refund Fly Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/tower_sell_refund_fly_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/tower_sell_refund_fish_chip_source.png`, and `/Users/zhaok/cat/assets/generated/ui/tower_sell_refund_fish_chip.png`, assembled from existing Image2 sell, fish chip, and refund art.
+- Successful tower sells now keep the existing local `TowerSellFeedback#` burst and also create `TowerSellRefundFlyFish#`, a non-blocking fish chip with dynamic `+N` text that flies from the sold tower slot toward the top fish counter.
+- The top `CoinsLabel` is marked as `image2_tower_sell_refund_target`, updates to the post-sell fish total before the chip launches, and pulses as the refund arrives.
+- Added `/Users/zhaok/cat/tests/run_tower_sell_refund_fly_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_tower_sell_refund_fly_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/tower_sell_refund_fly_feedback.png`; GUI capture was used for visual evidence.
+- Passed tower sell refund fly feedback, tower sell feedback, tower sell action exit animation, tower action, build slot manage badge, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 107 tests`.

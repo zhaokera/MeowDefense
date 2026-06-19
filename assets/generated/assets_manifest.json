@@ -484,6 +484,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived fish chip with a spend badge used when upgrades deduct fish."
     },
     {
+      "id": "tower_sell_refund_fly_feedback_design_reference",
+      "path": "res://assets/generated/ui/tower_sell_refund_fly_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing sold-tower fish refunds flying into the top fish counter."
+    },
+    {
+      "id": "tower_sell_refund_fish_chip_source",
+      "path": "res://assets/generated/ui/tower_sell_refund_fish_chip_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 fish chip art for tower sell refund fly feedback."
+    },
+    {
+      "id": "tower_sell_refund_fish_chip",
+      "path": "res://assets/generated/ui/tower_sell_refund_fish_chip.png",
+      "prompt_summary": "Project-bound transparent Image2-derived fish chip with a refund badge used when sold towers return fish."
+    },
+    {
       "id": "battle_resource_shortage_design_reference",
       "path": "res://assets/generated/ui/battle_resource_shortage_design_reference.png",
       "prompt_summary": "Image2 full-screen battle feedback design reference showing the not-enough-fish burst over the battle HUD."

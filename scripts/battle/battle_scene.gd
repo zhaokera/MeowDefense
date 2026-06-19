@@ -53,6 +53,7 @@ const BuildSlotManageBadgeTexture := preload("res://assets/generated/ui/album_pa
 const TowerMaxLevelStampTexture := preload("res://assets/generated/ui/tower_max_level_stamp.png")
 const TowerMaxLevelBurstTexture := preload("res://assets/generated/ui/tower_max_level_burst.png")
 const TowerUpgradeSpendFishChipTexture := preload("res://assets/generated/ui/tower_upgrade_spend_fish_chip.png")
+const TowerSellRefundFishChipTexture := preload("res://assets/generated/ui/tower_sell_refund_fish_chip.png")
 const TowerRangeAuraTexture := preload("res://assets/generated/effects/tower_range_aura.png")
 const BattleResourceShortageBurstTexture := preload("res://assets/generated/ui/battle_resource_shortage_burst.png")
 const BaseDamageWarningBurstTexture := preload("res://assets/generated/ui/base_damage_warning_burst.png")
@@ -119,6 +120,7 @@ var _build_success_feedback_index: int = 0
 var _tower_upgrade_feedback_index: int = 0
 var _tower_upgrade_spend_feedback_index: int = 0
 var _tower_sell_feedback_index: int = 0
+var _tower_sell_refund_fly_index: int = 0
 var _tower_max_level_feedback_index: int = 0
 var _tower_fire_feedback_index: int = 0
 var _projectile_index: int = 0
@@ -162,6 +164,7 @@ func start_level(path: String) -> void:
 	_tower_upgrade_feedback_index = 0
 	_tower_upgrade_spend_feedback_index = 0
 	_tower_sell_feedback_index = 0
+	_tower_sell_refund_fly_index = 0
 	_tower_max_level_feedback_index = 0
 	_tower_fire_feedback_index = 0
 	_projectile_index = 0
@@ -1282,16 +1285,17 @@ func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control, tri
 	var refund: int = _tower_sell_refund(tower)
 	var feedback_anchor: Vector2 = tower.global_position
 	coins += refund
+	_update_hud()
 	towers.erase(tower)
 	_tower_by_slot.erase(slot)
 	slot.set_occupied(false)
 	_mark_slot_button_empty(slot)
 	_show_tower_sell_feedback(feedback_anchor)
+	_show_tower_sell_refund_fly_feedback(refund, feedback_anchor)
 	tower.queue_free()
 	if overlay != null and is_instance_valid(overlay):
 		_animate_hud_overlay_exit(overlay, trigger_button)
 	_tip_label.text = "已收回猫塔，返还小鱼干 %d。" % refund
-	_update_hud()
 
 
 func _tower_sell_refund(tower: Node2D) -> int:
@@ -1848,6 +1852,72 @@ func _show_tower_sell_feedback(world_anchor: Vector2) -> void:
 	tween.tween_property(effect, "position", effect.position + Vector2(-62.0, -86.0), 0.52).set_delay(0.10).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(effect, "modulate:a", 0.0, 0.22).set_delay(0.48).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(Callable(effect, "queue_free")).set_delay(0.76)
+
+
+func _show_tower_sell_refund_fly_feedback(refund: int, world_anchor: Vector2) -> void:
+	if _hud == null or _coins_label == null or refund <= 0:
+		return
+	_tower_sell_refund_fly_index += 1
+	_coins_label.set_meta("image2_tower_sell_refund_target", true)
+
+	var chip_size := Vector2(72, 72)
+	var start_center := Vector2(
+		clampf(world_anchor.x + 32.0, 96.0, 1120.0),
+		clampf(world_anchor.y - 66.0, 116.0, 604.0)
+	)
+	var target_center: Vector2 = _coins_label.position + _coins_label.size * 0.5 + Vector2(18.0, 0.0)
+	var arc_center := Vector2(
+		(start_center.x + target_center.x) * 0.5,
+		maxf(76.0, min(start_center.y, target_center.y) - 28.0)
+	)
+
+	var chip: TextureRect = _hud_texture_rect("TowerSellRefundFlyFish%d" % _tower_sell_refund_fly_index, TowerSellRefundFishChipTexture, start_center - chip_size * 0.5, chip_size)
+	chip.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	chip.z_index = 92
+	chip.process_mode = Node.PROCESS_MODE_ALWAYS
+	chip.pivot_offset = chip.size * 0.5
+	chip.scale = Vector2(0.62, 0.62)
+	chip.rotation_degrees = -8.0
+	chip.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	chip.set_meta("image2_tower_sell_refund_fly_feedback", true)
+	chip.set_meta("refund", refund)
+	_hud.add_child(chip)
+
+	var amount: Label = _hud_label("+%d" % refund)
+	amount.name = "TowerSellRefundFlyAmountLabel"
+	amount.position = Vector2(8, 50)
+	amount.size = Vector2(56, 22)
+	amount.add_theme_font_size_override("font_size", 14)
+	amount.add_theme_color_override("font_color", Color(0.12, 0.42, 0.08))
+	amount.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.58, 0.94))
+	amount.add_theme_constant_override("outline_size", 3)
+	amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	amount.clip_text = true
+	chip.add_child(amount)
+
+	var chip_ref: WeakRef = weakref(chip)
+	var coins_ref: WeakRef = weakref(_coins_label)
+	var move_tween: Tween = chip.create_tween()
+	move_tween.tween_property(chip, "position", arc_center - chip_size * 0.5, 0.25).set_delay(0.03).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	move_tween.tween_property(chip, "position", target_center - chip_size * 0.5, 0.34).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+
+	var visual_tween: Tween = chip.create_tween()
+	visual_tween.set_parallel(true)
+	visual_tween.tween_property(chip, "modulate:a", 1.0, 0.06).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	visual_tween.tween_property(chip, "scale", Vector2(0.86, 0.86), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	visual_tween.tween_property(chip, "scale", Vector2(0.42, 0.42), 0.28).set_delay(0.38).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	visual_tween.tween_property(chip, "rotation_degrees", 14.0, 0.58).set_delay(0.04).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	visual_tween.tween_property(chip, "modulate:a", 0.0, 0.12).set_delay(0.68).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	visual_tween.tween_callback(func() -> void:
+		var target: Object = coins_ref.get_ref()
+		if target is Control:
+			_animate_control_scale(target as Control, 1.14, 0.08)
+	).set_delay(0.62)
+	visual_tween.tween_callback(func() -> void:
+		var resolved: Object = chip_ref.get_ref()
+		if resolved is Node:
+			(resolved as Node).queue_free()
+	).set_delay(0.86)
 
 
 func _show_tower_action_cancel_feedback(world_anchor: Vector2) -> void:
