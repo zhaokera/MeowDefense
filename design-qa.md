@@ -867,3 +867,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_energy_empty_refill_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_energy_empty_refill_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/energy_empty_refill_guidance.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed energy empty refill guidance, energy flow, shop energy refill, guidance overlay exit animation, shop product state asset, menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 99 tests`.
+
+**Image2 Shop Energy Refill Return Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/shop_energy_refill_return_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/shop_energy_refill_return_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_energy_refill_return_badge.png`, assembled from existing Image2 energy, level-select, play-button, paw, and tap-burst art.
+- Successful shop energy-refill purchases now add `ShopEnergyRefillReturnGuidance` to the Image2 purchase success overlay, with dynamic `去闯关` copy and a transparent `ShopEnergyRefillReturnButton`.
+- Pressing the return guidance exits the purchase reward overlay through the shared Image2 exit animation, leaves the shop overlay, opens level select, and preserves the purchased energy for immediate level entry.
+- The original `CloseShopPurchaseRewardButton` remains available as `留在商店` on energy-refill purchases, while non-energy shop purchases keep the previous `收好补给` behavior.
+- Added `/Users/zhaok/cat/tests/run_shop_energy_refill_return_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_energy_refill_return.gd`.
+- Captured `/Users/zhaok/cat/artifacts/shop_energy_refill_return.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed shop energy refill return, shop energy refill, shop purchase feedback, reward/shop feedback exit animation, energy empty refill guidance, menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 100 tests`.

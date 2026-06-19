@@ -54,6 +54,7 @@ const SHOP_INSUFFICIENT_FISH_BURST := preload("res://assets/generated/ui/shop_in
 const SHOP_PRODUCT_BUY_BUTTON_PLATE := preload("res://assets/generated/ui/shop_product_buy_button_plate.png")
 const SHOP_PRODUCT_INSUFFICIENT_STAMP := preload("res://assets/generated/ui/shop_product_insufficient_fish_stamp.png")
 const SHOP_ENERGY_REFILL_BUTTON_PLATE := preload("res://assets/generated/ui/shop_energy_refill_button_plate.png")
+const SHOP_ENERGY_REFILL_RETURN_BADGE := preload("res://assets/generated/ui/shop_energy_refill_return_badge.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
@@ -1278,7 +1279,7 @@ func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counte
 		status.text = _energy_refill_status_text()
 		buy_button.disabled = not _can_buy_energy_refill()
 		_pulse_control(energy_counter)
-		_show_shop_purchase_reward_overlay(parent, "体力补充", "体力 +%d" % restored_energy)
+		_show_shop_purchase_reward_overlay(parent, "体力补充", "体力 +%d" % restored_energy, true)
 	)
 	if state_target != null:
 		_attach_button_feedback(buy_button, state_target)
@@ -1692,7 +1693,7 @@ func _add_achievement_claimed_stamp(parent: Control, row_name: String, position:
 	tween.tween_property(stamp, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_text: String) -> void:
+func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_text: String, show_energy_return_guidance: bool = false) -> void:
 	_remove_named_child(parent, "ShopPurchaseRewardOverlay")
 	var reward: Control = Control.new()
 	reward.name = "ShopPurchaseRewardOverlay"
@@ -1719,7 +1720,10 @@ func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_t
 	var amount: Label = _label("ShopPurchaseRewardAmount", amount_text, Vector2(520, 450), Vector2(330, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	amount.z_index = 2
 	reward.add_child(amount)
-	var done_button: Button = _transparent_text_button("CloseShopPurchaseRewardButton", "收好补给", Rect2(Vector2(470, 594), Vector2(340, 78)), 26)
+	var done_text: String = "留在商店" if show_energy_return_guidance else "收好补给"
+	var done_rect := Rect2(Vector2(420, 594), Vector2(220, 78)) if show_energy_return_guidance else Rect2(Vector2(470, 594), Vector2(340, 78))
+	var done_font_size: int = 22 if show_energy_return_guidance else 26
+	var done_button: Button = _transparent_text_button("CloseShopPurchaseRewardButton", done_text, done_rect, done_font_size)
 	done_button.z_index = 3
 	done_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, done_button))
 	_attach_button_feedback(done_button, burst)
@@ -1728,8 +1732,41 @@ func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_t
 	dismiss_button.z_index = 3
 	dismiss_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, dismiss_button))
 	reward.add_child(dismiss_button)
+	if show_energy_return_guidance:
+		_add_shop_energy_refill_return_guidance(reward, burst)
 	_animate_overlay_entry(reward)
 	_pulse_control(burst)
+
+
+func _add_shop_energy_refill_return_guidance(reward: Control, feedback_target: Control) -> void:
+	var guidance: Control = Control.new()
+	guidance.name = "ShopEnergyRefillReturnGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 4
+	guidance.set_meta("image2_energy_refill_return_guidance", true)
+	reward.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("ShopEnergyRefillReturnBadge", SHOP_ENERGY_REFILL_RETURN_BADGE, Vector2(620, 562), Vector2(330, 122))
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("ShopEnergyRefillReturnLabel", "去闯关", Vector2(724, 606), Vector2(176, 44), 25, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	guidance.add_child(label)
+
+	var return_button: Button = _hotspot_button("ShopEnergyRefillReturnButton", Vector2(645, 582), Vector2(284, 94), "去闯关")
+	return_button.z_index = 5
+	return_button.pressed.connect(func() -> void:
+		_animate_overlay_exit(reward, return_button, _show_level_select)
+	)
+	_attach_button_feedback(return_button, badge)
+	reward.add_child(return_button)
+	_pulse_control(badge)
+	if feedback_target != null:
+		_pulse_control(feedback_target)
 
 
 func _shop_locked_product(parent: Control, node_prefix: String, title: String, detail: String, position: Vector2, size: Vector2) -> void:

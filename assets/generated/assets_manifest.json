@@ -899,6 +899,21 @@
       "prompt_summary": "Transparent Image2 shop purchase reward burst layered over purchase success overlays."
     },
     {
+      "id": "shop_energy_refill_return_design_reference",
+      "path": "res://assets/generated/ui/shop_energy_refill_return_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen shop purchase success reference showing a return-to-level action after buying energy."
+    },
+    {
+      "id": "shop_energy_refill_return_badge_source",
+      "path": "res://assets/generated/ui/shop_energy_refill_return_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 energy, level, play-button, paw, and tap-burst art for the energy-refill return badge."
+    },
+    {
+      "id": "shop_energy_refill_return_badge",
+      "path": "res://assets/generated/ui/shop_energy_refill_return_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived return-to-level badge shown only after a successful shop energy refill."
+    },
+    {
       "id": "shop_insufficient_fish_design_reference",
       "path": "res://assets/generated/ui/shop_insufficient_fish_design_reference.png",
       "prompt_summary": "Image2 full-screen shop insufficient-fish feedback overlay with blank runtime text and action areas."
