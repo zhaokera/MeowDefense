@@ -35,6 +35,7 @@ const DAILY_TASK_CLAIM_BUTTON_PLATE := preload("res://assets/generated/ui/daily_
 const DAILY_TASK_CLAIMED_STAMP := preload("res://assets/generated/ui/daily_task_claimed_stamp.png")
 const DAILY_TASK_PROGRESS_CHIP := preload("res://assets/generated/ui/daily_task_progress_chip.png")
 const ENERGY_EMPTY_DESIGN := preload("res://assets/generated/ui/energy_empty_overlay_design_reference.png")
+const ENERGY_EMPTY_REFILL_GUIDANCE_BADGE := preload("res://assets/generated/ui/energy_empty_refill_guidance_badge.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
 const BACKPACK_ORGANIZE_REWARD_DESIGN := preload("res://assets/generated/ui/backpack_organize_reward_design_reference.png")
@@ -920,10 +921,56 @@ func _show_energy_empty_overlay(parent: Node) -> void:
 	overlay.add_child(design)
 	overlay.add_child(_label("EnergyEmptyTitle", "体力不足", Vector2(450, 118), Vector2(380, 60), 40, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	overlay.add_child(_label("EnergyEmptyStatus", "当前体力 %s" % _energy_text(), Vector2(482, 446), Vector2(316, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	var close_button: Button = _transparent_text_button("CloseEnergyEmptyButton", "知道了", Rect2(Vector2(420, 505), Vector2(440, 92)), 30)
+	_add_energy_empty_refill_guidance(overlay, parent)
+	var close_button: Button = _transparent_text_button("CloseEnergyEmptyButton", "X", Rect2(Vector2(1036, 108), Vector2(76, 76)), 28)
 	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	overlay.add_child(close_button)
 	_animate_overlay_entry(overlay)
+
+
+func _add_energy_empty_refill_guidance(overlay: Control, host_parent: Node) -> void:
+	var guidance: Control = Control.new()
+	guidance.name = "EnergyEmptyRefillGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 2
+	guidance.set_meta("image2_energy_refill_guidance", true)
+	overlay.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("EnergyEmptyRefillGuidanceBadge", ENERGY_EMPTY_REFILL_GUIDANCE_BADGE, Vector2(666, 502), Vector2(160, 76))
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 2
+	guidance.add_child(badge)
+
+	var action_label: Label = _label("EnergyEmptyRefillGuidanceLabel", "去补体力", Vector2(456, 520), Vector2(246, 54), 31, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	action_label.z_index = 3
+	guidance.add_child(action_label)
+
+	var refill_button: Button = _hotspot_button("EnergyEmptyRefillButton", Vector2(420, 505), Vector2(440, 92), "去补体力")
+	refill_button.z_index = 4
+	refill_button.pressed.connect(func() -> void:
+		_animate_overlay_exit(overlay, refill_button, func() -> void:
+			if host_parent != null and is_instance_valid(host_parent):
+				_show_shop_overlay(host_parent)
+				_highlight_shop_energy_refill_guidance(host_parent)
+		)
+	)
+	_attach_button_feedback(refill_button, badge)
+	overlay.add_child(refill_button)
+	_pulse_control(badge)
+
+
+func _highlight_shop_energy_refill_guidance(host_parent: Node) -> void:
+	var target: Control = host_parent.find_child("ShopEnergyRefillButtonFrame", true, false) as Control
+	if target == null:
+		target = host_parent.find_child("ShopEnergyRefillInsufficientStamp", true, false) as Control
+	if target == null:
+		target = host_parent.find_child("BuyShopEnergyRefillButton", true, false) as Control
+	if target == null:
+		return
+	target.set_meta("image2_energy_refill_guidance_target", true)
+	_pulse_control(target)
 
 
 func _show_daily_task_overlay(parent: Node) -> void:

@@ -858,3 +858,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_defeat_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_defeat_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/result_defeat_guidance.png`; GUI capture was used for visual evidence.
 - Passed result defeat guidance, result defeat screen, result screen, result screen entry animation, result screen exit animation, result next-level unlock feedback, result reward fly feedback, menu, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 98 tests`.
+
+**Image2 Energy Empty Refill Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/energy_empty_refill_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/energy_empty_refill_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/energy_empty_refill_guidance_badge.png`, assembled from existing Image2 energy, reward, tap, and paw art.
+- Zero-energy level starts now show `EnergyEmptyRefillGuidance` on the Image2 energy-empty overlay, with dynamic `去补体力` copy and a transparent `EnergyEmptyRefillButton` over the existing bottom action area.
+- Pressing the refill guidance exits the energy-empty overlay, opens the Image2 shop overlay, and marks/pulses `ShopEnergyRefillButtonFrame` with `image2_energy_refill_guidance_target`; it does not grant energy until the actual shop purchase button is pressed.
+- `CloseEnergyEmptyButton` remains available as a small close action and still uses the shared Image2 overlay exit animation.
+- Added `/Users/zhaok/cat/tests/run_energy_empty_refill_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_energy_empty_refill_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/energy_empty_refill_guidance.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed energy empty refill guidance, energy flow, shop energy refill, guidance overlay exit animation, shop product state asset, menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 99 tests`.

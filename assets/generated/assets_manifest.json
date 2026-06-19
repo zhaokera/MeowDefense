@@ -739,6 +739,21 @@
       "prompt_summary": "Image2 full-screen out-of-energy overlay design with blank title, status, and button areas for dynamic Godot labels."
     },
     {
+      "id": "energy_empty_refill_guidance_design_reference",
+      "path": "res://assets/generated/ui/energy_empty_refill_guidance_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen energy-empty reference showing the bottom action area as a refill-energy shop route."
+    },
+    {
+      "id": "energy_empty_refill_guidance_badge_source",
+      "path": "res://assets/generated/ui/energy_empty_refill_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 energy, reward, tap, and paw art for the energy-empty refill guidance badge."
+    },
+    {
+      "id": "energy_empty_refill_guidance_badge",
+      "path": "res://assets/generated/ui/energy_empty_refill_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge used on the energy-empty overlay to point players toward shop energy refill."
+    },
+    {
       "id": "backpack_overlay_design_reference",
       "path": "res://assets/generated/ui/backpack_overlay_design_reference.png",
       "prompt_summary": "Image2 full-screen backpack overlay design used directly as the inventory popup background."
