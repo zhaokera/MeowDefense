@@ -1279,6 +1279,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after buying energy and returning from the shop."
     },
     {
+      "id": "level_select_pause_quit_return_design_reference",
+      "path": "res://assets/generated/ui/level_select_pause_quit_return_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen level-select reference showing the guidance after exiting a paused battle."
+    },
+    {
+      "id": "level_select_pause_quit_return_badge_source",
+      "path": "res://assets/generated/ui/level_select_pause_quit_return_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 level-select, map-button, fish, and tap-spark art for pause quit return guidance."
+    },
+    {
+      "id": "level_select_pause_quit_return_badge",
+      "path": "res://assets/generated/ui/level_select_pause_quit_return_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on the level map after exiting a paused battle."
+    },
+    {
       "id": "tower_action_cancel_feedback_design_reference",
       "path": "res://assets/generated/ui/tower_action_cancel_feedback_design_reference.png",
       "prompt_summary": "Image2-derived full-screen battle reference showing a non-blocking cancel feedback badge after closing tower management."

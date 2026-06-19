@@ -948,3 +948,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_pause_resume_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_resume_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/pause_resume_feedback.png`; GUI capture was used for visual evidence.
 - Passed pause resume feedback, pause restart feedback, pause menu action exit animation, pause menu, battle overlay exit animation, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 109 tests`.
+
+**Image2 Pause Quit Level Return Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/level_select_pause_quit_return_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/level_select_pause_quit_return_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/level_select_pause_quit_return_badge.png`, assembled from existing Image2 level-select, map-button, fish, and tap-spark art.
+- Exiting a paused battle to the level map now sets a one-time `PauseQuitLevelReturnGuidance` on the Image2 level-select screen, with dynamic `重新选择` copy and `回到关卡地图` support text.
+- Normal level-select visits do not show the guidance, and the badge uses `mouse_filter = IGNORE` so `StartLevel1Button` remains the real hit target.
+- Added `/Users/zhaok/cat/tests/run_pause_quit_level_return_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_quit_level_return_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/pause_quit_level_return_guidance.png`; GUI capture was used for visual evidence.
+- Passed pause quit level return guidance, menu, pause menu action exit animation, pause menu, level-select energy-ready guidance, level-select new-unlock hint, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 110 tests`.

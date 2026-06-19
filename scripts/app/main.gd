@@ -9,6 +9,7 @@ const UI_TAP_FEEDBACK_TEXTURE := preload("res://assets/generated/ui/ui_tap_feedb
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
 const LEVEL_SELECT_NEW_UNLOCK_HINT := preload("res://assets/generated/ui/level_select_new_unlock_hint.png")
 const LEVEL_SELECT_ENERGY_READY_BADGE := preload("res://assets/generated/ui/level_select_energy_ready_badge.png")
+const LEVEL_SELECT_PAUSE_QUIT_RETURN_BADGE := preload("res://assets/generated/ui/level_select_pause_quit_return_badge.png")
 const LOCKED_LEVEL_FEEDBACK_DESIGN := preload("res://assets/generated/ui/locked_level_feedback_design_reference.png")
 const LOCKED_LEVEL_FEEDBACK_BURST := preload("res://assets/generated/ui/locked_level_feedback_burst.png")
 const RESULT_SCREEN_DESIGN := preload("res://assets/generated/ui/result_screen_design_reference.png")
@@ -126,6 +127,7 @@ var _max_energy: int = DEFAULT_MAX_ENERGY
 var _energy: int = DEFAULT_MAX_ENERGY
 var _energy_refilled_on: String = ""
 var _show_energy_ready_level_guidance: bool = false
+var _show_pause_quit_level_guidance: bool = false
 var _hotspot_feedback_index: int = 0
 var _settings_control_feedback_index: int = 0
 
@@ -276,6 +278,10 @@ func _show_level_select_now() -> void:
 		_show_energy_ready_level_guidance = false
 		if _energy > 0 and _is_level_unlocked(1):
 			_add_level_energy_ready_guidance(screen, 1, level_hotspots[0]["rect"] as Rect2)
+	if _show_pause_quit_level_guidance:
+		_show_pause_quit_level_guidance = false
+		if _is_level_unlocked(1):
+			_add_pause_quit_level_return_guidance(screen, level_hotspots[0]["rect"] as Rect2)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(330, 580), Vector2(118, 120), "主城")
 	bottom_home.pressed.connect(_show_main_menu)
@@ -318,12 +324,17 @@ func _start_level(level_info: Dictionary) -> void:
 	battle.set("yarn_traps_available", _yarn_traps)
 	battle.battle_finished.connect(_show_result)
 	if battle.has_signal("exit_to_levels_requested"):
-		battle.exit_to_levels_requested.connect(_show_level_select)
+		battle.exit_to_levels_requested.connect(_show_level_select_from_pause_quit)
 	if battle.has_signal("yarn_traps_changed"):
 		battle.yarn_traps_changed.connect(_on_battle_yarn_traps_changed)
 	_current = battle
 	add_child(battle)
 	battle.start_level(_current_level_path)
+
+
+func _show_level_select_from_pause_quit() -> void:
+	_show_pause_quit_level_guidance = true
+	_show_level_select()
 
 
 func _show_locked_level_feedback(parent: Node, level_info: Dictionary) -> void:
@@ -2034,6 +2045,62 @@ func _add_level_energy_ready_guidance(parent: Control, level_id: int, rect: Rect
 		float_tween.set_loops()
 		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		float_tween.tween_property(resolved_group, "position:y", base_y, 0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
+
+
+func _add_pause_quit_level_return_guidance(parent: Control, rect: Rect2) -> void:
+	_remove_named_child(parent, "PauseQuitLevelReturnGuidance")
+	var guidance_size := Vector2(376, 154)
+	var guidance_position: Vector2 = rect.position + Vector2(-48.0, -52.0)
+	var group: Control = Control.new()
+	group.name = "PauseQuitLevelReturnGuidance"
+	group.position = guidance_position
+	group.size = guidance_size
+	group.z_index = 9
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.set_meta("image2_pause_quit_return_guidance", true)
+	parent.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("PauseQuitLevelReturnBadge", LEVEL_SELECT_PAUSE_QUIT_RETURN_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	group.add_child(badge)
+
+	var label: Label = _label("PauseQuitLevelReturnLabel", "重新选择", Vector2(142.0, 48.0), Vector2(176.0, 36.0), 27, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.96))
+	label.add_theme_constant_override("outline_size", 4)
+	group.add_child(label)
+
+	var sub_label: Label = _label("PauseQuitLevelReturnSubLabel", "回到关卡地图", Vector2(142.0, 88.0), Vector2(176.0, 28.0), 16, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sub_label.z_index = 2
+	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	group.add_child(sub_label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -2.5, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 1.8, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = guidance_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	)
 
 
