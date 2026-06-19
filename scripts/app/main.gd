@@ -58,6 +58,7 @@ const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blu
 const RESULT_BUTTON_GREEN := preload("res://assets/generated/ui/result_button_green.png")
 const RESULT_STAR_BADGE := preload("res://assets/generated/ui/result_star_badge.png")
 const RESULT_REWARD_FISH_CHIP := preload("res://assets/generated/ui/result_fish_chip.png")
+const RESULT_NEXT_LEVEL_UNLOCK_BURST := preload("res://assets/generated/ui/result_next_level_unlock_burst.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -370,10 +371,15 @@ func _on_battle_yarn_traps_changed(count: int) -> void:
 func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	get_tree().paused = false
 	var earned_stars: int = max(0, min(3, stars))
+	var previous_unlocked_level: int = _unlocked_level
+	var newly_unlocked_level_id: int = -1
 	if earned_stars > _level_stars(_current_level_id):
 		_best_stars_by_level[_current_level_id] = earned_stars
 	if won:
-		_unlocked_level = max(_unlocked_level, min(LEVELS.size(), _current_level_id + 1))
+		var target_unlocked_level: int = min(LEVELS.size(), _current_level_id + 1)
+		if target_unlocked_level > previous_unlocked_level:
+			newly_unlocked_level_id = target_unlocked_level
+		_unlocked_level = max(_unlocked_level, target_unlocked_level)
 	_total_fish += fish_reward
 	_recalculate_best_stars()
 	_save_progress()
@@ -421,6 +427,8 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 		next_button.pressed.connect(func() -> void:
 			_start_level_from_result(screen, next_button, _level_info_by_id(next_level_id))
 		)
+	if won and newly_unlocked_level_id > _current_level_id:
+		_add_result_next_level_unlock_feedback(screen, newly_unlocked_level_id)
 	_animate_result_screen_entry(screen)
 
 
@@ -540,6 +548,44 @@ func _add_result_reward_celebration(parent: Control, earned_stars: int, fish_rew
 	layer.add_child(count_label)
 	_animate_result_reward_piece(count_label, 0.30, Vector2.ONE)
 	_pulse_result_reward_label(count_label)
+
+
+func _add_result_next_level_unlock_feedback(parent: Control, level_id: int) -> void:
+	var level_info: Dictionary = _level_info_by_id(level_id)
+	var level_name: String = str(level_info.get("name", "新关卡"))
+	var feedback: TextureRect = _ui_texture_rect("ResultNextLevelUnlockFeedback", RESULT_NEXT_LEVEL_UNLOCK_BURST, Vector2(786, 326), Vector2(286, 286))
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 9
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.68, 0.68)
+	feedback.rotation_degrees = -4.0
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	parent.add_child(feedback)
+
+	var title: Label = _label("ResultNextLevelUnlockTitle", "新关卡开放", Vector2(44, 188), Vector2(198, 38), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.62, 0.90))
+	title.add_theme_constant_override("outline_size", 4)
+	title.z_index = 1
+	feedback.add_child(title)
+	var detail: Label = _label("ResultNextLevelUnlockDetail", "第 %d 关 %s" % [level_id, level_name], Vector2(34, 226), Vector2(218, 34), 18, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	detail.add_theme_color_override("font_outline_color", Color(1.0, 0.94, 0.74, 0.86))
+	detail.add_theme_constant_override("outline_size", 3)
+	detail.clip_text = true
+	detail.z_index = 1
+	feedback.add_child(detail)
+
+	var next_frame: Control = parent.find_child("ResultNextFrame", true, false) as Control
+	if next_frame != null:
+		_pulse_control(next_frame)
+
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.12).set_delay(0.14).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.24).set_delay(0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "rotation_degrees", 4.0, 0.08).set_delay(0.38).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", -2.0, 0.08).set_delay(0.48).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(feedback, "rotation_degrees", 0.0, 0.10).set_delay(0.58).set_trans(Tween.TRANS_BACK)
 
 
 func _animate_result_reward_piece(target: Control, delay: float, final_scale: Vector2) -> void:

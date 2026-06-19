@@ -1022,6 +1022,21 @@
       "id": "battle_wave_incoming_burst",
       "path": "res://assets/generated/ui/battle_wave_incoming_burst.png",
       "prompt_summary": "Project-bound transparent Image2-derived mouse entrance and fishbone burst used when a wave starts."
+    },
+    {
+      "id": "result_next_level_unlock_design_reference",
+      "path": "res://assets/generated/ui/result_next_level_unlock_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen result reference showing the new-level-unlocked celebration near the next-level action."
+    },
+    {
+      "id": "result_next_level_unlock_burst_source",
+      "path": "res://assets/generated/ui/result_next_level_unlock_burst_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 result, level, lock, paw, and star art for next-level-unlock feedback."
+    },
+    {
+      "id": "result_next_level_unlock_burst",
+      "path": "res://assets/generated/ui/result_next_level_unlock_burst.png",
+      "prompt_summary": "Project-bound transparent Image2-derived unlock burst used when victory opens the next level."
     }
   ]
 }

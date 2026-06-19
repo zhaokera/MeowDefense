@@ -808,3 +808,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_wave_incoming_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_incoming_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_wave_incoming_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
 - Passed battle wave incoming feedback, battle speed/wave, battle wave rush, enemy spawn feedback, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 92 tests`.
+
+**Image2 Result Next-Level Unlock Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/result_next_level_unlock_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/result_next_level_unlock_burst_source.png`, and `/Users/zhaok/cat/assets/generated/ui/result_next_level_unlock_burst.png`, assembled from existing Image2 result, level, lock, paw, and star art.
+- The victory result screen now detects when the current clear actually raises `_unlocked_level` and shows `ResultNextLevelUnlockFeedback` with dynamic `新关卡开放` and `第 N 关 <name>` copy near the next-level button.
+- Replaying an already unlocked level does not repeat the new-level feedback, while the newly unlocked next-level button remains playable.
+- Added `/Users/zhaok/cat/tests/run_result_next_level_unlock_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_result_next_level_unlock_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/result_next_level_unlock_feedback.png`; GUI capture was required because headless viewport texture capture returns a null texture in this project.
+- Passed result next-level unlock feedback, result screen, result screen exit animation, progression persistence, menu, playthrough, scene smoke, unit tests, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 93 tests`.
