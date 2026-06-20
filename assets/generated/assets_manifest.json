@@ -1139,6 +1139,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived return-to-level badge shown only after a successful shop energy refill."
     },
     {
+      "id": "shop_starter_yarn_guidance_design_reference",
+      "path": "res://assets/generated/ui/shop_starter_yarn_guidance_design_reference.png",
+      "prompt_summary": "Image2-first shop purchase reference showing yarn-purchase guidance after the starter fish pack makes yarn affordable."
+    },
+    {
+      "id": "shop_starter_yarn_guidance_badge_source",
+      "path": "res://assets/generated/ui/shop_starter_yarn_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived chroma-key source for the starter fish pack yarn-purchase guidance badge."
+    },
+    {
+      "id": "shop_starter_yarn_guidance_badge",
+      "path": "res://assets/generated/ui/shop_starter_yarn_guidance_badge.png",
+      "prompt_summary": "Transparent Image2-derived badge that points starter fish pack claimers to the now-affordable yarn trap purchase."
+    },
+    {
       "id": "shop_yarn_purchase_backpack_guidance_design_reference",
       "path": "res://assets/generated/ui/shop_yarn_purchase_backpack_guidance_design_reference.png",
       "prompt_summary": "Image2-first shop purchase reference showing the one-time backpack route guidance after buying a yarn trap."

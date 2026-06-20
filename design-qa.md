@@ -1060,3 +1060,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_reward_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_reward_shop_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/result_reward_shop_guidance.png`; GUI capture was used for visual evidence, and the badge was moved upward after visual QA to avoid colliding with new-level feedback and bottom actions.
 - Passed result reward shop guidance, result achievement claim guidance, result next-level unlock feedback, result screen, result screen exit animation, result reward fly feedback, shop buyable design, shop yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 122 tests`.
+
+**Image2 Shop Starter Yarn Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/shop_starter_yarn_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/shop_starter_yarn_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_starter_yarn_guidance_badge.png`, assembled from existing Image2 shop purchase, yarn, fish, and battle-ready art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Claiming the free starter fish pack now refreshes the yarn trap product state when the +15 fish makes the 25-fish purchase affordable: the old shortage route and stamp are removed, the Image2 buy plate appears, and the buy button becomes enabled immediately.
+- The starter claim reward overlay now shows `ShopStarterYarnGuidance`, a non-blocking Image2 badge with dynamic `买毛线` copy.
+- Pressing `ShopStarterYarnButton` preserves the shared Image2 purchase-overlay exit animation, disables the route button during transition, then highlights the now-buyable yarn trap target in the shop.
+- Non-starter purchases do not create the starter yarn guidance, and buying yarn afterward still opens the existing backpack guidance.
+- Added `/Users/zhaok/cat/tests/run_shop_starter_yarn_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_starter_yarn_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/shop_starter_yarn_guidance.png`; GUI capture was used for visual evidence.
+- Passed shop starter yarn guidance, shop purchase feedback, shop yarn trap, shop yarn purchase backpack guidance, shop shortage daily-task guidance, shop buyable design, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 123 tests`.
