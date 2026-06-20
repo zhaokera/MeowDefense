@@ -76,6 +76,7 @@ const RESULT_REWARD_FLY_FISH_CHIP := preload("res://assets/generated/ui/result_r
 const RESULT_NEXT_LEVEL_UNLOCK_BURST := preload("res://assets/generated/ui/result_next_level_unlock_burst.png")
 const RESULT_DEFEAT_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_defeat_guidance_badge.png")
 const RESULT_ACHIEVEMENT_CLAIM_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_achievement_claim_guidance_badge.png")
+const RESULT_REWARD_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_reward_shop_guidance_badge.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -485,6 +486,8 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 		var claimable_achievement: Dictionary = _first_completed_unclaimed_achievement()
 		if not claimable_achievement.is_empty():
 			_add_result_achievement_claim_guidance(screen, claimable_achievement)
+		elif fish_reward > 0 and newly_unlocked_level_id <= _current_level_id:
+			_add_result_reward_shop_guidance(screen)
 	_animate_result_screen_entry(screen)
 
 
@@ -797,6 +800,56 @@ func _add_result_achievement_claim_guidance(parent: Control, achievement: Dictio
 	intro.set_parallel(true)
 	intro.tween_property(guidance, "modulate:a", 1.0, 0.12).set_delay(0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	intro.tween_property(guidance, "scale", Vector2.ONE, 0.24).set_delay(0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _add_result_reward_shop_guidance(parent: Control) -> void:
+	var guidance_size := Vector2(430, 160)
+	var guidance: Control = Control.new()
+	guidance.name = "ResultRewardShopGuidance"
+	guidance.position = Vector2(748, 360)
+	guidance.size = guidance_size
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 12
+	guidance.set_meta("image2_result_reward_shop_guidance", true)
+	parent.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("ResultRewardShopGuidanceBadge", RESULT_REWARD_SHOP_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.97)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("ResultRewardShopGuidanceLabel", "去商店", Vector2(292, 70), Vector2(104, 34), 21, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	guidance.add_child(label)
+
+	var route_button: Button = _hotspot_button("ResultRewardShopGuidanceButton", Vector2(224, 44), Vector2(188, 82), "去商店")
+	route_button.z_index = 5
+	route_button.pressed.connect(func() -> void:
+		_animate_result_screen_exit(parent, route_button, func() -> void:
+			_show_main_menu_now()
+			if _current != null and is_instance_valid(_current):
+				_show_shop_overlay(_current)
+		)
+	)
+	_attach_button_feedback(route_button, badge)
+	guidance.add_child(route_button)
+
+	guidance.pivot_offset = guidance.size * 0.5
+	guidance.scale = Vector2(0.78, 0.78)
+	guidance.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_pulse_control(badge)
+	var fish_counter: Control = parent.find_child("FishCounter", true, false) as Control
+	if fish_counter != null:
+		_pulse_control(fish_counter)
+	var intro: Tween = guidance.create_tween()
+	intro.set_parallel(true)
+	intro.tween_property(guidance, "modulate:a", 1.0, 0.12).set_delay(0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	intro.tween_property(guidance, "scale", Vector2.ONE, 0.24).set_delay(0.24).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _start_result_defeat_guidance_float(guidance: Control) -> void:

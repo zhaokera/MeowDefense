@@ -1259,6 +1259,21 @@
       "prompt_summary": "Transparent Image2-style achievement-claim guidance badge layered over victory result screens with runtime labels and an achievements route hit area."
     },
     {
+      "id": "result_reward_shop_guidance_design_reference",
+      "path": "res://assets/generated/ui/result_reward_shop_guidance_design_reference.png",
+      "prompt_summary": "Image2-first full-screen victory result reference showing a shop guidance badge near the earned fish reward."
+    },
+    {
+      "id": "result_reward_shop_guidance_badge_source",
+      "path": "res://assets/generated/ui/result_reward_shop_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived chroma-key source for the victory result shop guidance badge."
+    },
+    {
+      "id": "result_reward_shop_guidance_badge",
+      "path": "res://assets/generated/ui/result_reward_shop_guidance_badge.png",
+      "prompt_summary": "Transparent Image2-derived badge prompting players to spend victory fish in the shop."
+    },
+    {
       "id": "result_screen_asset_sheet_source",
       "path": "res://assets/generated/ui/result_screen_asset_sheet_source.png",
       "prompt_summary": "Image2 chroma-key result screen asset sheet used to derive button, strip, star, and reward textures."

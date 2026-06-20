@@ -1051,3 +1051,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_reward_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_reward_shop_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/daily_reward_shop_guidance.png`; GUI capture was used for visual evidence, and the subtitle was removed after visual QA because it collided with the Image2 badge edge.
 - Passed daily reward shop guidance, daily reward reset, reward overlay, reward feedback exit animation, reward claim action exit animation, shop buyable design, shop yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 121 tests`.
+
+**Image2 Result Reward Shop Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/result_reward_shop_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/result_reward_shop_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/result_reward_shop_guidance_badge.png`, assembled from existing Image2 result, fish reward, and shop guidance art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Winning a replayed level with fish reward now shows `ResultRewardShopGuidance`, a non-blocking Image2 badge with dynamic `去商店` copy on the victory result screen when no claimable achievement is pending.
+- Pressing `ResultRewardShopGuidanceButton` preserves the shared Image2 result-screen exit animation, disables the route button during transition, then opens `ShopOverlay` with the earned fish intact and yarn purchase affordable when the reward covers it.
+- Claimable achievement guidance and new-level unlock feedback keep priority, so the shop badge does not stack over those result-screen moments; defeat and zero-fish results do not show it.
+- Added `/Users/zhaok/cat/tests/run_result_reward_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_reward_shop_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/result_reward_shop_guidance.png`; GUI capture was used for visual evidence, and the badge was moved upward after visual QA to avoid colliding with new-level feedback and bottom actions.
+- Passed result reward shop guidance, result achievement claim guidance, result next-level unlock feedback, result screen, result screen exit animation, result reward fly feedback, shop buyable design, shop yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 122 tests`.
