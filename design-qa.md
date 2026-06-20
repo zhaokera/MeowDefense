@@ -956,3 +956,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_pause_quit_level_return_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_pause_quit_level_return_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/pause_quit_level_return_guidance.png`; GUI capture was used for visual evidence.
 - Passed pause quit level return guidance, menu, pause menu action exit animation, pause menu, level-select energy-ready guidance, level-select new-unlock hint, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 110 tests`.
+
+**Image2 Battle Wave Preview Close Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_close_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_close_feedback_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/battle_wave_preview_close_feedback_badge.png`, assembled from existing Image2 wave-preview, map-button, rush, fish, and info-badge art.
+- Closing the wave preview detail overlay now waits for the Image2 panel exit animation, then creates `WavePreviewCloseFeedback`, a non-blocking badge with dynamic `情报收起` copy and `继续布防` support text.
+- The wave chip remains usable after the close feedback appears, and the `StartWaveFromPreviewButton` still uses the existing early-wave rush feedback path.
+- Added `/Users/zhaok/cat/tests/run_battle_wave_preview_close_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_preview_close_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/battle_wave_preview_close_feedback.png`; GUI capture was used for visual evidence.
+- Passed battle wave preview close feedback, battle wave preview detail, battle wave rush, battle speed/wave, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 111 tests`.

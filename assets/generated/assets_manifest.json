@@ -444,6 +444,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived paw badge used as the wave-preview info hotspot."
     },
     {
+      "id": "battle_wave_preview_close_feedback_design_reference",
+      "path": "res://assets/generated/ui/battle_wave_preview_close_feedback_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen battle reference showing the non-blocking feedback after closing the wave intel panel."
+    },
+    {
+      "id": "battle_wave_preview_close_feedback_badge_source",
+      "path": "res://assets/generated/ui/battle_wave_preview_close_feedback_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 wave-preview, map-button, rush, fish, and info-badge art for wave intel close feedback."
+    },
+    {
+      "id": "battle_wave_preview_close_feedback_badge",
+      "path": "res://assets/generated/ui/battle_wave_preview_close_feedback_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown after closing the wave-preview intel panel."
+    },
+    {
       "id": "battle_speed_button",
       "path": "res://assets/generated/ui/battle_speed_button.png",
       "prompt_summary": "Image2 transparent speed-toggle button used by the battle HUD for 1x/2x battle speed."

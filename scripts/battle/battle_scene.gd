@@ -21,6 +21,7 @@ const BattlePostBuildGuidanceTexture := preload("res://assets/generated/ui/battl
 const BattleWavePreviewChipTexture := preload("res://assets/generated/ui/battle_wave_preview_chip.png")
 const BattleWavePreviewDetailPanelTexture := preload("res://assets/generated/ui/battle_wave_preview_detail_panel.png")
 const BattleWavePreviewInfoBadgeTexture := preload("res://assets/generated/ui/battle_wave_preview_info_badge.png")
+const BattleWavePreviewCloseFeedbackTexture := preload("res://assets/generated/ui/battle_wave_preview_close_feedback_badge.png")
 const BattleWaveRushBurstTexture := preload("res://assets/generated/ui/battle_wave_rush_burst.png")
 const BattleWaveClearBurstTexture := preload("res://assets/generated/ui/battle_wave_clear_burst.png")
 const BattleWaveIncomingBurstTexture := preload("res://assets/generated/ui/battle_wave_incoming_burst.png")
@@ -2308,7 +2309,7 @@ func _show_wave_preview_detail() -> void:
 	var close_button: Button = _pause_transparent_text_button("CloseWavePreviewDetailButton", "", Rect2(panel_position + Vector2(482, 18), Vector2(150, 58)), 20)
 	close_button.z_index = 4
 	_attach_press_feedback(close_button, panel)
-	close_button.pressed.connect(func() -> void: _animate_hud_overlay_exit(overlay, close_button))
+	close_button.pressed.connect(func() -> void: _animate_hud_overlay_exit(overlay, close_button, _show_wave_preview_close_feedback))
 	overlay.add_child(close_button)
 
 	if _tip_label != null:
@@ -2382,6 +2383,65 @@ func _show_wave_rush_feedback(message: String) -> void:
 	tween.tween_property(feedback, "position:y", feedback.position.y - 18.0, 0.44).set_delay(0.42).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(feedback, "modulate:a", 0.0, 0.28).set_delay(1.00).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(Callable(feedback, "queue_free")).set_delay(1.34)
+
+
+func _show_wave_preview_close_feedback() -> void:
+	if _hud == null:
+		return
+	var existing: Node = _hud.find_child("WavePreviewCloseFeedback", true, false)
+	if existing != null:
+		existing.queue_free()
+
+	var feedback_size := Vector2(420, 150)
+	var feedback: TextureRect = _hud_texture_rect("WavePreviewCloseFeedback", BattleWavePreviewCloseFeedbackTexture, Vector2(430, 124), feedback_size)
+	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	feedback.z_index = 88
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.72, 0.72)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	feedback.set_meta("image2_wave_preview_close_feedback", true)
+	_hud.add_child(feedback)
+
+	var label: Label = _hud_label("情报收起")
+	label.name = "WavePreviewCloseFeedbackLabel"
+	label.position = Vector2(154, 52)
+	label.size = Vector2(190, 38)
+	label.add_theme_font_size_override("font_size", 27)
+	label.add_theme_color_override("font_color", Color(0.33, 0.15, 0.04))
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.94))
+	label.add_theme_constant_override("outline_size", 4)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.clip_text = true
+	feedback.add_child(label)
+
+	var sub_label: Label = _hud_label("继续布防")
+	sub_label.name = "WavePreviewCloseFeedbackSubLabel"
+	sub_label.position = Vector2(164, 92)
+	sub_label.size = Vector2(170, 30)
+	sub_label.add_theme_font_size_override("font_size", 17)
+	sub_label.add_theme_color_override("font_color", Color(0.42, 0.20, 0.08))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.add_child(sub_label)
+
+	var preview_frame: Control = _hud.find_child("WavePreviewFrame", true, false) as Control
+	if preview_frame != null:
+		_animate_control_scale(preview_frame, 1.05, 0.08)
+
+	var feedback_ref: WeakRef = weakref(feedback)
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 8.0, 0.44).set_delay(0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 2.0, 0.42).set_delay(0.66).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.24).set_delay(1.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(func() -> void:
+		var resolved: Object = feedback_ref.get_ref()
+		if resolved is Node:
+			(resolved as Node).queue_free()
+	).set_delay(1.48)
 
 
 func _show_wave_incoming_feedback(message: String) -> void:
