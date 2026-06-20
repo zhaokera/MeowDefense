@@ -1105,3 +1105,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_energy_empty_refill_context_reset_tests.gd` and `/Users/zhaok/cat/tests/capture_energy_empty_refill_context_reset.gd`.
 - Captured `/Users/zhaok/cat/artifacts/energy_empty_refill_context_reset.png`; GUI capture was used for visual evidence.
 - Passed energy empty refill context reset, energy empty refill guidance, guidance overlay exit animation, shop energy refill return, level-select energy ready guidance, result energy refill target level, result energy refill guidance, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 127 tests`.
+
+**Image2 Daily Task Shop Return Target**
+- Shop shortage routes now remember which product created the `ShopInsufficientFishOverlay`, including yarn trap, paw bundle, and energy refill targets.
+- Claiming a daily task from the shortage context carries that product key through `DailyTaskClaimRewardOverlay`; pressing `DailyTaskShopReturnButton` opens `ShopOverlay` and pulses the original product's Image2 state controls.
+- The yarn-trap return route now marks both `BuyShopYarnTrapKitButton` and `ShopYarnTrapKitBuyButtonFrame` with `image2_daily_task_shop_return_target` after the task reward makes the purchase affordable.
+- Closing the shortage feedback clears the unused return target context so dismissed routes do not leak into later shop visits.
+- Added `/Users/zhaok/cat/tests/capture_daily_task_shop_return_target.gd` and expanded `/Users/zhaok/cat/tests/run_daily_task_shop_return_guidance_tests.gd`.
+- Captured `/Users/zhaok/cat/artifacts/daily_task_shop_return_target.png`; GUI capture was used for visual evidence.
+- Passed daily task shop-return guidance, shop shortage daily-task guidance, shop yarn trap, shop product state asset, shop starter yarn guidance, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 127 tests`.

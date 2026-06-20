@@ -147,6 +147,7 @@ var _show_pause_quit_level_guidance: bool = false
 var _show_achievement_continue_level_guidance: bool = false
 var _show_backpack_yarn_level_guidance: bool = false
 var _show_shop_shortage_daily_task_guidance: bool = false
+var _shop_shortage_return_target: String = ""
 var _show_album_detail_level_guidance: bool = false
 var _hotspot_feedback_index: int = 0
 var _settings_control_feedback_index: int = 0
@@ -1288,6 +1289,8 @@ func _show_daily_task_overlay(parent: Node) -> void:
 	content.add_child(close_button)
 	if _show_shop_shortage_daily_task_guidance:
 		_show_shop_shortage_daily_task_guidance = false
+		content.set_meta("image2_shop_shortage_return_target", _shop_shortage_return_target)
+		_shop_shortage_return_target = ""
 		content.set_meta("image2_shop_shortage_daily_task_context", true)
 		_add_shop_shortage_daily_task_guidance(content)
 	_animate_overlay_entry(content)
@@ -1438,7 +1441,9 @@ func _claim_daily_task(task: Dictionary, parent: Control, claim_label: Label, cl
 	_pulse_control(parent)
 	var show_shop_return_guidance := bool(parent.get_meta("image2_shop_shortage_daily_task_context", false))
 	if show_shop_return_guidance:
+		parent.set_meta("image2_daily_task_shop_return_target", str(parent.get_meta("image2_shop_shortage_return_target", "")))
 		parent.remove_meta("image2_shop_shortage_daily_task_context")
+		parent.remove_meta("image2_shop_shortage_return_target")
 	_show_daily_task_claim_reward_overlay(parent, task, show_shop_return_guidance)
 
 
@@ -1448,6 +1453,9 @@ func _show_daily_task_claim_reward_overlay(parent: Control, task: Dictionary, sh
 	reward.name = "DailyTaskClaimRewardOverlay"
 	reward.size = VIEW_SIZE
 	reward.z_index = 18
+	if parent.has_meta("image2_daily_task_shop_return_target"):
+		reward.set_meta("image2_daily_task_shop_return_target", str(parent.get_meta("image2_daily_task_shop_return_target", "")))
+		parent.remove_meta("image2_daily_task_shop_return_target")
 	parent.add_child(reward)
 
 	var design: TextureRect = _ui_texture_rect("DailyTaskClaimRewardDesignBackground", DAILY_TASK_CLAIM_REWARD_DESIGN, Vector2.ZERO, VIEW_SIZE)
@@ -1522,6 +1530,7 @@ func _add_daily_task_shop_return_guidance(reward: Control, feedback_target: Cont
 	shop_button.pressed.connect(func() -> void:
 		_animate_overlay_exit(reward, shop_button, func() -> void:
 			_show_shop_overlay(self)
+			_highlight_daily_task_shop_return_target(self, str(reward.get_meta("image2_daily_task_shop_return_target", "")))
 		)
 	)
 	_attach_button_feedback(shop_button, badge)
@@ -1529,6 +1538,29 @@ func _add_daily_task_shop_return_guidance(reward: Control, feedback_target: Cont
 	_pulse_control(badge)
 	if feedback_target != null:
 		_pulse_control(feedback_target)
+
+
+func _highlight_daily_task_shop_return_target(parent: Node, target_key: String) -> void:
+	var resolved_key := target_key
+	if resolved_key.is_empty():
+		resolved_key = _shop_shortage_return_target
+	_shop_shortage_return_target = ""
+	match resolved_key:
+		"yarn":
+			_mark_shop_return_target(parent, "ShopYarnTrapKitBuyButtonFrame", "BuyShopYarnTrapKitButton", "ShopYarnTrapKitInsufficientStamp", "ShopYarnTrapKitShortageButton")
+		"paw":
+			_mark_shop_return_target(parent, "ShopPawBundleBuyButtonFrame", "BuyShopPawBundleButton", "ShopPawBundleInsufficientStamp", "ShopPawBundleShortageButton")
+		"energy":
+			_mark_shop_return_target(parent, "ShopEnergyRefillButtonFrame", "BuyShopEnergyRefillButton", "ShopEnergyRefillInsufficientStamp", "ShopEnergyRefillShortageButton")
+
+
+func _mark_shop_return_target(parent: Node, frame_name: String, button_name: String, stamp_name: String, shortage_name: String) -> void:
+	for node_name: String in [frame_name, button_name, stamp_name, shortage_name]:
+		var control: Control = parent.find_child(node_name, true, false) as Control
+		if control == null:
+			continue
+		control.set_meta("image2_daily_task_shop_return_target", true)
+		_pulse_control(control)
 
 
 func _sync_claimed_daily_tasks_for_today() -> void:
@@ -2588,10 +2620,21 @@ func _add_shop_shortage_button(parent: Control, button_name: String, rect: Rect2
 	var shortage_button: Button = _hotspot_button(button_name, rect.position, rect.size, "鱼干不足")
 	shortage_button.z_index = 6
 	shortage_button.pressed.connect(func() -> void:
+		_shop_shortage_return_target = _shop_return_target_from_shortage_button(button_name)
 		_show_shop_insufficient_fish_feedback(parent, product_title, required_fish)
 	)
 	_attach_button_feedback(shortage_button, feedback_target)
 	parent.add_child(shortage_button)
+
+
+func _shop_return_target_from_shortage_button(button_name: String) -> String:
+	if button_name.contains("YarnTrapKit"):
+		return "yarn"
+	if button_name.contains("PawBundle"):
+		return "paw"
+	if button_name.contains("EnergyRefill"):
+		return "energy"
+	return ""
 
 
 func _show_shop_insufficient_fish_feedback(parent: Control, product_title: String, required_fish: int) -> void:
@@ -2635,7 +2678,10 @@ func _show_shop_insufficient_fish_feedback(parent: Control, product_title: Strin
 	overlay.add_child(tasks_button)
 	var close_button: Button = _hotspot_button("CloseShopInsufficientFishButton", Vector2(1000, 84), Vector2(94, 94), "关闭")
 	close_button.z_index = 3
-	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
+	close_button.pressed.connect(func() -> void:
+		_shop_shortage_return_target = ""
+		_animate_overlay_exit(overlay, close_button)
+	)
 	overlay.add_child(close_button)
 	_animate_overlay_entry(overlay)
 	_pulse_control(burst)

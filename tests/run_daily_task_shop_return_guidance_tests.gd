@@ -99,6 +99,10 @@ func _run() -> void:
 	var yarn_buy: Button = _assert_button(instance, "BuyShopYarnTrapKitButton", "returned shop should expose yarn trap buy button")
 	if yarn_buy != null:
 		_assert_true(not yarn_buy.disabled, "returned shop should make yarn trap purchase affordable after task reward")
+		_assert_true(bool(yarn_buy.get_meta("image2_daily_task_shop_return_target", false)), "returned shop should mark the original yarn purchase target")
+	var yarn_frame: Control = _assert_control(instance, "ShopYarnTrapKitBuyButtonFrame", "returned shop should show the yarn buy plate")
+	if yarn_frame != null:
+		_assert_true(bool(yarn_frame.get_meta("image2_daily_task_shop_return_target", false)), "returned shop should mark the yarn buy plate as the guided target")
 	_assert_true(int(instance.get("_total_fish")) == 30, "routing back to shop should preserve earned fish")
 
 	_cleanup_instance(instance)
