@@ -980,3 +980,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_backpack_yarn_level_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_backpack_yarn_level_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/backpack_yarn_level_guidance.png`; GUI capture was used for visual evidence.
 - Passed backpack yarn level guidance, backpack item detail, overlay action exit animation, battle yarn inventory flow, battle yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 113 tests`.
+
+**Image2 Shop Shortage Daily Task Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/shop_shortage_daily_task_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/shop_shortage_daily_task_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_shortage_daily_task_guidance_badge.png`, assembled from existing Image2 daily-task, fish reward, reward burst, and shop button art after the fresh Image2 generation drifted into an unrelated fish-bone battle visual.
+- Tapping `去今日任务` from `ShopInsufficientFishOverlay` now preserves the shared Image2 overlay exit animation, marks a one-time earning hint, and opens the daily task overlay.
+- The daily task overlay now shows `ShopShortageDailyTaskGuidance`, a non-blocking Image2 badge with dynamic `赚鱼干` and `完成任务` copy, while leaving ready claim buttons tappable and granting no fish until the player actually claims a task.
+- Added `/Users/zhaok/cat/tests/run_shop_shortage_daily_task_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_shortage_daily_task_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/shop_shortage_daily_task_guidance.png`; GUI capture was used for visual evidence.
+- Passed shop shortage daily-task guidance, shop insufficient fish feedback, overlay action exit animation, daily task overlay, daily task reset, shop product state asset, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 114 tests`.

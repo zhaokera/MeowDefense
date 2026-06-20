@@ -36,6 +36,7 @@ const DAILY_TASK_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/daily_
 const DAILY_TASK_CLAIM_BUTTON_PLATE := preload("res://assets/generated/ui/daily_task_claim_button_plate.png")
 const DAILY_TASK_CLAIMED_STAMP := preload("res://assets/generated/ui/daily_task_claimed_stamp.png")
 const DAILY_TASK_PROGRESS_CHIP := preload("res://assets/generated/ui/daily_task_progress_chip.png")
+const SHOP_SHORTAGE_DAILY_TASK_GUIDANCE_BADGE := preload("res://assets/generated/ui/shop_shortage_daily_task_guidance_badge.png")
 const ENERGY_EMPTY_DESIGN := preload("res://assets/generated/ui/energy_empty_overlay_design_reference.png")
 const ENERGY_EMPTY_REFILL_GUIDANCE_BADGE := preload("res://assets/generated/ui/energy_empty_refill_guidance_badge.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
@@ -132,6 +133,7 @@ var _show_energy_ready_level_guidance: bool = false
 var _show_pause_quit_level_guidance: bool = false
 var _show_achievement_continue_level_guidance: bool = false
 var _show_backpack_yarn_level_guidance: bool = false
+var _show_shop_shortage_daily_task_guidance: bool = false
 var _hotspot_feedback_index: int = 0
 var _settings_control_feedback_index: int = 0
 
@@ -1012,7 +1014,66 @@ func _show_daily_task_overlay(parent: Node) -> void:
 	var close_button: Button = _hotspot_button("CloseDailyTaskButton", Vector2(958, 84), Vector2(92, 92), "关闭")
 	close_button.pressed.connect(func() -> void: _animate_overlay_exit(content.get_parent() as Control, close_button))
 	content.add_child(close_button)
+	if _show_shop_shortage_daily_task_guidance:
+		_show_shop_shortage_daily_task_guidance = false
+		_add_shop_shortage_daily_task_guidance(content)
 	_animate_overlay_entry(content)
+
+
+func _add_shop_shortage_daily_task_guidance(parent: Control) -> void:
+	_remove_named_child(parent, "ShopShortageDailyTaskGuidance")
+	var guidance_size := Vector2(390, 156)
+	var guidance_position := Vector2(116.0, 54.0)
+	var group: Control = Control.new()
+	group.name = "ShopShortageDailyTaskGuidance"
+	group.position = guidance_position
+	group.size = guidance_size
+	group.z_index = 8
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.set_meta("image2_shop_shortage_daily_task_guidance", true)
+	parent.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("ShopShortageDailyTaskBadge", SHOP_SHORTAGE_DAILY_TASK_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	group.add_child(badge)
+
+	var label: Label = _label("ShopShortageDailyTaskLabel", "赚鱼干", Vector2(112.0, 48.0), Vector2(178.0, 34.0), 28, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.96))
+	label.add_theme_constant_override("outline_size", 4)
+	group.add_child(label)
+
+	var sub_label: Label = _label("ShopShortageDailyTaskSubLabel", "完成任务", Vector2(128.0, 88.0), Vector2(148.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sub_label.z_index = 2
+	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	group.add_child(sub_label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -2.5, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 1.8, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = guidance_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
 
 
 func _daily_task_row(parent: Control, task: Dictionary) -> void:
@@ -1950,6 +2011,7 @@ func _show_shop_insufficient_fish_feedback(parent: Control, product_title: Strin
 	tasks_button.z_index = 3
 	tasks_button.pressed.connect(func() -> void:
 		_animate_overlay_exit(overlay, tasks_button, func() -> void:
+			_show_shop_shortage_daily_task_guidance = true
 			_show_daily_task_overlay(self)
 		)
 	)

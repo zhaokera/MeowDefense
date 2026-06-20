@@ -964,6 +964,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after routing from the backpack yarn trap detail."
     },
     {
+      "id": "shop_shortage_daily_task_guidance_design_reference",
+      "path": "res://assets/generated/ui/shop_shortage_daily_task_guidance_design_reference.png",
+      "prompt_summary": "Image2-first daily-task reference showing the one-time earning guidance after routing from shop insufficient-fish feedback."
+    },
+    {
+      "id": "shop_shortage_daily_task_guidance_badge_source",
+      "path": "res://assets/generated/ui/shop_shortage_daily_task_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 daily-task, fish reward, and shop button art for the shop-shortage daily-task guidance."
+    },
+    {
+      "id": "shop_shortage_daily_task_guidance_badge",
+      "path": "res://assets/generated/ui/shop_shortage_daily_task_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on daily tasks after tapping go-to-tasks from shop shortage feedback."
+    },
+    {
       "id": "yarn_trap_field_effect",
       "path": "res://assets/generated/ui/yarn_trap_field_effect.png",
       "prompt_summary": "Image2 transparent battlefield yarn snare effect used when deploying the yarn trap consumable."
