@@ -74,6 +74,7 @@ const RESULT_REWARD_FISH_CHIP := preload("res://assets/generated/ui/result_fish_
 const RESULT_REWARD_FLY_FISH_CHIP := preload("res://assets/generated/ui/result_reward_fly_fish_chip.png")
 const RESULT_NEXT_LEVEL_UNLOCK_BURST := preload("res://assets/generated/ui/result_next_level_unlock_burst.png")
 const RESULT_DEFEAT_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_defeat_guidance_badge.png")
+const RESULT_ACHIEVEMENT_CLAIM_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_achievement_claim_guidance_badge.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
 const FISH_BASE_TEXTURE := preload("res://assets/generated/bases/fish_base.png")
@@ -479,6 +480,10 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 		_add_result_defeat_guidance(screen)
 	if won and newly_unlocked_level_id > _current_level_id:
 		_add_result_next_level_unlock_feedback(screen, newly_unlocked_level_id)
+	if won:
+		var claimable_achievement: Dictionary = _first_completed_unclaimed_achievement()
+		if not claimable_achievement.is_empty():
+			_add_result_achievement_claim_guidance(screen, claimable_achievement)
 	_animate_result_screen_entry(screen)
 
 
@@ -728,6 +733,69 @@ func _add_result_defeat_guidance(parent: Control) -> void:
 		if resolved is Control:
 			_start_result_defeat_guidance_float(resolved as Control)
 	)
+
+
+func _first_completed_unclaimed_achievement() -> Dictionary:
+	for achievement: Dictionary in ACHIEVEMENTS:
+		var achievement_id: String = str(achievement.get("id", ""))
+		var target: int = max(1, int(achievement.get("target", 1)))
+		if not achievement_id.is_empty() and not _is_achievement_claimed(achievement_id) and _achievement_progress(achievement_id) >= target:
+			return achievement
+	return {}
+
+
+func _add_result_achievement_claim_guidance(parent: Control, achievement: Dictionary) -> void:
+	var guidance_size := Vector2(372, 138)
+	var guidance: Control = Control.new()
+	guidance.name = "ResultAchievementClaimGuidance"
+	guidance.position = Vector2(80, 400)
+	guidance.size = guidance_size
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 12
+	guidance.set_meta("image2_result_achievement_claim_guidance", true)
+	parent.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("ResultAchievementClaimGuidanceBadge", RESULT_ACHIEVEMENT_CLAIM_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.97)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("ResultAchievementClaimGuidanceLabel", "去成就", Vector2(240, 46), Vector2(96, 34), 21, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	guidance.add_child(label)
+
+	var title: String = str(achievement.get("title", "成就"))
+	var sub_label: Label = _label("ResultAchievementClaimGuidanceSubLabel", "%s可领" % title, Vector2(218, 76), Vector2(132, 24), 11, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.clip_text = true
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sub_label.z_index = 2
+	guidance.add_child(sub_label)
+
+	var route_button: Button = _hotspot_button("ResultAchievementClaimGuidanceButton", Vector2(184, 32), Vector2(176, 82), "去成就")
+	route_button.z_index = 5
+	route_button.pressed.connect(func() -> void:
+		_animate_result_screen_exit(parent, route_button, func() -> void:
+			_show_main_menu_now()
+			if _current != null and is_instance_valid(_current):
+				_show_achievements_overlay(_current)
+		)
+	)
+	_attach_button_feedback(route_button, badge)
+	guidance.add_child(route_button)
+
+	guidance.pivot_offset = guidance.size * 0.5
+	guidance.scale = Vector2(0.78, 0.78)
+	guidance.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_pulse_control(badge)
+	var intro: Tween = guidance.create_tween()
+	intro.set_parallel(true)
+	intro.tween_property(guidance, "modulate:a", 1.0, 0.12).set_delay(0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	intro.tween_property(guidance, "scale", Vector2.ONE, 0.24).set_delay(0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _start_result_defeat_guidance_float(guidance: Control) -> void:

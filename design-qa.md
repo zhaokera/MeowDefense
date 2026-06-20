@@ -1033,3 +1033,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_achievement_claim_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_achievement_claim_shop_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/achievement_claim_shop_guidance.png`; GUI capture was used for visual evidence.
 - Passed achievement claim shop guidance, achievement claim, reward shop feedback exit animation, shop buyable design, shop yarn trap, shop paw bundle, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 119 tests`.
+
+**Image2 Result Achievement Claim Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/result_achievement_claim_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/result_achievement_claim_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/result_achievement_claim_guidance_badge.png`, assembled from existing Image2 victory result and achievement badge art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Winning a level now detects completed but unclaimed achievements and shows `ResultAchievementClaimGuidance`, a non-blocking Image2 badge with dynamic `去成就` and claim-ready copy on the victory result screen.
+- Pressing `ResultAchievementClaimGuidanceButton` preserves the shared Image2 result-screen exit animation, disables the route button during transition, then opens `AchievementsOverlay` on the main menu with the claimable achievement intact.
+- Defeat results and already-claimed achievement states do not create this result guidance.
+- Added `/Users/zhaok/cat/tests/run_result_achievement_claim_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_achievement_claim_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/result_achievement_claim_guidance.png`; GUI capture was used for visual evidence.
+- Passed result achievement claim guidance, result screen, result screen exit animation, result next-level unlock feedback, achievement claim, progression persistence, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 120 tests`.
