@@ -38,6 +38,7 @@ const DAILY_TASK_CLAIM_BUTTON_PLATE := preload("res://assets/generated/ui/daily_
 const DAILY_TASK_CLAIMED_STAMP := preload("res://assets/generated/ui/daily_task_claimed_stamp.png")
 const DAILY_TASK_PROGRESS_CHIP := preload("res://assets/generated/ui/daily_task_progress_chip.png")
 const SHOP_SHORTAGE_DAILY_TASK_GUIDANCE_BADGE := preload("res://assets/generated/ui/shop_shortage_daily_task_guidance_badge.png")
+const DAILY_TASK_SHOP_RETURN_GUIDANCE_BADGE := preload("res://assets/generated/ui/daily_task_shop_return_guidance_badge.png")
 const ENERGY_EMPTY_DESIGN := preload("res://assets/generated/ui/energy_empty_overlay_design_reference.png")
 const ENERGY_EMPTY_REFILL_GUIDANCE_BADGE := preload("res://assets/generated/ui/energy_empty_refill_guidance_badge.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
@@ -1023,6 +1024,7 @@ func _show_daily_task_overlay(parent: Node) -> void:
 	content.add_child(close_button)
 	if _show_shop_shortage_daily_task_guidance:
 		_show_shop_shortage_daily_task_guidance = false
+		content.set_meta("image2_shop_shortage_daily_task_context", true)
 		_add_shop_shortage_daily_task_guidance(content)
 	_animate_overlay_entry(content)
 
@@ -1170,10 +1172,13 @@ func _claim_daily_task(task: Dictionary, parent: Control, claim_label: Label, cl
 	claim_label.text = "已领取"
 	claim_button.disabled = true
 	_pulse_control(parent)
-	_show_daily_task_claim_reward_overlay(parent, task)
+	var show_shop_return_guidance := bool(parent.get_meta("image2_shop_shortage_daily_task_context", false))
+	if show_shop_return_guidance:
+		parent.remove_meta("image2_shop_shortage_daily_task_context")
+	_show_daily_task_claim_reward_overlay(parent, task, show_shop_return_guidance)
 
 
-func _show_daily_task_claim_reward_overlay(parent: Control, task: Dictionary) -> void:
+func _show_daily_task_claim_reward_overlay(parent: Control, task: Dictionary, show_shop_return_guidance: bool = false) -> void:
 	_remove_named_child(parent, "DailyTaskClaimRewardOverlay")
 	var reward: Control = Control.new()
 	reward.name = "DailyTaskClaimRewardOverlay"
@@ -1204,7 +1209,10 @@ func _show_daily_task_claim_reward_overlay(parent: Control, task: Dictionary) ->
 	var amount: Label = _label("DailyTaskClaimRewardAmount", "小鱼干 +%d" % reward_fish, Vector2(352, 466), Vector2(236, 44), 25, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	amount.z_index = 2
 	reward.add_child(amount)
-	var done_button: Button = _transparent_text_button("CloseDailyTaskClaimRewardButton", "收好奖励", Rect2(Vector2(522, 552), Vector2(486, 82)), 27)
+	var done_text := "留在任务" if show_shop_return_guidance else "收好奖励"
+	var done_rect := Rect2(Vector2(430, 552), Vector2(236, 82)) if show_shop_return_guidance else Rect2(Vector2(522, 552), Vector2(486, 82))
+	var done_font_size := 23 if show_shop_return_guidance else 27
+	var done_button: Button = _transparent_text_button("CloseDailyTaskClaimRewardButton", done_text, done_rect, done_font_size)
 	done_button.z_index = 3
 	done_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, done_button))
 	_attach_button_feedback(done_button, burst)
@@ -1213,8 +1221,50 @@ func _show_daily_task_claim_reward_overlay(parent: Control, task: Dictionary) ->
 	dismiss_button.z_index = 3
 	dismiss_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, dismiss_button))
 	reward.add_child(dismiss_button)
+	if show_shop_return_guidance:
+		_add_daily_task_shop_return_guidance(reward, burst)
 	_animate_overlay_entry(reward)
 	_pulse_control(burst)
+
+
+func _add_daily_task_shop_return_guidance(reward: Control, feedback_target: Control) -> void:
+	var guidance: Control = Control.new()
+	guidance.name = "DailyTaskShopReturnGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 4
+	guidance.set_meta("image2_daily_task_shop_return_guidance", true)
+	reward.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("DailyTaskShopReturnBadge", DAILY_TASK_SHOP_RETURN_GUIDANCE_BADGE, Vector2(676, 520), Vector2(430, 160))
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("DailyTaskShopReturnLabel", "回商店", Vector2(956, 582), Vector2(104, 38), 23, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(label)
+
+	var sub_label: Label = _label("DailyTaskShopReturnSubLabel", "继续购买", Vector2(956, 616), Vector2(104, 26), 12, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.z_index = 2
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(sub_label)
+
+	var shop_button: Button = _hotspot_button("DailyTaskShopReturnButton", Vector2(870, 568), Vector2(230, 92), "回商店")
+	shop_button.z_index = 5
+	shop_button.pressed.connect(func() -> void:
+		_animate_overlay_exit(reward, shop_button, func() -> void:
+			_show_shop_overlay(self)
+		)
+	)
+	_attach_button_feedback(shop_button, badge)
+	reward.add_child(shop_button)
+	_pulse_control(badge)
+	if feedback_target != null:
+		_pulse_control(feedback_target)
 
 
 func _sync_claimed_daily_tasks_for_today() -> void:

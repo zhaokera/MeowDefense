@@ -1005,3 +1005,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_yarn_purchase_backpack_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_yarn_purchase_backpack_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/shop_yarn_purchase_backpack_guidance.png`; GUI capture was used for visual evidence.
 - Passed shop yarn purchase backpack guidance, shop yarn trap, shop purchase feedback, reward shop feedback exit animation, backpack item detail, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 116 tests`.
+
+**Image2 Daily Task Shop Return Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/daily_task_shop_return_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/daily_task_shop_return_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/daily_task_shop_return_guidance_badge.png`, assembled from existing Image2 daily-task reward, shop button, yarn, and fish art after the fresh Image2 output was not exposed as a file by the local Codex image tool.
+- Routing from a shop insufficient-fish state to today tasks now marks a one-claim shop-return context without granting fish early.
+- Claiming a ready daily task from that context now shows `DailyTaskShopReturnGuidance`, a non-blocking Image2 badge with dynamic `回商店` and `继续购买` copy on the reward overlay.
+- Pressing `DailyTaskShopReturnButton` preserves the shared Image2 reward-overlay exit animation, disables the route button during the transition, then opens `ShopOverlay` with the earned fish intact so the yarn trap purchase is affordable.
+- Normal daily task claims continue to show the regular reward overlay and do not create the shop-return guidance.
+- Added `/Users/zhaok/cat/tests/run_daily_task_shop_return_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_task_shop_return_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/daily_task_shop_return_guidance.png`; GUI capture was used for visual evidence.
+- Passed daily task shop-return guidance, shop shortage daily-task guidance, shop insufficient fish feedback, daily task overlay, reward feedback exit animation, overlay action exit animation, shop yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 117 tests`.

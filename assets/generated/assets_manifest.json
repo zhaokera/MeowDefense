@@ -979,6 +979,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived badge shown on daily tasks after tapping go-to-tasks from shop shortage feedback."
     },
     {
+      "id": "daily_task_shop_return_guidance_design_reference",
+      "path": "res://assets/generated/ui/daily_task_shop_return_guidance_design_reference.png",
+      "prompt_summary": "Image2-first daily task reward reference showing a return-to-shop action after earning fish from a shop shortage route."
+    },
+    {
+      "id": "daily_task_shop_return_guidance_badge_source",
+      "path": "res://assets/generated/ui/daily_task_shop_return_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 task reward, shop button, fish, and yarn art for daily-task return-to-shop guidance."
+    },
+    {
+      "id": "daily_task_shop_return_guidance_badge",
+      "path": "res://assets/generated/ui/daily_task_shop_return_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge and route button shown after claiming fish from a shop-shortage daily task flow."
+    },
+    {
       "id": "album_detail_level_guidance_design_reference",
       "path": "res://assets/generated/ui/album_detail_level_guidance_design_reference.png",
       "prompt_summary": "Image2-first full-screen level-select reference showing the one-time choose-level guidance after routing from album detail."
