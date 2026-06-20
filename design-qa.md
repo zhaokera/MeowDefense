@@ -1079,3 +1079,13 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_backpack_organize_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_backpack_organize_shop_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/backpack_organize_shop_guidance.png`; GUI capture was used for visual evidence, and the reward copy was tightened after visual QA so it no longer collides with the guidance badge.
 - Passed backpack organize shop guidance, backpack organize reward, backpack item detail, shop yarn trap, shop buyable design, reward shop feedback exit animation, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 124 tests`.
+
+**Image2 Result Energy Refill Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/result_energy_refill_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/result_energy_refill_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/result_energy_refill_guidance_badge.png`, assembled from existing Image2 result, energy refill, shop, and fish art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Tapping `下一关` from a victory result with the next level unlocked but zero energy now keeps the result screen visible and shows `ResultEnergyRefillGuidance` instead of hard-cutting to the generic `EnergyEmptyOverlay`.
+- Pressing `ResultEnergyRefillButton` preserves the shared Image2 result-screen exit animation, disables the route button during transition, then opens `ShopOverlay` and highlights the energy refill target.
+- Normal next-level actions with energy still start the next battle.
+- Zero-fish victory results now show `已领取` in the result reward row and no longer create a `+0` fish chip/count-up celebration; star celebration remains.
+- Added `/Users/zhaok/cat/tests/run_result_energy_refill_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_energy_refill_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/result_energy_refill_guidance.png`; GUI capture was used for visual evidence.
+- Passed result energy refill guidance, result screen, result reward shop guidance, energy empty refill guidance, result screen exit animation, shop energy refill, shop energy refill return, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 125 tests`.

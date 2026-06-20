@@ -78,6 +78,7 @@ const RESULT_REWARD_FLY_FISH_CHIP := preload("res://assets/generated/ui/result_r
 const RESULT_NEXT_LEVEL_UNLOCK_BURST := preload("res://assets/generated/ui/result_next_level_unlock_burst.png")
 const RESULT_DEFEAT_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_defeat_guidance_badge.png")
 const RESULT_ACHIEVEMENT_CLAIM_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_achievement_claim_guidance_badge.png")
+const RESULT_ENERGY_REFILL_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_energy_refill_guidance_badge.png")
 const RESULT_REWARD_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/result_reward_shop_guidance_badge.png")
 const CAT_TOWER_TEXTURE := preload("res://assets/generated/towers/orange_cat_tower.png")
 const MOUSE_TEXTURE := preload("res://assets/generated/enemies/mouse_basic.png")
@@ -447,7 +448,7 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 
 	var title_text: String = "守住啦！" if won else "猫粮罐被偷空了"
 	screen.add_child(_label("ResultTitle", title_text, Vector2(486, 152), Vector2(316, 58), 38, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	screen.add_child(_label("ResultFishReward", "+%d" % fish_reward, Vector2(496, 452), Vector2(108, 48), 28, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	screen.add_child(_label("ResultFishReward", _result_fish_reward_text(won, fish_reward), Vector2(496, 452), Vector2(108, 48), 28, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	screen.add_child(_label("ResultBestRecord", _star_text(_level_stars(_current_level_id)), Vector2(736, 452), Vector2(128, 48), 26, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	if won:
 		_add_result_reward_celebration(screen, earned_stars, fish_reward)
@@ -497,8 +498,11 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 func _start_level_from_result(screen: Control, trigger_button: Button, level_info: Dictionary) -> void:
 	var requested_level_id: int = int(level_info.get("id", 1))
 	_sync_energy_for_today()
-	if not _is_level_unlocked(requested_level_id) or _energy <= 0:
+	if not _is_level_unlocked(requested_level_id):
 		_start_level(level_info)
+		return
+	if _energy <= 0:
+		_show_result_energy_refill_guidance(screen, trigger_button)
 		return
 	_animate_result_screen_exit(screen, trigger_button, func() -> void:
 		_start_level(level_info)
@@ -576,6 +580,12 @@ func _add_result_resource_strip(parent: Control) -> void:
 	parent.add_child(_label("ProgressCounter", "%d" % _current_level_id, Vector2(1202, 38), Vector2(54, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 
 
+func _result_fish_reward_text(won: bool, fish_reward: int) -> String:
+	if fish_reward > 0:
+		return "+%d" % fish_reward
+	return "已领取" if won else "未获得"
+
+
 func _add_result_reward_celebration(parent: Control, earned_stars: int, fish_reward: int) -> void:
 	var layer: Control = Control.new()
 	layer.name = "ResultRewardCelebrationLayer"
@@ -594,23 +604,24 @@ func _add_result_reward_celebration(parent: Control, earned_stars: int, fish_rew
 		layer.add_child(star)
 		_animate_result_reward_piece(star, 0.08 + index * 0.08, Vector2(1.0, 1.0))
 
-	var fish_chip: TextureRect = _ui_texture_rect("ResultRewardFishChip", RESULT_REWARD_FISH_CHIP, Vector2(814, 96), Vector2(92, 92))
-	fish_chip.pivot_offset = fish_chip.size * 0.5
-	fish_chip.scale = Vector2(0.72, 0.72)
-	fish_chip.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	layer.add_child(fish_chip)
-	_animate_result_reward_piece(fish_chip, 0.24, Vector2(0.88, 0.88))
+	if fish_reward > 0:
+		var fish_chip: TextureRect = _ui_texture_rect("ResultRewardFishChip", RESULT_REWARD_FISH_CHIP, Vector2(814, 96), Vector2(92, 92))
+		fish_chip.pivot_offset = fish_chip.size * 0.5
+		fish_chip.scale = Vector2(0.72, 0.72)
+		fish_chip.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		layer.add_child(fish_chip)
+		_animate_result_reward_piece(fish_chip, 0.24, Vector2(0.88, 0.88))
 
-	var count_label: Label = _label("ResultRewardCountUpLabel", "+%d" % fish_reward, Vector2(892, 120), Vector2(112, 40), 24, INK, HORIZONTAL_ALIGNMENT_LEFT)
-	count_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.90))
-	count_label.add_theme_constant_override("outline_size", 3)
-	count_label.pivot_offset = count_label.size * 0.5
-	count_label.scale = Vector2(0.86, 0.86)
-	count_label.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	layer.add_child(count_label)
-	_animate_result_reward_piece(count_label, 0.30, Vector2.ONE)
-	_pulse_result_reward_label(count_label)
-	_add_result_reward_fly_feedback(parent, fish_reward)
+		var count_label: Label = _label("ResultRewardCountUpLabel", "+%d" % fish_reward, Vector2(892, 120), Vector2(112, 40), 24, INK, HORIZONTAL_ALIGNMENT_LEFT)
+		count_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.90))
+		count_label.add_theme_constant_override("outline_size", 3)
+		count_label.pivot_offset = count_label.size * 0.5
+		count_label.scale = Vector2(0.86, 0.86)
+		count_label.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		layer.add_child(count_label)
+		_animate_result_reward_piece(count_label, 0.30, Vector2.ONE)
+		_pulse_result_reward_label(count_label)
+		_add_result_reward_fly_feedback(parent, fish_reward)
 
 
 func _add_result_reward_fly_feedback(parent: Control, fish_reward: int) -> void:
@@ -853,6 +864,58 @@ func _add_result_reward_shop_guidance(parent: Control) -> void:
 	intro.set_parallel(true)
 	intro.tween_property(guidance, "modulate:a", 1.0, 0.12).set_delay(0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	intro.tween_property(guidance, "scale", Vector2.ONE, 0.24).set_delay(0.24).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _show_result_energy_refill_guidance(parent: Control, feedback_target: Control = null) -> void:
+	_remove_named_child(parent, "ResultEnergyRefillGuidance")
+	_remove_named_child(parent, "EnergyEmptyOverlay")
+	var guidance_size := Vector2(430, 160)
+	var guidance: Control = Control.new()
+	guidance.name = "ResultEnergyRefillGuidance"
+	guidance.position = Vector2(666, 414)
+	guidance.size = guidance_size
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 13
+	guidance.set_meta("image2_result_energy_refill_guidance", true)
+	parent.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("ResultEnergyRefillBadge", RESULT_ENERGY_REFILL_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.97)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("ResultEnergyRefillLabel", "补体力", Vector2(286, 70), Vector2(112, 34), 21, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	guidance.add_child(label)
+
+	var route_button: Button = _hotspot_button("ResultEnergyRefillButton", Vector2(224, 44), Vector2(188, 82), "补体力")
+	route_button.z_index = 5
+	route_button.pressed.connect(func() -> void:
+		_animate_result_screen_exit(parent, route_button, func() -> void:
+			_show_main_menu_now()
+			if _current != null and is_instance_valid(_current):
+				_show_shop_overlay(_current)
+				_highlight_result_energy_refill_target(_current)
+		)
+	)
+	_attach_button_feedback(route_button, badge)
+	guidance.add_child(route_button)
+
+	guidance.pivot_offset = guidance.size * 0.5
+	guidance.scale = Vector2(0.78, 0.78)
+	guidance.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	_pulse_control(badge)
+	if feedback_target != null:
+		_pulse_control(feedback_target)
+	var intro: Tween = guidance.create_tween()
+	intro.set_parallel(true)
+	intro.tween_property(guidance, "modulate:a", 1.0, 0.12).set_delay(0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	intro.tween_property(guidance, "scale", Vector2.ONE, 0.22).set_delay(0.08).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _start_result_defeat_guidance_float(guidance: Control) -> void:
@@ -1175,6 +1238,18 @@ func _highlight_shop_energy_refill_guidance(host_parent: Node) -> void:
 	if target == null:
 		return
 	target.set_meta("image2_energy_refill_guidance_target", true)
+	_pulse_control(target)
+
+
+func _highlight_result_energy_refill_target(host_parent: Node) -> void:
+	var target: Control = host_parent.find_child("ShopEnergyRefillButtonFrame", true, false) as Control
+	if target == null:
+		target = host_parent.find_child("ShopEnergyRefillInsufficientStamp", true, false) as Control
+	if target == null:
+		target = host_parent.find_child("BuyShopEnergyRefillButton", true, false) as Control
+	if target == null:
+		return
+	target.set_meta("image2_result_energy_refill_target", true)
 	_pulse_control(target)
 
 

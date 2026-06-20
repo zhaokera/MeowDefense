@@ -1289,6 +1289,21 @@
       "prompt_summary": "Transparent Image2-style achievement-claim guidance badge layered over victory result screens with runtime labels and an achievements route hit area."
     },
     {
+      "id": "result_energy_refill_guidance_design_reference",
+      "path": "res://assets/generated/ui/result_energy_refill_guidance_design_reference.png",
+      "prompt_summary": "Image2-first victory result reference showing refill-energy guidance when the next-level action is tapped with empty energy."
+    },
+    {
+      "id": "result_energy_refill_guidance_badge_source",
+      "path": "res://assets/generated/ui/result_energy_refill_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived chroma-key source for the result-screen refill-energy guidance badge."
+    },
+    {
+      "id": "result_energy_refill_guidance_badge",
+      "path": "res://assets/generated/ui/result_energy_refill_guidance_badge.png",
+      "prompt_summary": "Transparent Image2-derived badge that routes empty-energy result-screen next-level attempts to the shop energy refill."
+    },
+    {
       "id": "result_reward_shop_guidance_design_reference",
       "path": "res://assets/generated/ui/result_reward_shop_guidance_design_reference.png",
       "prompt_summary": "Image2-first full-screen victory result reference showing a shop guidance badge near the earned fish reward."
