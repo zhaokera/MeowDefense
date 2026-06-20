@@ -1070,3 +1070,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_starter_yarn_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_starter_yarn_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/shop_starter_yarn_guidance.png`; GUI capture was used for visual evidence.
 - Passed shop starter yarn guidance, shop purchase feedback, shop yarn trap, shop yarn purchase backpack guidance, shop shortage daily-task guidance, shop buyable design, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 123 tests`.
+
+**Image2 Backpack Organize Shop Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/backpack_organize_shop_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/backpack_organize_shop_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/backpack_organize_shop_guidance_badge.png`, assembled from existing Image2 backpack reward, shop, yarn, and fish art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Organizing the backpack now detects when the +5 fish reward crosses the 25-fish yarn-trap price and shows `BackpackOrganizeShopGuidance`, a non-blocking Image2 badge with dynamic `去商店` copy on the reward overlay.
+- Pressing `BackpackOrganizeShopButton` preserves the shared Image2 reward-overlay exit animation, disables the route button during transition, closes the backpack overlay, opens `ShopOverlay`, and highlights the now-buyable yarn trap target.
+- Smaller organize rewards that do not make yarn affordable keep the regular reward overlay and do not create the shop guidance.
+- Added `/Users/zhaok/cat/tests/run_backpack_organize_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_backpack_organize_shop_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/backpack_organize_shop_guidance.png`; GUI capture was used for visual evidence, and the reward copy was tightened after visual QA so it no longer collides with the guidance badge.
+- Passed backpack organize shop guidance, backpack organize reward, backpack item detail, shop yarn trap, shop buyable design, reward shop feedback exit animation, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 124 tests`.

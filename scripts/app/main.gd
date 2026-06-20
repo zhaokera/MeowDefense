@@ -45,6 +45,7 @@ const ENERGY_EMPTY_REFILL_GUIDANCE_BADGE := preload("res://assets/generated/ui/e
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
 const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
 const BACKPACK_ORGANIZE_REWARD_DESIGN := preload("res://assets/generated/ui/backpack_organize_reward_design_reference.png")
+const BACKPACK_ORGANIZE_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/backpack_organize_shop_guidance_badge.png")
 const BACKPACK_YARN_LEVEL_GUIDANCE_BADGE := preload("res://assets/generated/ui/backpack_yarn_level_guidance_badge.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
@@ -1797,6 +1798,7 @@ func _run_backpack_item_action(backpack_content: Control, host: Node, action_nam
 func _claim_backpack_organize_reward(parent: Control, fish_counter: Label, organize_button: Button) -> void:
 	if _backpack_organized:
 		return
+	var fish_before_claim: int = _total_fish
 	_backpack_organized = true
 	_total_fish += 5
 	_save_progress()
@@ -1804,10 +1806,11 @@ func _claim_backpack_organize_reward(parent: Control, fish_counter: Label, organ
 		fish_counter.text = "%d" % _total_fish
 	organize_button.text = "已整理"
 	organize_button.disabled = true
-	_show_backpack_organize_reward(parent)
+	var organize_unlocked_yarn: bool = fish_before_claim < YARN_TRAP_PRICE and _total_fish >= YARN_TRAP_PRICE
+	_show_backpack_organize_reward(parent, organize_unlocked_yarn)
 
 
-func _show_backpack_organize_reward(parent: Control) -> void:
+func _show_backpack_organize_reward(parent: Control, show_shop_guidance: bool = false) -> void:
 	_remove_named_child(parent, "BackpackOrganizeRewardOverlay")
 	var reward: Control = Control.new()
 	reward.name = "BackpackOrganizeRewardOverlay"
@@ -1823,15 +1826,68 @@ func _show_backpack_organize_reward(parent: Control) -> void:
 	fish_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	reward.add_child(fish_icon)
 	reward.add_child(_label("BackpackOrganizeRewardAmount", "小鱼干 +5", Vector2(484, 444), Vector2(312, 44), 25, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	reward.add_child(_label("BackpackOrganizeRewardCopy", "猫爪仓库变清爽了，顺手找到了小鱼干。", Vector2(426, 518), Vector2(428, 44), 19, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
-	var done_button: Button = _transparent_text_button("CloseBackpackOrganizeRewardButton", "收好奖励", Rect2(Vector2(470, 594), Vector2(340, 78)), 26)
+	var copy_text: String = "毛线陷阱可以买了。" if show_shop_guidance else "猫爪仓库变清爽了，顺手找到了小鱼干。"
+	var copy_position := Vector2(382, 520) if show_shop_guidance else Vector2(426, 518)
+	var copy_size := Vector2(236, 40) if show_shop_guidance else Vector2(428, 44)
+	var copy_font_size := 18 if show_shop_guidance else 19
+	reward.add_child(_label("BackpackOrganizeRewardCopy", copy_text, copy_position, copy_size, copy_font_size, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
+	var done_text: String = "留在背包" if show_shop_guidance else "收好奖励"
+	var done_rect := Rect2(Vector2(396, 594), Vector2(230, 78)) if show_shop_guidance else Rect2(Vector2(470, 594), Vector2(340, 78))
+	var done_font_size := 23 if show_shop_guidance else 26
+	var done_button: Button = _transparent_text_button("CloseBackpackOrganizeRewardButton", done_text, done_rect, done_font_size)
 	done_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, done_button))
 	reward.add_child(done_button)
 	var close_button: Button = _hotspot_button("DismissBackpackOrganizeRewardButton", Vector2(904, 132), Vector2(96, 96), "关闭")
 	close_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, close_button))
 	reward.add_child(close_button)
+	if show_shop_guidance:
+		_add_backpack_organize_shop_guidance(reward, fish_icon)
 	_animate_overlay_entry(reward)
 	_pulse_control(fish_icon)
+
+
+func _add_backpack_organize_shop_guidance(reward: Control, feedback_target: Control) -> void:
+	var guidance: Control = Control.new()
+	guidance.name = "BackpackOrganizeShopGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 4
+	guidance.set_meta("image2_backpack_organize_shop_guidance", true)
+	reward.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("BackpackOrganizeShopBadge", BACKPACK_ORGANIZE_SHOP_GUIDANCE_BADGE, Vector2(636, 510), Vector2(430, 160))
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("BackpackOrganizeShopLabel", "去商店", Vector2(860, 580), Vector2(132, 38), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(label)
+
+	var shop_button: Button = _hotspot_button("BackpackOrganizeShopButton", Vector2(780, 566), Vector2(246, 94), "去商店")
+	shop_button.z_index = 5
+	shop_button.pressed.connect(func() -> void:
+		var backpack_content: Control = reward.get_parent() as Control
+		var backpack_overlay: Node = null
+		if backpack_content != null:
+			backpack_overlay = backpack_content.get_parent()
+		_animate_overlay_exit(reward, shop_button, func() -> void:
+			if backpack_overlay != null and is_instance_valid(backpack_overlay):
+				backpack_overlay.queue_free()
+			_show_shop_overlay(self)
+			var shop_content: Control = find_child("ShopOverlayContent", true, false) as Control
+			if shop_content != null:
+				_highlight_backpack_organize_shop_target(shop_content)
+		)
+	)
+	_attach_button_feedback(shop_button, badge)
+	reward.add_child(shop_button)
+	_pulse_control(badge)
+	if feedback_target != null:
+		_pulse_control(feedback_target)
 
 
 func _achievement_row(parent: Control, achievement: Dictionary) -> void:
@@ -2361,6 +2417,18 @@ func _highlight_shop_starter_yarn_target(parent: Control) -> void:
 		_pulse_control(frame)
 	if buy_button != null:
 		buy_button.set_meta("image2_shop_starter_yarn_target", true)
+		if frame == null:
+			_pulse_control(buy_button)
+
+
+func _highlight_backpack_organize_shop_target(parent: Control) -> void:
+	var frame: Control = parent.find_child("ShopYarnTrapKitBuyButtonFrame", true, false) as Control
+	var buy_button: Button = parent.find_child("BuyShopYarnTrapKitButton", true, false) as Button
+	if frame != null:
+		frame.set_meta("image2_backpack_organize_shop_target", true)
+		_pulse_control(frame)
+	if buy_button != null:
+		buy_button.set_meta("image2_backpack_organize_shop_target", true)
 		if frame == null:
 			_pulse_control(buy_button)
 

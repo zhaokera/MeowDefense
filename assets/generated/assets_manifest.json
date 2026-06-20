@@ -979,6 +979,21 @@
       "prompt_summary": "Image2 transparent yarn trap item icon used by the shop purchase state and inventory flow."
     },
     {
+      "id": "backpack_organize_shop_guidance_design_reference",
+      "path": "res://assets/generated/ui/backpack_organize_shop_guidance_design_reference.png",
+      "prompt_summary": "Image2-first backpack organize reward reference showing shop and yarn-purchase guidance when the +5 fish reward makes yarn affordable."
+    },
+    {
+      "id": "backpack_organize_shop_guidance_badge_source",
+      "path": "res://assets/generated/ui/backpack_organize_shop_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived chroma-key source for the backpack organize reward shop guidance badge."
+    },
+    {
+      "id": "backpack_organize_shop_guidance_badge",
+      "path": "res://assets/generated/ui/backpack_organize_shop_guidance_badge.png",
+      "prompt_summary": "Transparent Image2-derived badge that routes backpack organize rewards to the now-affordable yarn trap purchase."
+    },
+    {
       "id": "backpack_yarn_level_guidance_design_reference",
       "path": "res://assets/generated/ui/backpack_yarn_level_guidance_design_reference.png",
       "prompt_summary": "Image2-first full-screen level-select reference showing the backpack yarn-trap battle guidance."
