@@ -1532,6 +1532,21 @@
       "id": "tower_action_cancel_feedback_badge",
       "path": "res://assets/generated/ui/tower_action_cancel_feedback_badge.png",
       "prompt_summary": "Project-bound transparent Image2-derived badge shown when the player cancels tower management without changing the tower."
+    },
+    {
+      "id": "settings_saved_feedback_design_reference",
+      "path": "res://assets/generated/ui/settings_saved_feedback_design_reference.png",
+      "prompt_summary": "Project-bound Image2-derived full-screen settings reference showing a non-blocking saved-feedback badge near the settings controls."
+    },
+    {
+      "id": "settings_saved_feedback_badge_source",
+      "path": "res://assets/generated/ui/settings_saved_feedback_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 settings button and tap-spark art for the settings saved feedback badge."
+    },
+    {
+      "id": "settings_saved_feedback_badge",
+      "path": "res://assets/generated/ui/settings_saved_feedback_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown when settings changes are saved."
     }
   ]
 }

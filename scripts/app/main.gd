@@ -20,6 +20,7 @@ const SETTINGS_TOGGLE_OFF := preload("res://assets/generated/ui/settings_toggle_
 const SETTINGS_SLIDER_TRACK := preload("res://assets/generated/ui/settings_slider_track.png")
 const SETTINGS_SLIDER_KNOB := preload("res://assets/generated/ui/settings_slider_knob.png")
 const SETTINGS_CLOSE_BUTTON := preload("res://assets/generated/ui/settings_close_button.png")
+const SETTINGS_SAVED_FEEDBACK_BADGE := preload("res://assets/generated/ui/settings_saved_feedback_badge.png")
 const ALBUM_OVERLAY_PANEL := preload("res://assets/generated/ui/album_overlay_panel.png")
 const ALBUM_CARD_FRAME := preload("res://assets/generated/ui/album_card_frame.png")
 const ALBUM_CLOSE_BUTTON := preload("res://assets/generated/ui/album_close_button.png")
@@ -552,6 +553,7 @@ func _show_settings_overlay(parent: Node) -> void:
 		music_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
 		_pulse_control(music_frame)
 		_save_progress()
+		_show_settings_saved_feedback(overlay, "音乐已保存")
 	)
 	overlay.add_child(music_toggle)
 
@@ -564,6 +566,7 @@ func _show_settings_overlay(parent: Node) -> void:
 		effects_frame.texture = SETTINGS_TOGGLE_ON if enabled else SETTINGS_TOGGLE_OFF
 		_pulse_control(effects_frame)
 		_save_progress()
+		_show_settings_saved_feedback(overlay, "音效已保存")
 	)
 	overlay.add_child(effects_toggle)
 
@@ -584,6 +587,7 @@ func _show_settings_overlay(parent: Node) -> void:
 		_volume = value
 		_position_settings_slider_knob(slider_knob, slider)
 		_save_progress()
+		_show_settings_saved_feedback(overlay, "音量已保存")
 	)
 	_attach_settings_control_feedback(slider, slider_knob)
 	overlay.add_child(slider)
@@ -594,6 +598,47 @@ func _show_settings_overlay(parent: Node) -> void:
 	_attach_button_feedback(close_button, close_frame)
 	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	overlay.add_child(close_button)
+
+
+func _show_settings_saved_feedback(parent: Control, copy: String) -> void:
+	if parent == null or not is_instance_valid(parent):
+		return
+	var existing: Node = parent.find_child("SettingsSavedFeedback", true, false)
+	if existing != null:
+		parent.remove_child(existing)
+		existing.queue_free()
+	var feedback: Control = Control.new()
+	feedback.name = "SettingsSavedFeedback"
+	feedback.position = Vector2(912, 194)
+	feedback.size = Vector2(320, 128)
+	feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.z_index = 8
+	feedback.set_meta("image2_settings_saved_feedback", true)
+	parent.add_child(feedback)
+
+	var badge: TextureRect = _ui_texture_rect("SettingsSavedFeedbackBadge", SETTINGS_SAVED_FEEDBACK_BADGE, Vector2.ZERO, feedback.size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.add_child(badge)
+
+	var label: Label = _label("SettingsSavedFeedbackLabel", copy, Vector2(70, 44), Vector2(180, 38), 22, Color(0.18, 0.08, 0.04), HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback.add_child(label)
+
+	feedback.pivot_offset = feedback.size * 0.5
+	feedback.scale = Vector2(0.76, 0.76)
+	feedback.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var tween: Tween = feedback.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(feedback, "scale", Vector2(1.0, 1.0), 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(feedback, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_interval(1.05)
+	tween.chain().set_parallel(true)
+	tween.tween_property(feedback, "position:y", feedback.position.y - 12.0, 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_property(feedback, "modulate:a", 0.0, 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.chain().tween_callback(feedback.queue_free)
 
 
 func _add_result_resource_strip(parent: Control) -> void:

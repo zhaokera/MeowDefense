@@ -1114,3 +1114,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/capture_daily_task_shop_return_target.gd` and expanded `/Users/zhaok/cat/tests/run_daily_task_shop_return_guidance_tests.gd`.
 - Captured `/Users/zhaok/cat/artifacts/daily_task_shop_return_target.png`; GUI capture was used for visual evidence.
 - Passed daily task shop-return guidance, shop shortage daily-task guidance, shop yarn trap, shop product state asset, shop starter yarn guidance, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 127 tests`.
+
+**Image2 Settings Saved Feedback**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/settings_saved_feedback_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/settings_saved_feedback_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/settings_saved_feedback_badge.png`, assembled from existing Image2 settings button and tap-spark art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Changing music, effects, or volume settings now shows `SettingsSavedFeedback`, a non-blocking Image2 badge with dynamic `音乐已保存`, `音效已保存`, or `音量已保存` copy.
+- Consecutive setting changes replace the existing feedback immediately, preserving the stable `SettingsSavedFeedback` node name instead of allowing Godot to auto-rename same-frame duplicates.
+- The feedback badge floats at the right edge of the settings panel, keeping the Image2 toggles, slider, and confirm button visible and tappable.
+- Added `/Users/zhaok/cat/tests/run_settings_saved_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_settings_saved_feedback.gd`.
+- Captured `/Users/zhaok/cat/artifacts/settings_saved_feedback.png`; GUI capture was used for visual evidence after moving the badge away from the toggle row.
+- Passed settings saved feedback, settings control feedback, settings overlay exit animation, menu, pause menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 128 tests`.
