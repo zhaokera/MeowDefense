@@ -1015,3 +1015,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_task_shop_return_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_task_shop_return_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/daily_task_shop_return_guidance.png`; GUI capture was used for visual evidence.
 - Passed daily task shop-return guidance, shop shortage daily-task guidance, shop insufficient fish feedback, daily task overlay, reward feedback exit animation, overlay action exit animation, shop yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 117 tests`.
+
+**Image2 Shop Paw Purchase Achievement Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/shop_paw_purchase_achievement_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/shop_paw_purchase_achievement_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/shop_paw_purchase_achievement_guidance_badge.png`, assembled from existing Image2 shop purchase, paw badge, achievement, star, fish, and shop button art after the fresh Image2 output was not exposed as a file by the local Codex image tool.
+- Buying `猫爪徽章包` now shows `ShopPawPurchaseAchievementGuidance`, a non-blocking Image2 badge with dynamic `去成就` and `查看徽章` copy on the purchase success overlay.
+- Pressing `ShopPawPurchaseAchievementButton` preserves the shared Image2 purchase-overlay exit animation, disables the route button during the transition, then opens `AchievementsOverlay` with purchased paw tokens and remaining fish intact.
+- Non-paw purchases continue to show their own purchase guidance paths and do not create the paw achievement guidance.
+- Added `/Users/zhaok/cat/tests/run_shop_paw_purchase_achievement_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_paw_purchase_achievement_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/shop_paw_purchase_achievement_guidance.png`; GUI capture was used for visual evidence.
+- Passed shop paw purchase achievement guidance, shop paw bundle, shop purchase feedback, reward shop feedback exit animation, achievement claim, shop yarn purchase backpack guidance, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 118 tests`.

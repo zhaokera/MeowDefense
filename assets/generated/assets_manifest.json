@@ -1124,6 +1124,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived badge and route button shown after buying a yarn trap in the shop."
     },
     {
+      "id": "shop_paw_purchase_achievement_guidance_design_reference",
+      "path": "res://assets/generated/ui/shop_paw_purchase_achievement_guidance_design_reference.png",
+      "prompt_summary": "Image2-first shop purchase reference showing the one-time achievement route guidance after buying a paw badge bundle."
+    },
+    {
+      "id": "shop_paw_purchase_achievement_guidance_badge_source",
+      "path": "res://assets/generated/ui/shop_paw_purchase_achievement_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 paw badge, achievement, shop button, and purchase reward art for paw purchase achievement guidance."
+    },
+    {
+      "id": "shop_paw_purchase_achievement_guidance_badge",
+      "path": "res://assets/generated/ui/shop_paw_purchase_achievement_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge and route button shown after buying a paw badge bundle in the shop."
+    },
+    {
       "id": "shop_insufficient_fish_design_reference",
       "path": "res://assets/generated/ui/shop_insufficient_fish_design_reference.png",
       "prompt_summary": "Image2 full-screen shop insufficient-fish feedback overlay with blank runtime text and action areas."
