@@ -24,6 +24,7 @@ const ALBUM_OVERLAY_PANEL := preload("res://assets/generated/ui/album_overlay_pa
 const ALBUM_CARD_FRAME := preload("res://assets/generated/ui/album_card_frame.png")
 const ALBUM_CLOSE_BUTTON := preload("res://assets/generated/ui/album_close_button.png")
 const ALBUM_ENTRY_DETAIL_DESIGN := preload("res://assets/generated/ui/album_entry_detail_design_reference.png")
+const ALBUM_DETAIL_LEVEL_GUIDANCE_BADGE := preload("res://assets/generated/ui/album_detail_level_guidance_badge.png")
 const REWARD_OVERLAY_PANEL := preload("res://assets/generated/ui/reward_overlay_panel.png")
 const REWARD_CHEST := preload("res://assets/generated/ui/reward_chest.png")
 const REWARD_CLAIM_BUTTON := preload("res://assets/generated/ui/reward_claim_button.png")
@@ -134,6 +135,7 @@ var _show_pause_quit_level_guidance: bool = false
 var _show_achievement_continue_level_guidance: bool = false
 var _show_backpack_yarn_level_guidance: bool = false
 var _show_shop_shortage_daily_task_guidance: bool = false
+var _show_album_detail_level_guidance: bool = false
 var _hotspot_feedback_index: int = 0
 var _settings_control_feedback_index: int = 0
 
@@ -296,6 +298,10 @@ func _show_level_select_now() -> void:
 		_show_backpack_yarn_level_guidance = false
 		if _is_level_unlocked(1):
 			_add_backpack_yarn_level_guidance(screen, level_hotspots[0]["rect"] as Rect2)
+	if _show_album_detail_level_guidance:
+		_show_album_detail_level_guidance = false
+		if _is_level_unlocked(1):
+			_add_album_detail_level_guidance(screen, level_hotspots[0]["rect"] as Rect2)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(330, 580), Vector2(118, 120), "主城")
 	bottom_home.pressed.connect(_show_main_menu)
@@ -1451,7 +1457,10 @@ func _show_album_entry_detail(parent: Control, texture: Texture2D, title: String
 
 	var action: Button = _transparent_text_button("AlbumEntryDetailActionButton", "去关卡", Rect2(Vector2(464, 590), Vector2(352, 78)), 27)
 	action.pressed.connect(func() -> void:
-		_animate_overlay_exit(detail, action, _show_level_select)
+		_animate_overlay_exit(detail, action, func() -> void:
+			_show_album_detail_level_guidance = true
+			_show_level_select()
+		)
 	)
 	detail.add_child(action)
 	var close_button: Button = _hotspot_button("CloseAlbumEntryDetailButton", Vector2(952, 132), Vector2(88, 88), "关闭")
@@ -2267,6 +2276,62 @@ func _add_backpack_yarn_level_guidance(parent: Control, rect: Rect2) -> void:
 	group.add_child(label)
 
 	var sub_label: Label = _label("BackpackYarnLevelSubLabel", "选关开战", Vector2(146.0, 88.0), Vector2(164.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sub_label.z_index = 2
+	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	group.add_child(sub_label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -2.5, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 1.8, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = guidance_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
+
+
+func _add_album_detail_level_guidance(parent: Control, rect: Rect2) -> void:
+	_remove_named_child(parent, "AlbumDetailLevelGuidance")
+	var guidance_size := Vector2(372, 154)
+	var guidance_position: Vector2 = rect.position + Vector2(-170.0, 176.0)
+	var group: Control = Control.new()
+	group.name = "AlbumDetailLevelGuidance"
+	group.position = guidance_position
+	group.size = guidance_size
+	group.z_index = 9
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.set_meta("image2_album_detail_level_guidance", true)
+	parent.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("AlbumDetailLevelBadge", ALBUM_DETAIL_LEVEL_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	group.add_child(badge)
+
+	var label: Label = _label("AlbumDetailLevelLabel", "图鉴出发", Vector2(112.0, 50.0), Vector2(174.0, 36.0), 27, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.96))
+	label.add_theme_constant_override("outline_size", 4)
+	group.add_child(label)
+
+	var sub_label: Label = _label("AlbumDetailLevelSubLabel", "选择关卡", Vector2(130.0, 90.0), Vector2(136.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sub_label.z_index = 2
 	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))

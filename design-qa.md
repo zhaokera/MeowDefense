@@ -988,3 +988,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_shortage_daily_task_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_shortage_daily_task_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/shop_shortage_daily_task_guidance.png`; GUI capture was used for visual evidence.
 - Passed shop shortage daily-task guidance, shop insufficient fish feedback, overlay action exit animation, daily task overlay, daily task reset, shop product state asset, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 114 tests`.
+
+**Image2 Album Detail Level Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/album_detail_level_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/album_detail_level_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/album_detail_level_guidance_badge.png`, assembled from existing Image2 album badge, orange cat tower, fish reward, and level-select art.
+- Tapping `去关卡` from `AlbumEntryDetailOverlay` now preserves the existing Image2 detail exit animation, marks a one-time level-select hint, and opens the level map.
+- The level map now shows `AlbumDetailLevelGuidance`, a non-blocking Image2 badge with dynamic `图鉴出发` and `选择关卡` copy, while leaving `StartLevel1Button` tappable.
+- Added `/Users/zhaok/cat/tests/run_album_detail_level_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_album_detail_level_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/album_detail_level_guidance.png`; GUI capture was used for visual evidence.
+- Passed album detail level guidance, album entry detail, overlay action exit animation, menu, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 115 tests`.

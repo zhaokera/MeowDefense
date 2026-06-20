@@ -979,6 +979,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived badge shown on daily tasks after tapping go-to-tasks from shop shortage feedback."
     },
     {
+      "id": "album_detail_level_guidance_design_reference",
+      "path": "res://assets/generated/ui/album_detail_level_guidance_design_reference.png",
+      "prompt_summary": "Image2-first full-screen level-select reference showing the one-time choose-level guidance after routing from album detail."
+    },
+    {
+      "id": "album_detail_level_guidance_badge_source",
+      "path": "res://assets/generated/ui/album_detail_level_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 album badge, orange cat tower, fish reward, and level-select art for album-to-level guidance."
+    },
+    {
+      "id": "album_detail_level_guidance_badge",
+      "path": "res://assets/generated/ui/album_detail_level_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after tapping go-to-levels from an album entry detail."
+    },
+    {
       "id": "yarn_trap_field_effect",
       "path": "res://assets/generated/ui/yarn_trap_field_effect.png",
       "prompt_summary": "Image2 transparent battlefield yarn snare effect used when deploying the yarn trap consumable."
