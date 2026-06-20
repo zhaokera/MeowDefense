@@ -1094,6 +1094,21 @@
       "prompt_summary": "Project-bound transparent Image2-derived return-to-level badge shown only after a successful shop energy refill."
     },
     {
+      "id": "shop_yarn_purchase_backpack_guidance_design_reference",
+      "path": "res://assets/generated/ui/shop_yarn_purchase_backpack_guidance_design_reference.png",
+      "prompt_summary": "Image2-first shop purchase reference showing the one-time backpack route guidance after buying a yarn trap."
+    },
+    {
+      "id": "shop_yarn_purchase_backpack_guidance_badge_source",
+      "path": "res://assets/generated/ui/shop_yarn_purchase_backpack_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 yarn, backpack, shop button, and purchase reward art for yarn purchase backpack guidance."
+    },
+    {
+      "id": "shop_yarn_purchase_backpack_guidance_badge",
+      "path": "res://assets/generated/ui/shop_yarn_purchase_backpack_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge and route button shown after buying a yarn trap in the shop."
+    },
+    {
       "id": "shop_insufficient_fish_design_reference",
       "path": "res://assets/generated/ui/shop_insufficient_fish_design_reference.png",
       "prompt_summary": "Image2 full-screen shop insufficient-fish feedback overlay with blank runtime text and action areas."

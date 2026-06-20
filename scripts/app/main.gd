@@ -61,6 +61,7 @@ const SHOP_PRODUCT_BUY_BUTTON_PLATE := preload("res://assets/generated/ui/shop_p
 const SHOP_PRODUCT_INSUFFICIENT_STAMP := preload("res://assets/generated/ui/shop_product_insufficient_fish_stamp.png")
 const SHOP_ENERGY_REFILL_BUTTON_PLATE := preload("res://assets/generated/ui/shop_energy_refill_button_plate.png")
 const SHOP_ENERGY_REFILL_RETURN_BADGE := preload("res://assets/generated/ui/shop_energy_refill_return_badge.png")
+const SHOP_YARN_PURCHASE_BACKPACK_GUIDANCE_BADGE := preload("res://assets/generated/ui/shop_yarn_purchase_backpack_guidance_badge.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
@@ -1799,7 +1800,7 @@ func _add_achievement_claimed_stamp(parent: Control, row_name: String, position:
 	tween.tween_property(stamp, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_text: String, show_energy_return_guidance: bool = false) -> void:
+func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_text: String, show_energy_return_guidance: bool = false, show_yarn_backpack_guidance: bool = false) -> void:
 	_remove_named_child(parent, "ShopPurchaseRewardOverlay")
 	var reward: Control = Control.new()
 	reward.name = "ShopPurchaseRewardOverlay"
@@ -1826,9 +1827,10 @@ func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_t
 	var amount: Label = _label("ShopPurchaseRewardAmount", amount_text, Vector2(520, 450), Vector2(330, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	amount.z_index = 2
 	reward.add_child(amount)
-	var done_text: String = "留在商店" if show_energy_return_guidance else "收好补给"
-	var done_rect := Rect2(Vector2(420, 594), Vector2(220, 78)) if show_energy_return_guidance else Rect2(Vector2(470, 594), Vector2(340, 78))
-	var done_font_size: int = 22 if show_energy_return_guidance else 26
+	var has_route_guidance := show_energy_return_guidance or show_yarn_backpack_guidance
+	var done_text: String = "留在商店" if has_route_guidance else "收好补给"
+	var done_rect := Rect2(Vector2(420, 594), Vector2(220, 78)) if has_route_guidance else Rect2(Vector2(470, 594), Vector2(340, 78))
+	var done_font_size: int = 22 if has_route_guidance else 26
 	var done_button: Button = _transparent_text_button("CloseShopPurchaseRewardButton", done_text, done_rect, done_font_size)
 	done_button.z_index = 3
 	done_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, done_button))
@@ -1840,6 +1842,8 @@ func _show_shop_purchase_reward_overlay(parent: Control, title: String, amount_t
 	reward.add_child(dismiss_button)
 	if show_energy_return_guidance:
 		_add_shop_energy_refill_return_guidance(reward, burst)
+	if show_yarn_backpack_guidance:
+		_add_shop_yarn_purchase_backpack_guidance(reward, burst)
 	_animate_overlay_entry(reward)
 	_pulse_control(burst)
 
@@ -1871,6 +1875,46 @@ func _add_shop_energy_refill_return_guidance(reward: Control, feedback_target: C
 	)
 	_attach_button_feedback(return_button, badge)
 	reward.add_child(return_button)
+	_pulse_control(badge)
+	if feedback_target != null:
+		_pulse_control(feedback_target)
+
+
+func _add_shop_yarn_purchase_backpack_guidance(reward: Control, feedback_target: Control) -> void:
+	var guidance: Control = Control.new()
+	guidance.name = "ShopYarnPurchaseBackpackGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 4
+	guidance.set_meta("image2_shop_yarn_purchase_backpack_guidance", true)
+	reward.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("ShopYarnPurchaseBackpackBadge", SHOP_YARN_PURCHASE_BACKPACK_GUIDANCE_BADGE, Vector2(636, 520), Vector2(430, 160))
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("ShopYarnPurchaseBackpackLabel", "去背包", Vector2(850, 582), Vector2(132, 38), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(label)
+
+	var sub_label: Label = _label("ShopYarnPurchaseBackpackSubLabel", "查看毛线", Vector2(850, 616), Vector2(132, 26), 13, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.z_index = 2
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(sub_label)
+
+	var backpack_button: Button = _hotspot_button("ShopYarnPurchaseBackpackButton", Vector2(768, 568), Vector2(236, 92), "去背包")
+	backpack_button.z_index = 5
+	backpack_button.pressed.connect(func() -> void:
+		_animate_overlay_exit(reward, backpack_button, func() -> void:
+			_show_backpack_overlay(self)
+		)
+	)
+	_attach_button_feedback(backpack_button, badge)
+	reward.add_child(backpack_button)
 	_pulse_control(badge)
 	if feedback_target != null:
 		_pulse_control(feedback_target)
@@ -1933,7 +1977,7 @@ func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vec
 		buy_button.text = "再买 25" if _total_fish >= price else "鱼干不足"
 		buy_button.disabled = _total_fish < price
 		_pulse_control(parent)
-		_show_shop_purchase_reward_overlay(parent, "毛线陷阱", "毛线陷阱 +1")
+		_show_shop_purchase_reward_overlay(parent, "毛线陷阱", "毛线陷阱 +1", false, true)
 	)
 	if state_target != null:
 		_attach_button_feedback(buy_button, state_target)
