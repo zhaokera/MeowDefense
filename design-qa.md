@@ -1042,3 +1042,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_achievement_claim_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_achievement_claim_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/result_achievement_claim_guidance.png`; GUI capture was used for visual evidence.
 - Passed result achievement claim guidance, result screen, result screen exit animation, result next-level unlock feedback, achievement claim, progression persistence, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 120 tests`.
+
+**Image2 Daily Reward Shop Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/daily_reward_shop_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/daily_reward_shop_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/daily_reward_shop_guidance_badge.png`, assembled from the existing Image2 daily reward success reference and shop-return badge art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Claiming the daily reward now shows `DailyRewardShopGuidance`, a non-blocking Image2 badge with dynamic `去商店` copy on the daily reward success overlay.
+- Pressing `DailyRewardShopButton` preserves the shared Image2 reward-overlay exit animation, disables the route button during the transition, then opens `ShopOverlay` with the claimed 20 fish intact.
+- Daily task reward overlays continue to use their own reward paths and do not create the daily reward shop guidance.
+- Added `/Users/zhaok/cat/tests/run_daily_reward_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_reward_shop_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/daily_reward_shop_guidance.png`; GUI capture was used for visual evidence, and the subtitle was removed after visual QA because it collided with the Image2 badge edge.
+- Passed daily reward shop guidance, daily reward reset, reward overlay, reward feedback exit animation, reward claim action exit animation, shop buyable design, shop yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 121 tests`.
