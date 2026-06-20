@@ -929,6 +929,21 @@
       "prompt_summary": "Transparent Image2 trophy-map burst layered over unfinished achievement guidance with pulse and button feedback."
     },
     {
+      "id": "achievement_continue_level_guidance_design_reference",
+      "path": "res://assets/generated/ui/achievement_continue_level_guidance_design_reference.png",
+      "prompt_summary": "Image2-first full-screen level-select reference showing the one-time continue-challenge guidance after leaving achievements."
+    },
+    {
+      "id": "achievement_continue_level_guidance_badge_source",
+      "path": "res://assets/generated/ui/achievement_continue_level_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 achievement plaque and star assets for the continue-challenge level guidance."
+    },
+    {
+      "id": "achievement_continue_level_guidance_badge",
+      "path": "res://assets/generated/ui/achievement_continue_level_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after tapping continue challenge from achievements."
+    },
+    {
       "id": "yarn_trap_item_icon",
       "path": "res://assets/generated/ui/yarn_trap_item_icon.png",
       "prompt_summary": "Image2 transparent yarn trap item icon used by the shop purchase state and inventory flow."

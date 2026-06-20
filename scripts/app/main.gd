@@ -47,6 +47,7 @@ const ACHIEVEMENT_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/achi
 const ACHIEVEMENT_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/achievement_claim_reward_burst.png")
 const ACHIEVEMENT_PROGRESS_DESIGN := preload("res://assets/generated/ui/achievement_progress_guidance_design_reference.png")
 const ACHIEVEMENT_PROGRESS_BURST := preload("res://assets/generated/ui/achievement_progress_guidance_burst.png")
+const ACHIEVEMENT_CONTINUE_LEVEL_BADGE := preload("res://assets/generated/ui/achievement_continue_level_guidance_badge.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_buyable_design_reference.png")
 const SHOP_PURCHASE_FEEDBACK_DESIGN := preload("res://assets/generated/ui/shop_purchase_feedback_design_reference.png")
@@ -128,6 +129,7 @@ var _energy: int = DEFAULT_MAX_ENERGY
 var _energy_refilled_on: String = ""
 var _show_energy_ready_level_guidance: bool = false
 var _show_pause_quit_level_guidance: bool = false
+var _show_achievement_continue_level_guidance: bool = false
 var _hotspot_feedback_index: int = 0
 var _settings_control_feedback_index: int = 0
 
@@ -282,6 +284,10 @@ func _show_level_select_now() -> void:
 		_show_pause_quit_level_guidance = false
 		if _is_level_unlocked(1):
 			_add_pause_quit_level_return_guidance(screen, level_hotspots[0]["rect"] as Rect2)
+	if _show_achievement_continue_level_guidance:
+		_show_achievement_continue_level_guidance = false
+		if _is_level_unlocked(1):
+			_add_achievement_continue_level_guidance(screen, level_hotspots[0]["rect"] as Rect2)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(330, 580), Vector2(118, 120), "主城")
 	bottom_home.pressed.connect(_show_main_menu)
@@ -1230,7 +1236,10 @@ func _show_achievements_overlay(parent: Node) -> void:
 	for achievement: Dictionary in ACHIEVEMENTS:
 		_achievement_row(content, achievement)
 	var action: Button = _transparent_text_button("AchievementsActionButton", "继续挑战", Rect2(Vector2(468, 575), Vector2(344, 78)), 27)
-	action.pressed.connect(_show_level_select)
+	action.pressed.connect(func() -> void:
+		_show_achievement_continue_level_guidance = true
+		_animate_overlay_exit(content.get_parent() as Control, action, _show_level_select)
+	)
 	content.add_child(action)
 	var close_button: Button = _hotspot_button("CloseAchievementsButton", Vector2(970, 122), Vector2(118, 112), "关闭")
 	close_button.pressed.connect(func() -> void: _animate_overlay_exit(content.get_parent() as Control, close_button))
@@ -2074,6 +2083,62 @@ func _add_pause_quit_level_return_guidance(parent: Control, rect: Rect2) -> void
 	group.add_child(label)
 
 	var sub_label: Label = _label("PauseQuitLevelReturnSubLabel", "回到关卡地图", Vector2(142.0, 88.0), Vector2(176.0, 28.0), 16, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sub_label.z_index = 2
+	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	group.add_child(sub_label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -2.5, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 1.8, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = guidance_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
+
+
+func _add_achievement_continue_level_guidance(parent: Control, rect: Rect2) -> void:
+	_remove_named_child(parent, "AchievementContinueLevelGuidance")
+	var guidance_size := Vector2(352, 146)
+	var guidance_position: Vector2 = rect.position + Vector2(-148.0, 176.0)
+	var group: Control = Control.new()
+	group.name = "AchievementContinueLevelGuidance"
+	group.position = guidance_position
+	group.size = guidance_size
+	group.z_index = 9
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.set_meta("image2_achievement_continue_level_guidance", true)
+	parent.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("AchievementContinueLevelBadge", ACHIEVEMENT_CONTINUE_LEVEL_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	group.add_child(badge)
+
+	var label: Label = _label("AchievementContinueLevelLabel", "继续挑战", Vector2(120.0, 48.0), Vector2(192.0, 36.0), 28, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.96))
+	label.add_theme_constant_override("outline_size", 4)
+	group.add_child(label)
+
+	var sub_label: Label = _label("AchievementContinueLevelSubLabel", "选择关卡", Vector2(140.0, 86.0), Vector2(154.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sub_label.z_index = 2
 	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))

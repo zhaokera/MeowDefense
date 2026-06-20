@@ -62,7 +62,8 @@ func _run() -> void:
 	if return_button != null:
 		_assert_true(not return_button.disabled, "return-to-level action should be tappable")
 		return_button.emit_signal("pressed")
-		await _wait_frames(45)
+		await _wait_until_missing(instance, "ShopPurchaseRewardOverlay")
+		await _wait_until_exists(instance, "LevelSelectScreen")
 
 	_assert_missing(instance, "ShopPurchaseRewardOverlay", "return action should close the purchase reward overlay")
 	_assert_missing(instance, "ShopOverlay", "return action should leave the shop overlay")
@@ -181,6 +182,20 @@ func _find_by_name(node: Node, node_name: String) -> Node:
 
 func _wait_frames(count: int) -> void:
 	for index: int in range(count):
+		await process_frame
+
+
+func _wait_until_exists(root_node: Node, node_name: String, max_frames: int = 240) -> void:
+	for _frame: int in range(max_frames):
+		if _find_by_name(root_node, node_name) != null:
+			return
+		await process_frame
+
+
+func _wait_until_missing(root_node: Node, node_name: String, max_frames: int = 240) -> void:
+	for _frame: int in range(max_frames):
+		if _find_by_name(root_node, node_name) == null:
+			return
 		await process_frame
 
 

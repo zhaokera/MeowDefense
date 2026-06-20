@@ -964,3 +964,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_battle_wave_preview_close_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_battle_wave_preview_close_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/battle_wave_preview_close_feedback.png`; GUI capture was used for visual evidence.
 - Passed battle wave preview close feedback, battle wave preview detail, battle wave rush, battle speed/wave, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 111 tests`.
+
+**Image2 Achievement Continue Level Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/achievement_continue_level_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/achievement_continue_level_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/achievement_continue_level_guidance_badge.png`, assembled from existing Image2 achievement plaque and star assets.
+- Pressing `AchievementsActionButton` now marks a one-time continue-challenge hint, runs `AchievementsOverlay` through the shared Image2 overlay exit animation, then opens the level-select screen.
+- The level map now shows `AchievementContinueLevelGuidance`, a non-blocking Image2 badge with dynamic `继续挑战` and `选择关卡` copy, while leaving `StartLevel1Button` tappable.
+- Added `/Users/zhaok/cat/tests/run_achievement_continue_level_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_achievement_continue_level_guidance.gd`; stabilized `/Users/zhaok/cat/tests/run_shop_energy_refill_return_tests.gd` with condition-based waits for chained Image2 transitions.
+- Captured `/Users/zhaok/cat/artifacts/achievement_continue_level_guidance.png`; GUI capture was used for visual evidence.
+- Passed achievement continue level guidance, overlay action exit animation, achievement progress guidance, achievement claim, menu, playthrough, the shop-return suffix regression, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 112 tests`.
