@@ -972,3 +972,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_achievement_continue_level_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_achievement_continue_level_guidance.gd`; stabilized `/Users/zhaok/cat/tests/run_shop_energy_refill_return_tests.gd` with condition-based waits for chained Image2 transitions.
 - Captured `/Users/zhaok/cat/artifacts/achievement_continue_level_guidance.png`; GUI capture was used for visual evidence.
 - Passed achievement continue level guidance, overlay action exit animation, achievement progress guidance, achievement claim, menu, playthrough, the shop-return suffix regression, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 112 tests`.
+
+**Image2 Backpack Yarn Level Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/backpack_yarn_level_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/backpack_yarn_level_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/backpack_yarn_level_guidance_badge.png`, assembled from existing Image2 yarn item and achievement plaque art.
+- Tapping `去战斗` from the backpack yarn trap detail now preserves the existing Image2 detail exit animation, marks a one-time level-select hint when yarn traps are available, and routes to the level map.
+- The level map now shows `BackpackYarnLevelGuidance`, a non-blocking Image2 badge with dynamic `毛线就绪` and `选关开战` copy, while leaving `StartLevel1Button` tappable and preserving yarn inventory until battle use.
+- Added `/Users/zhaok/cat/tests/run_backpack_yarn_level_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_backpack_yarn_level_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/backpack_yarn_level_guidance.png`; GUI capture was used for visual evidence.
+- Passed backpack yarn level guidance, backpack item detail, overlay action exit animation, battle yarn inventory flow, battle yarn trap, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 113 tests`.

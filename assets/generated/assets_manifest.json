@@ -949,6 +949,21 @@
       "prompt_summary": "Image2 transparent yarn trap item icon used by the shop purchase state and inventory flow."
     },
     {
+      "id": "backpack_yarn_level_guidance_design_reference",
+      "path": "res://assets/generated/ui/backpack_yarn_level_guidance_design_reference.png",
+      "prompt_summary": "Image2-first full-screen level-select reference showing the backpack yarn-trap battle guidance."
+    },
+    {
+      "id": "backpack_yarn_level_guidance_badge_source",
+      "path": "res://assets/generated/ui/backpack_yarn_level_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 yarn item and achievement plaque art for backpack-to-battle guidance."
+    },
+    {
+      "id": "backpack_yarn_level_guidance_badge",
+      "path": "res://assets/generated/ui/backpack_yarn_level_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after routing from the backpack yarn trap detail."
+    },
+    {
       "id": "yarn_trap_field_effect",
       "path": "res://assets/generated/ui/yarn_trap_field_effect.png",
       "prompt_summary": "Image2 transparent battlefield yarn snare effect used when deploying the yarn trap consumable."
