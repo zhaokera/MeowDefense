@@ -49,6 +49,7 @@ const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievem
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
 const ACHIEVEMENT_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/achievement_claim_reward_design_reference.png")
 const ACHIEVEMENT_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/achievement_claim_reward_burst.png")
+const ACHIEVEMENT_CLAIM_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/achievement_claim_shop_guidance_badge.png")
 const ACHIEVEMENT_PROGRESS_DESIGN := preload("res://assets/generated/ui/achievement_progress_guidance_design_reference.png")
 const ACHIEVEMENT_PROGRESS_BURST := preload("res://assets/generated/ui/achievement_progress_guidance_burst.png")
 const ACHIEVEMENT_CONTINUE_LEVEL_BADGE := preload("res://assets/generated/ui/achievement_continue_level_guidance_badge.png")
@@ -1771,7 +1772,7 @@ func _show_achievement_claim_reward_overlay(parent: Control, achievement: Dictio
 	var amount: Label = _label("AchievementClaimRewardAmount", "小鱼干 +%d    徽章 +%d" % [reward_fish, reward_paws], Vector2(510, 450), Vector2(350, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	amount.z_index = 2
 	reward.add_child(amount)
-	var done_button: Button = _transparent_text_button("CloseAchievementClaimRewardButton", "收好奖励", Rect2(Vector2(470, 594), Vector2(340, 78)), 26)
+	var done_button: Button = _transparent_text_button("CloseAchievementClaimRewardButton", "留在成就", Rect2(Vector2(418, 594), Vector2(220, 78)), 23)
 	done_button.z_index = 3
 	done_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, done_button))
 	_attach_button_feedback(done_button, burst)
@@ -1780,8 +1781,49 @@ func _show_achievement_claim_reward_overlay(parent: Control, achievement: Dictio
 	dismiss_button.z_index = 3
 	dismiss_button.pressed.connect(func() -> void: _animate_overlay_exit(reward, dismiss_button))
 	reward.add_child(dismiss_button)
+	_add_achievement_claim_shop_guidance(reward, burst)
 	_animate_overlay_entry(reward)
 	_pulse_control(burst)
+
+
+func _add_achievement_claim_shop_guidance(reward: Control, feedback_target: Control) -> void:
+	var guidance: Control = Control.new()
+	guidance.name = "AchievementClaimShopGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 4
+	guidance.set_meta("image2_achievement_claim_shop_guidance", true)
+	reward.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("AchievementClaimShopBadge", ACHIEVEMENT_CLAIM_SHOP_GUIDANCE_BADGE, Vector2(646, 514), Vector2(430, 160))
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("AchievementClaimShopLabel", "去商店", Vector2(926, 576), Vector2(104, 38), 23, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(label)
+
+	var sub_label: Label = _label("AchievementClaimShopSubLabel", "购买补给", Vector2(926, 610), Vector2(104, 26), 12, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.z_index = 2
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(sub_label)
+
+	var shop_button: Button = _hotspot_button("AchievementClaimShopButton", Vector2(842, 558), Vector2(226, 94), "去商店")
+	shop_button.z_index = 5
+	shop_button.pressed.connect(func() -> void:
+		_animate_overlay_exit(reward, shop_button, func() -> void:
+			_show_shop_overlay(self)
+		)
+	)
+	_attach_button_feedback(shop_button, badge)
+	reward.add_child(shop_button)
+	_pulse_control(badge)
+	if feedback_target != null:
+		_pulse_control(feedback_target)
 
 
 func _show_achievement_progress_guidance(parent: Control, achievement: Dictionary, progress_value: int, target: int) -> void:

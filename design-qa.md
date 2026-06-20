@@ -1024,3 +1024,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_shop_paw_purchase_achievement_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_shop_paw_purchase_achievement_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/shop_paw_purchase_achievement_guidance.png`; GUI capture was used for visual evidence.
 - Passed shop paw purchase achievement guidance, shop paw bundle, shop purchase feedback, reward shop feedback exit animation, achievement claim, shop yarn purchase backpack guidance, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 118 tests`.
+
+**Image2 Achievement Claim Shop Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/achievement_claim_shop_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/achievement_claim_shop_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/achievement_claim_shop_guidance_badge.png`, assembled from existing Image2 achievement reward, shop-paw guidance, and cat-shop UI pieces after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Claiming an achievement reward now shows `AchievementClaimShopGuidance`, a non-blocking Image2 badge with dynamic `去商店` and `购买补给` copy on the achievement reward overlay.
+- Pressing `AchievementClaimShopButton` preserves the shared Image2 reward-overlay exit animation, disables the route button during the transition, then opens `ShopOverlay` with the claimed fish and paw token intact.
+- Normal shop purchase reward overlays do not create the achievement-claim shop guidance.
+- Added `/Users/zhaok/cat/tests/run_achievement_claim_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_achievement_claim_shop_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/achievement_claim_shop_guidance.png`; GUI capture was used for visual evidence.
+- Passed achievement claim shop guidance, achievement claim, reward shop feedback exit animation, shop buyable design, shop yarn trap, shop paw bundle, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 119 tests`.

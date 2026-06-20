@@ -914,6 +914,21 @@
       "prompt_summary": "Transparent Image2 achievement reward burst layered over the reward overlay with pop and pulse motion."
     },
     {
+      "id": "achievement_claim_shop_guidance_design_reference",
+      "path": "res://assets/generated/ui/achievement_claim_shop_guidance_design_reference.png",
+      "prompt_summary": "Image2-first full-screen achievement claim reward reference showing a lower-right shop guidance badge for spending claimed fish and paw rewards."
+    },
+    {
+      "id": "achievement_claim_shop_guidance_badge_source",
+      "path": "res://assets/generated/ui/achievement_claim_shop_guidance_badge_source.png",
+      "prompt_summary": "Image2-style chroma-key source art for the achievement claim shop guidance badge, composed from existing generated MeowDefense UI assets after the Image2 call did not expose a project-copyable file."
+    },
+    {
+      "id": "achievement_claim_shop_guidance_badge",
+      "path": "res://assets/generated/ui/achievement_claim_shop_guidance_badge.png",
+      "prompt_summary": "Transparent Image2-style shop guidance badge layered over the achievement claim reward overlay with runtime labels and press feedback."
+    },
+    {
       "id": "achievement_progress_guidance_design_reference",
       "path": "res://assets/generated/ui/achievement_progress_guidance_design_reference.png",
       "prompt_summary": "Image2 full-screen unfinished achievement progress guidance overlay with blank runtime title, requirement, copy, close, and action areas."
