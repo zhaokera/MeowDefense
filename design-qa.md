@@ -1097,3 +1097,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_energy_refill_target_level_tests.gd` and `/Users/zhaok/cat/tests/capture_result_energy_refill_target_level.gd`.
 - Captured `/Users/zhaok/cat/artifacts/result_energy_refill_target_level.png`; GUI capture was used for visual evidence.
 - Passed result energy refill target level, result energy refill guidance, shop energy refill return, level-select energy ready guidance, energy empty refill guidance, shop energy refill, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 126 tests`.
+
+**Image2 Energy Empty Context Reset**
+- Closing `EnergyEmptyOverlay` now clears the pending energy-ready target level, so a later direct shop energy refill does not leak a dismissed level attempt into the return guidance.
+- Returning from an energy refill while already on the Image2 level-select screen now closes `ShopOverlay` and places the existing energy-ready badge on the current screen, avoiding a same-name level-select rebuild from inside nested overlay callbacks.
+- The contextual result/empty-energy refill route still preserves its requested target level when the player actually taps `去补体力`.
+- Added `/Users/zhaok/cat/tests/run_energy_empty_refill_context_reset_tests.gd` and `/Users/zhaok/cat/tests/capture_energy_empty_refill_context_reset.gd`.
+- Captured `/Users/zhaok/cat/artifacts/energy_empty_refill_context_reset.png`; GUI capture was used for visual evidence.
+- Passed energy empty refill context reset, energy empty refill guidance, guidance overlay exit animation, shop energy refill return, level-select energy ready guidance, result energy refill target level, result energy refill guidance, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 127 tests`.

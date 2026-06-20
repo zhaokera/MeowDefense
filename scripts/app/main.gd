@@ -268,13 +268,7 @@ func _show_level_select_now() -> void:
 	settings_button.pressed.connect(func() -> void: _show_settings_overlay(screen))
 	screen.add_child(settings_button)
 
-	var level_hotspots: Array[Dictionary] = [
-		{"button": "StartLevel1Button", "rect": Rect2(Vector2(178, 166), Vector2(210, 176)), "level": LEVELS[0]},
-		{"button": "StartLevel2Button", "rect": Rect2(Vector2(526, 166), Vector2(210, 176)), "level": LEVELS[1]},
-		{"button": "StartLevel3Button", "rect": Rect2(Vector2(858, 176), Vector2(212, 178)), "level": LEVELS[2]},
-		{"button": "StartLevel4Button", "rect": Rect2(Vector2(368, 368), Vector2(210, 180)), "level": LEVELS[3]},
-		{"button": "StartLevel5Button", "rect": Rect2(Vector2(714, 376), Vector2(222, 178)), "level": LEVELS[4]}
-	]
+	var level_hotspots: Array[Dictionary] = _level_select_hotspots()
 	for hotspot: Dictionary in level_hotspots:
 		var rect: Rect2 = hotspot["rect"] as Rect2
 		var level_info: Dictionary = (hotspot["level"] as Dictionary).duplicate(true)
@@ -295,19 +289,7 @@ func _show_level_select_now() -> void:
 			locked_info_button.pressed.connect(func() -> void: _show_locked_level_feedback(screen, level_info))
 			screen.add_child(locked_info_button)
 	if _show_energy_ready_level_guidance:
-		_show_energy_ready_level_guidance = false
-		var ready_level_id: int = max(1, min(LEVELS.size(), _energy_ready_guidance_level_id))
-		_energy_ready_guidance_level_id = 1
-		var ready_rect := Rect2()
-		var found_ready_level := false
-		for hotspot: Dictionary in level_hotspots:
-			var hotspot_level: Dictionary = hotspot["level"] as Dictionary
-			if int(hotspot_level.get("id", 1)) == ready_level_id:
-				ready_rect = hotspot["rect"] as Rect2
-				found_ready_level = true
-				break
-		if _energy > 0 and found_ready_level and _is_level_unlocked(ready_level_id):
-			_add_level_energy_ready_guidance(screen, ready_level_id, ready_rect)
+		_show_pending_energy_ready_guidance_on_level_select(screen)
 	if _show_pause_quit_level_guidance:
 		_show_pause_quit_level_guidance = false
 		if _is_level_unlocked(1):
@@ -341,6 +323,32 @@ func _show_level_select_now() -> void:
 
 func _start_level_one() -> void:
 	_start_level(LEVELS[0])
+
+
+func _level_select_hotspots() -> Array[Dictionary]:
+	return [
+		{"button": "StartLevel1Button", "rect": Rect2(Vector2(178, 166), Vector2(210, 176)), "level": LEVELS[0]},
+		{"button": "StartLevel2Button", "rect": Rect2(Vector2(526, 166), Vector2(210, 176)), "level": LEVELS[1]},
+		{"button": "StartLevel3Button", "rect": Rect2(Vector2(858, 176), Vector2(212, 178)), "level": LEVELS[2]},
+		{"button": "StartLevel4Button", "rect": Rect2(Vector2(368, 368), Vector2(210, 180)), "level": LEVELS[3]},
+		{"button": "StartLevel5Button", "rect": Rect2(Vector2(714, 376), Vector2(222, 178)), "level": LEVELS[4]}
+	]
+
+
+func _show_pending_energy_ready_guidance_on_level_select(screen: Control) -> void:
+	_show_energy_ready_level_guidance = false
+	var ready_level_id: int = max(1, min(LEVELS.size(), _energy_ready_guidance_level_id))
+	_energy_ready_guidance_level_id = 1
+	var ready_rect := Rect2()
+	var found_ready_level := false
+	for hotspot: Dictionary in _level_select_hotspots():
+		var hotspot_level: Dictionary = hotspot["level"] as Dictionary
+		if int(hotspot_level.get("id", 1)) == ready_level_id:
+			ready_rect = hotspot["rect"] as Rect2
+			found_ready_level = true
+			break
+	if _energy > 0 and found_ready_level and _is_level_unlocked(ready_level_id):
+		_add_level_energy_ready_guidance(screen, ready_level_id, ready_rect)
 
 
 func _start_level(level_info: Dictionary) -> void:
@@ -1204,7 +1212,10 @@ func _show_energy_empty_overlay(parent: Node) -> void:
 	overlay.add_child(_label("EnergyEmptyStatus", "当前体力 %s" % _energy_text(), Vector2(482, 446), Vector2(316, 42), 24, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	_add_energy_empty_refill_guidance(overlay, parent)
 	var close_button: Button = _transparent_text_button("CloseEnergyEmptyButton", "X", Rect2(Vector2(1036, 108), Vector2(76, 76)), 28)
-	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
+	close_button.pressed.connect(func() -> void:
+		_energy_ready_guidance_level_id = 1
+		_animate_overlay_exit(overlay, close_button)
+	)
 	overlay.add_child(close_button)
 	_animate_overlay_entry(overlay)
 
@@ -2277,13 +2288,30 @@ func _add_shop_energy_refill_return_guidance(reward: Control, feedback_target: C
 	return_button.z_index = 5
 	return_button.pressed.connect(func() -> void:
 		_show_energy_ready_level_guidance = true
-		_animate_overlay_exit(reward, return_button, _show_level_select)
+		_animate_overlay_exit(reward, return_button, func() -> void:
+			call_deferred("_return_to_level_select_after_energy_refill")
+		)
 	)
 	_attach_button_feedback(return_button, badge)
 	reward.add_child(return_button)
 	_pulse_control(badge)
 	if feedback_target != null:
 		_pulse_control(feedback_target)
+
+
+func _return_to_level_select_after_energy_refill() -> void:
+	if _current is Control and _current.name == "LevelSelectScreen":
+		var screen: Control = _current as Control
+		var shop_overlay: Control = screen.find_child("ShopOverlay", true, false) as Control
+		if shop_overlay != null:
+			_animate_overlay_exit(shop_overlay, null, func() -> void:
+				if is_instance_valid(screen):
+					_show_pending_energy_ready_guidance_on_level_select(screen)
+			)
+			return
+		_show_pending_energy_ready_guidance_on_level_select(screen)
+		return
+	_show_level_select()
 
 
 func _add_shop_starter_yarn_guidance(reward: Control, feedback_target: Control) -> void:
