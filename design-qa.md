@@ -1089,3 +1089,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_result_energy_refill_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_result_energy_refill_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/result_energy_refill_guidance.png`; GUI capture was used for visual evidence.
 - Passed result energy refill guidance, result screen, result reward shop guidance, energy empty refill guidance, result screen exit animation, shop energy refill, shop energy refill return, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 125 tests`.
+
+**Image2 Result Energy Refill Target Level**
+- Result-screen empty-energy routes now remember the actual requested next level before opening the shop, instead of falling back to a generic level-one return target.
+- After purchasing energy from that result route, `ShopEnergyRefillReturnButton` opens the Image2 level-select screen and places the existing `LevelSelectEnergyReadyBadge` on the requested unlocked level, such as `Level2EnergyReadyGuidance` after clearing level one.
+- Direct shop energy refills still use the original level-one ready guidance, so the new target behavior is contextual and does not disturb normal shop entry.
+- Added `/Users/zhaok/cat/tests/run_result_energy_refill_target_level_tests.gd` and `/Users/zhaok/cat/tests/capture_result_energy_refill_target_level.gd`.
+- Captured `/Users/zhaok/cat/artifacts/result_energy_refill_target_level.png`; GUI capture was used for visual evidence.
+- Passed result energy refill target level, result energy refill guidance, shop energy refill return, level-select energy ready guidance, energy empty refill guidance, shop energy refill, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 126 tests`.

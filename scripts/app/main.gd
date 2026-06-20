@@ -142,6 +142,7 @@ var _max_energy: int = DEFAULT_MAX_ENERGY
 var _energy: int = DEFAULT_MAX_ENERGY
 var _energy_refilled_on: String = ""
 var _show_energy_ready_level_guidance: bool = false
+var _energy_ready_guidance_level_id: int = 1
 var _show_pause_quit_level_guidance: bool = false
 var _show_achievement_continue_level_guidance: bool = false
 var _show_backpack_yarn_level_guidance: bool = false
@@ -295,8 +296,18 @@ func _show_level_select_now() -> void:
 			screen.add_child(locked_info_button)
 	if _show_energy_ready_level_guidance:
 		_show_energy_ready_level_guidance = false
-		if _energy > 0 and _is_level_unlocked(1):
-			_add_level_energy_ready_guidance(screen, 1, level_hotspots[0]["rect"] as Rect2)
+		var ready_level_id: int = max(1, min(LEVELS.size(), _energy_ready_guidance_level_id))
+		_energy_ready_guidance_level_id = 1
+		var ready_rect := Rect2()
+		var found_ready_level := false
+		for hotspot: Dictionary in level_hotspots:
+			var hotspot_level: Dictionary = hotspot["level"] as Dictionary
+			if int(hotspot_level.get("id", 1)) == ready_level_id:
+				ready_rect = hotspot["rect"] as Rect2
+				found_ready_level = true
+				break
+		if _energy > 0 and found_ready_level and _is_level_unlocked(ready_level_id):
+			_add_level_energy_ready_guidance(screen, ready_level_id, ready_rect)
 	if _show_pause_quit_level_guidance:
 		_show_pause_quit_level_guidance = false
 		if _is_level_unlocked(1):
@@ -342,6 +353,7 @@ func _start_level(level_info: Dictionary) -> void:
 		return
 	_sync_energy_for_today()
 	if _energy <= 0:
+		_energy_ready_guidance_level_id = requested_level_id
 		if _current != null:
 			_show_energy_empty_overlay(_current)
 		return
@@ -502,6 +514,7 @@ func _start_level_from_result(screen: Control, trigger_button: Button, level_inf
 		_start_level(level_info)
 		return
 	if _energy <= 0:
+		_energy_ready_guidance_level_id = requested_level_id
 		_show_result_energy_refill_guidance(screen, trigger_button)
 		return
 	_animate_result_screen_exit(screen, trigger_button, func() -> void:
