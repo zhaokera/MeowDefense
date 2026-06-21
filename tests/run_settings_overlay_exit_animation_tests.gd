@@ -35,6 +35,9 @@ func _run() -> void:
 
 	var overlay: Control = _find_by_name(instance, "SettingsOverlay") as Control
 	var close_button: Button = _find_by_name(instance, "CloseSettingsButton") as Button
+	var music_toggle: CheckButton = _find_by_name(instance, "MusicToggle") as CheckButton
+	var effects_toggle: CheckButton = _find_by_name(instance, "EffectsToggle") as CheckButton
+	var volume_slider: HSlider = _find_by_name(instance, "VolumeSlider") as HSlider
 	if overlay == null:
 		_failures.append("settings overlay should exist before closing")
 	elif close_button == null:
@@ -46,6 +49,18 @@ func _run() -> void:
 		_assert_true(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "settings overlay should stop catching input while exiting")
 		_assert_true(overlay.modulate.a < 1.0, "settings overlay should start fading out immediately during exit animation")
 		_assert_true(close_button.disabled, "settings close button should disable during exit animation")
+		if music_toggle == null:
+			_failures.append("settings music toggle should exist before exit")
+		else:
+			_assert_true(music_toggle.disabled, "settings music toggle should disable during exit animation")
+		if effects_toggle == null:
+			_failures.append("settings effects toggle should exist before exit")
+		else:
+			_assert_true(effects_toggle.disabled, "settings effects toggle should disable during exit animation")
+		if volume_slider == null:
+			_failures.append("settings volume slider should exist before exit")
+		else:
+			_assert_true(volume_slider.mouse_filter == Control.MOUSE_FILTER_IGNORE, "settings volume slider should ignore input during exit animation")
 		for _frame: int in range(16):
 			await process_frame
 		_assert_true(_find_by_name(instance, "SettingsOverlay") == null, "settings overlay should be removed after exit animation")

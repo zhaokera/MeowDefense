@@ -4006,8 +4006,10 @@ func _animate_result_screen_exit(screen: Control, trigger_button: Button = null,
 
 func _disable_buttons_under(node: Node) -> void:
 	for child: Node in node.get_children():
-		if child is Button:
-			(child as Button).disabled = true
+		if child is BaseButton:
+			(child as BaseButton).disabled = true
+		if child is Control:
+			(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_disable_buttons_under(child)
 
 

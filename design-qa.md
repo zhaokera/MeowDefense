@@ -1302,3 +1302,11 @@ final result: passed
 - No new screenshot was needed because the change protects the existing Image2 HUD overlay transition without changing visible art.
 - Targeted verification passed: `run_battle_overlay_exit_animation_tests.gd`, `run_pause_menu_action_exit_animation_tests.gd`, `run_pause_menu_tests.gd`, `run_pause_resume_feedback_tests.gd`, `run_pause_restart_feedback_tests.gd`, `run_pause_settings_control_feedback_tests.gd`, `run_pause_settings_persistence_tests.gd`, `run_battle_wave_preview_close_feedback_tests.gd`, `run_battle_wave_preview_detail_tests.gd`, `run_tower_action_tests.gd`, `run_tower_action_cancel_feedback_tests.gd`, and `run_tower_sell_action_exit_animation_tests.gd`.
 - Full regression passed after the battle HUD overlay input lock: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.
+
+**Settings Overlay Exit Control Lock**
+- The shared main-app Image2 exit lock now disables every `BaseButton` and makes child `Control` nodes ignore pointer input during screen, overlay, and result exit animations.
+- This specifically fixes the settings overlay `VolumeSlider`, which could still receive pointer input while the Image2 settings panel was fading and sliding out.
+- Expanded `/Users/zhaok/cat/tests/run_settings_overlay_exit_animation_tests.gd` to assert `MusicToggle`, `EffectsToggle`, and `VolumeSlider` are locked during exit; the test was verified red for the slider input leak and green after the shared lock update.
+- No new screenshot was needed because the change only protects existing Image2 exit transitions without changing rendered art.
+- Targeted verification passed: `run_settings_overlay_exit_animation_tests.gd`, `run_settings_control_feedback_tests.gd`, `run_settings_saved_feedback_tests.gd`, `run_overlay_action_exit_animation_tests.gd`, `run_detail_overlay_exit_animation_tests.gd`, `run_reward_overlay_exit_animation_tests.gd`, `run_reward_claim_action_exit_animation_tests.gd`, `run_image2_screen_exit_animation_tests.gd`, `run_result_screen_exit_animation_tests.gd`, `run_result_screen_entry_animation_tests.gd`, `run_result_screen_tests.gd`, and `run_battle_overlay_exit_animation_tests.gd`.
+- Full regression passed after the settings overlay control lock: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.
