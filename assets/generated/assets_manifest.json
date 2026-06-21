@@ -834,6 +834,21 @@
       "prompt_summary": "Transparent Image2 daily task claim reward burst layered over the claim feedback overlay."
     },
     {
+      "id": "daily_task_progress_guidance_design_reference",
+      "path": "res://assets/generated/ui/daily_task_progress_guidance_design_reference.png",
+      "prompt_summary": "Image2-derived full-screen daily task progress guidance design with blank runtime title, requirement, progress, and action areas."
+    },
+    {
+      "id": "daily_task_progress_guidance_burst_source",
+      "path": "res://assets/generated/ui/daily_task_progress_guidance_burst_source.png",
+      "prompt_summary": "Image2 chroma-key source art reused for the daily task unfinished-progress guidance burst."
+    },
+    {
+      "id": "daily_task_progress_guidance_burst",
+      "path": "res://assets/generated/ui/daily_task_progress_guidance_burst.png",
+      "prompt_summary": "Transparent Image2-derived daily task progress burst layered over the unfinished-task guidance overlay."
+    },
+    {
       "id": "daily_task_state_design_reference",
       "path": "res://assets/generated/ui/daily_task_state_design_reference.png",
       "prompt_summary": "Image2 full-screen daily task state reference showing ready-to-claim, unfinished progress, and claimed row treatments with blank runtime text areas."
@@ -1562,6 +1577,21 @@
       "id": "achievement_progress_level_guidance_badge",
       "path": "res://assets/generated/ui/achievement_progress_level_guidance_badge.png",
       "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after routing from unfinished achievement progress."
+    },
+    {
+      "id": "daily_task_progress_level_guidance_design_reference",
+      "path": "res://assets/generated/ui/daily_task_progress_level_guidance_design_reference.png",
+      "prompt_summary": "Project-bound Image2-derived level-select reference showing a non-blocking daily-task progress badge near the first playable level."
+    },
+    {
+      "id": "daily_task_progress_level_guidance_badge_source",
+      "path": "res://assets/generated/ui/daily_task_progress_level_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 daily task, star, tap-spark, and level-select art for unfinished daily task level guidance."
+    },
+    {
+      "id": "daily_task_progress_level_guidance_badge",
+      "path": "res://assets/generated/ui/daily_task_progress_level_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after routing from unfinished daily task progress."
     }
   ]
 }

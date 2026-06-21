@@ -36,11 +36,14 @@ const DAILY_REWARD_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/dai
 const DAILY_TASK_OVERLAY_DESIGN := preload("res://assets/generated/ui/daily_task_overlay_state_slots_design_reference.png")
 const DAILY_TASK_CLAIM_REWARD_DESIGN := preload("res://assets/generated/ui/daily_task_claim_reward_design_reference.png")
 const DAILY_TASK_CLAIM_REWARD_BURST := preload("res://assets/generated/ui/daily_task_claim_reward_burst.png")
+const DAILY_TASK_PROGRESS_GUIDANCE_DESIGN := preload("res://assets/generated/ui/daily_task_progress_guidance_design_reference.png")
+const DAILY_TASK_PROGRESS_GUIDANCE_BURST := preload("res://assets/generated/ui/daily_task_progress_guidance_burst.png")
 const DAILY_TASK_CLAIM_BUTTON_PLATE := preload("res://assets/generated/ui/daily_task_claim_button_plate.png")
 const DAILY_TASK_CLAIMED_STAMP := preload("res://assets/generated/ui/daily_task_claimed_stamp.png")
 const DAILY_TASK_PROGRESS_CHIP := preload("res://assets/generated/ui/daily_task_progress_chip.png")
 const SHOP_SHORTAGE_DAILY_TASK_GUIDANCE_BADGE := preload("res://assets/generated/ui/shop_shortage_daily_task_guidance_badge.png")
 const DAILY_TASK_SHOP_RETURN_GUIDANCE_BADGE := preload("res://assets/generated/ui/daily_task_shop_return_guidance_badge.png")
+const DAILY_TASK_PROGRESS_LEVEL_GUIDANCE_BADGE := preload("res://assets/generated/ui/daily_task_progress_level_guidance_badge.png")
 const ENERGY_EMPTY_DESIGN := preload("res://assets/generated/ui/energy_empty_overlay_design_reference.png")
 const ENERGY_EMPTY_REFILL_GUIDANCE_BADGE := preload("res://assets/generated/ui/energy_empty_refill_guidance_badge.png")
 const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_overlay_design_reference.png")
@@ -148,6 +151,7 @@ var _energy_ready_guidance_level_id: int = 1
 var _show_pause_quit_level_guidance: bool = false
 var _show_achievement_continue_level_guidance: bool = false
 var _show_achievement_progress_level_guidance: bool = false
+var _show_daily_task_progress_level_guidance: bool = false
 var _show_backpack_yarn_level_guidance: bool = false
 var _show_shop_shortage_daily_task_guidance: bool = false
 var _shop_shortage_return_target: String = ""
@@ -306,6 +310,10 @@ func _show_level_select_now() -> void:
 		_show_achievement_progress_level_guidance = false
 		if _is_level_unlocked(1):
 			_add_achievement_progress_level_guidance(screen, level_hotspots[0]["rect"] as Rect2)
+	if _show_daily_task_progress_level_guidance:
+		_show_daily_task_progress_level_guidance = false
+		if _is_level_unlocked(1):
+			_add_daily_task_progress_level_guidance(screen, level_hotspots[0]["rect"] as Rect2)
 	if _show_backpack_yarn_level_guidance:
 		_show_backpack_yarn_level_guidance = false
 		if _is_level_unlocked(1):
@@ -1455,6 +1463,68 @@ func _daily_task_row(parent: Control, task: Dictionary) -> void:
 		_claim_daily_task(task, parent, claim_label, claim_button)
 	)
 	parent.add_child(claim_button)
+	if not claimed and not ready:
+		var progress_button: Button = _hotspot_button("%sProgressButton" % row_name, position + Vector2(304, 10), Vector2(290, 74), "查看进度")
+		progress_button.z_index = 4
+		progress_button.pressed.connect(func() -> void:
+			_show_daily_task_progress_guidance(parent, task, progress_value, target)
+		)
+		if state_target != null:
+			_attach_button_feedback(progress_button, state_target)
+		parent.add_child(progress_button)
+
+
+func _show_daily_task_progress_guidance(parent: Control, task: Dictionary, progress_value: int, target: int) -> void:
+	_remove_named_child(parent, "DailyTaskProgressGuidanceOverlay")
+	var guidance: Control = Control.new()
+	guidance.name = "DailyTaskProgressGuidanceOverlay"
+	guidance.size = VIEW_SIZE
+	guidance.z_index = 18
+	parent.add_child(guidance)
+
+	var design: TextureRect = _ui_texture_rect("DailyTaskProgressGuidanceDesignBackground", DAILY_TASK_PROGRESS_GUIDANCE_DESIGN, Vector2.ZERO, VIEW_SIZE)
+	design.stretch_mode = TextureRect.STRETCH_SCALE
+	guidance.add_child(design)
+
+	var burst: TextureRect = _ui_texture_rect("DailyTaskProgressGuidanceBurst", DAILY_TASK_PROGRESS_GUIDANCE_BURST, Vector2(352, 296), Vector2(178, 178))
+	burst.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	burst.modulate = Color(1.0, 1.0, 1.0, 0.90)
+	burst.z_index = 1
+	guidance.add_child(burst)
+
+	var title: String = str(task.get("title", "今日任务"))
+	var detail: String = str(task.get("detail", "完成目标"))
+	var reward_fish: int = max(0, int(task.get("reward_fish", 0)))
+	var title_label: Label = _label("DailyTaskProgressGuidanceTitle", "任务进度：%s" % title, Vector2(430, 78), Vector2(420, 54), 31, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title_label.z_index = 2
+	guidance.add_child(title_label)
+	var requirement: Label = _label("DailyTaskProgressGuidanceRequirement", "目标：%s  %d/%d" % [detail, progress_value, target], Vector2(758, 226), Vector2(300, 44), 21, INK, HORIZONTAL_ALIGNMENT_LEFT)
+	requirement.z_index = 2
+	requirement.clip_text = true
+	guidance.add_child(requirement)
+	var reward_text: Label = _label("DailyTaskProgressGuidanceReward", "完成奖励：小鱼干 +%d" % reward_fish, Vector2(758, 306), Vector2(300, 40), 19, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_LEFT)
+	reward_text.z_index = 2
+	reward_text.clip_text = true
+	guidance.add_child(reward_text)
+	var copy: Label = _label("DailyTaskProgressGuidanceCopy", "去关卡挑战，完成后回来领取今日任务奖励。", Vector2(320, 476), Vector2(640, 54), 22, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	copy.z_index = 2
+	guidance.add_child(copy)
+
+	var go_button: Button = _transparent_text_button("GoLevelsFromDailyTaskProgressButton", "去关卡", Rect2(Vector2(488, 590), Vector2(304, 76)), 27)
+	go_button.z_index = 3
+	go_button.pressed.connect(func() -> void:
+		_show_daily_task_progress_level_guidance = true
+		_animate_overlay_exit(guidance, go_button, _show_level_select)
+	)
+	_attach_button_feedback(go_button, burst)
+	guidance.add_child(go_button)
+	var close_button: Button = _hotspot_button("CloseDailyTaskProgressGuidanceButton", Vector2(1076, 90), Vector2(96, 96), "关闭")
+	close_button.z_index = 3
+	close_button.pressed.connect(func() -> void: _animate_overlay_exit(guidance, close_button))
+	guidance.add_child(close_button)
+	_animate_overlay_entry(guidance)
+	_pulse_control(burst)
 
 
 func _daily_task_progress(task_id: String) -> int:
@@ -2982,6 +3052,63 @@ func _add_achievement_progress_level_guidance(parent: Control, rect: Rect2) -> v
 	group.add_child(label)
 
 	var sub_label: Label = _label("AchievementProgressLevelSubLabel", "通关推进", Vector2(144.0, 88.0), Vector2(164.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sub_label.z_index = 2
+	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	group.add_child(sub_label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -2.5, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 1.8, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = guidance_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
+
+
+func _add_daily_task_progress_level_guidance(parent: Control, rect: Rect2) -> void:
+	_remove_named_child(parent, "DailyTaskProgressLevelGuidance")
+	var guidance_size := Vector2(376, 154)
+	var guidance_position: Vector2 = rect.position + Vector2(-154.0, 176.0)
+	var group: Control = Control.new()
+	group.name = "DailyTaskProgressLevelGuidance"
+	group.position = guidance_position
+	group.size = guidance_size
+	group.z_index = 9
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.set_meta("image2_daily_task_progress_level_guidance", true)
+	parent.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("DailyTaskProgressLevelBadge", DAILY_TASK_PROGRESS_LEVEL_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(badge)
+
+	var label: Label = _label("DailyTaskProgressLevelLabel", "今日任务", Vector2(124.0, 48.0), Vector2(198.0, 36.0), 27, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.96))
+	label.add_theme_constant_override("outline_size", 4)
+	group.add_child(label)
+
+	var sub_label: Label = _label("DailyTaskProgressLevelSubLabel", "通关领取", Vector2(144.0, 88.0), Vector2(164.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sub_label.z_index = 2
 	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))
