@@ -486,10 +486,25 @@ func _attach_press_feedback(button: Button, target: Control) -> void:
 	)
 
 
-func _show_battle_tap_feedback(button: Button, local_position: Vector2) -> void:
-	if button == null or not is_instance_valid(button) or button.get_parent() == null:
+func _attach_pause_settings_control_feedback(control: Control, target: Control) -> void:
+	control.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton:
+			var mouse: InputEventMouseButton = event as InputEventMouseButton
+			if mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT:
+				_show_battle_tap_feedback(control, mouse.position)
+				_animate_control_scale(target, 1.06, 0.06)
+		elif event is InputEventScreenTouch:
+			var touch: InputEventScreenTouch = event as InputEventScreenTouch
+			if touch.pressed:
+				_show_battle_tap_feedback(control, touch.position)
+				_animate_control_scale(target, 1.06, 0.06)
+	)
+
+
+func _show_battle_tap_feedback(control: Control, local_position: Vector2) -> void:
+	if control == null or not is_instance_valid(control) or control.get_parent() == null:
 		return
-	var parent: Node = button.get_parent()
+	var parent: Node = control.get_parent()
 	var feedback_parent: Control = parent as Control
 	var feedback_parent_node: Node = feedback_parent
 	var clamp_to_viewport: bool = false
@@ -508,9 +523,9 @@ func _show_battle_tap_feedback(button: Button, local_position: Vector2) -> void:
 	feedback.texture = BattleTapFeedbackTexture
 	feedback.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	feedback.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var edge: float = clamp(max(button.size.x, button.size.y) * 1.75, 132.0, 220.0)
+	var edge: float = clamp(max(control.size.x, control.size.y) * 1.75, 132.0, 220.0)
 	feedback.size = Vector2(edge, edge)
-	feedback.position = button.position + local_position - feedback.size * 0.5
+	feedback.position = control.position + local_position - feedback.size * 0.5
 	if clamp_to_viewport and feedback_bounds.x > 0.0 and feedback_bounds.y > 0.0:
 		feedback.position = Vector2(
 			clampf(feedback.position.x, 0.0, maxf(0.0, feedback_bounds.x - feedback.size.x)),
@@ -518,7 +533,7 @@ func _show_battle_tap_feedback(button: Button, local_position: Vector2) -> void:
 		)
 	feedback.pivot_offset = feedback.size * 0.5
 	feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	feedback.z_index = button.z_index + 260
+	feedback.z_index = control.z_index + 260
 	feedback.scale = Vector2(0.72, 0.72)
 	feedback_parent_node.add_child(feedback)
 	var tween: Tween = feedback.create_tween()
@@ -3133,6 +3148,7 @@ func _show_pause_settings() -> void:
 	music_frame.process_mode = Node.PROCESS_MODE_ALWAYS
 	overlay.add_child(music_frame)
 	var music: CheckButton = _pause_invisible_toggle("PauseMusicToggle", Rect2(music_frame.position, music_frame.size), _pause_music_enabled)
+	_attach_pause_settings_control_feedback(music, music_frame)
 	music.toggled.connect(func(enabled: bool) -> void:
 		_pause_music_enabled = enabled
 		music_frame.texture = SettingsToggleOnTexture if enabled else SettingsToggleOffTexture
@@ -3144,6 +3160,7 @@ func _show_pause_settings() -> void:
 	effects_frame.process_mode = Node.PROCESS_MODE_ALWAYS
 	overlay.add_child(effects_frame)
 	var effects: CheckButton = _pause_invisible_toggle("PauseEffectsToggle", Rect2(effects_frame.position, effects_frame.size), _pause_effects_enabled)
+	_attach_pause_settings_control_feedback(effects, effects_frame)
 	effects.toggled.connect(func(enabled: bool) -> void:
 		_pause_effects_enabled = enabled
 		effects_frame.texture = SettingsToggleOnTexture if enabled else SettingsToggleOffTexture
@@ -3171,6 +3188,7 @@ func _show_pause_settings() -> void:
 		_pause_volume = value
 		_position_pause_settings_knob(slider_knob, slider)
 	)
+	_attach_pause_settings_control_feedback(slider, slider_knob)
 	overlay.add_child(slider)
 
 	var close_frame: TextureRect = _hud_texture_rect("PauseSettingsCloseFrame", SettingsCloseButtonTexture, Vector2(482, 498), Vector2(316, 80))

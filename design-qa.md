@@ -1208,3 +1208,10 @@ final result: passed
 - No new screenshot was needed because this is an automated guard for the existing Image2 home entry, not a rendered UI change.
 - Targeted verification passed: `run_scene_smoke.gd`, `run_menu_tests.gd`, `run_app_legacy_ui_helper_tests.gd`, and manifest JSON parsing.
 - Full regression passed after the guard update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 135 tests`.
+
+**Image2 Pause Settings Control Feedback**
+- Pause settings toggles and the volume slider now reuse the existing Image2 battle tap starburst feedback instead of only changing their hidden control state, making the in-battle settings panel feel consistent with the rest of the tactile HUD.
+- Generalized `/Users/zhaok/cat/scripts/battle/battle_scene.gd` battle tap feedback to accept any `Control`, then wired `PauseMusicToggle`, `PauseEffectsToggle`, and `PauseVolumeSlider` to pulse their Image2 toggle/knob targets and spawn `BattleTapFeedback#` at the pointer position.
+- Added `/Users/zhaok/cat/tests/run_pause_settings_control_feedback_tests.gd` to verify the music toggle and volume slider spawn the project-bound `battle_tap_feedback_starburst.png` asset without blocking input; the test was verified red before the implementation and green after it.
+- Added `/Users/zhaok/cat/tests/capture_pause_settings_control_feedback.gd` and captured `/Users/zhaok/cat/artifacts/pause_settings_control_feedback.png` with GUI capture because headless viewport capture returns a null texture in this project.
+- Passed pause settings control feedback, pause menu, battle tap feedback, main settings control feedback, battle overlay exit animation, scene smoke, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 136 tests`.
