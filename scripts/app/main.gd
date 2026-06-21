@@ -1293,10 +1293,51 @@ func _show_reward_overlay(parent: Node) -> void:
 			_animate_overlay_exit(overlay, claim)
 	)
 	content.add_child(claim)
+	if claimed_today:
+		_add_reward_claimed_daily_task_guidance(content, overlay, parent, chest)
 	var close_button: Button = _hotspot_button("CloseRewardButton", Vector2(846, 92), Vector2(88, 88), "关闭")
 	close_button.pressed.connect(func() -> void: _animate_overlay_exit(overlay, close_button))
 	content.add_child(close_button)
 	_animate_overlay_entry(content)
+
+
+func _add_reward_claimed_daily_task_guidance(content: Control, overlay: Control, host_parent: Node, feedback_target: Control) -> void:
+	var guidance: Control = Control.new()
+	guidance.name = "RewardClaimedDailyTaskGuidance"
+	guidance.position = Vector2(714, 334)
+	guidance.size = Vector2(224, 96)
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 4
+	guidance.set_meta("image2_reward_claimed_daily_task_guidance", true)
+	content.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("RewardClaimedDailyTaskBadge", DAILY_TASK_PROGRESS_LEVEL_GUIDANCE_BADGE, Vector2.ZERO, guidance.size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("RewardClaimedDailyTaskLabel", "做任务", Vector2(88, 38), Vector2(106, 28), 19, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	guidance.add_child(label)
+
+	var task_button: Button = _hotspot_button("RewardClaimedDailyTaskButton", guidance.position + Vector2(58, 24), Vector2(152, 62), "做任务")
+	task_button.z_index = 5
+	task_button.pressed.connect(func() -> void:
+		_animate_overlay_exit(overlay, task_button, func() -> void:
+			if host_parent != null and is_instance_valid(host_parent):
+				_show_daily_task_overlay(host_parent)
+		)
+	)
+	_attach_button_feedback(task_button, badge)
+	content.add_child(task_button)
+	_pulse_control(badge)
+	if feedback_target != null:
+		_pulse_control(feedback_target)
 
 
 func _claim_daily_reward() -> bool:

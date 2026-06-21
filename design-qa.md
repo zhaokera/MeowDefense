@@ -1247,3 +1247,11 @@ final result: passed
 - Updated `/Users/zhaok/cat/tests/capture_result_energy_refill_target_level.gd` to assert the `去下一关` copy before returning to the level map, then recaptured `/Users/zhaok/cat/artifacts/result_energy_refill_target_level.png` and `/Users/zhaok/cat/artifacts/shop_energy_refill_return.png`.
 - Targeted verification passed: `run_result_energy_refill_target_level_tests.gd`, `run_result_energy_refill_guidance_tests.gd`, `run_shop_energy_refill_return_tests.gd`, and `run_level_select_energy_ready_guidance_tests.gd`.
 - Full regression passed after the shop return-context update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.
+
+**Image2 Claimed Daily Reward Task Route**
+- When the daily reward has already been claimed today, the Image2 daily reward overlay now adds `RewardClaimedDailyTaskGuidance`, reusing the project-bound Image2 badge `/Users/zhaok/cat/assets/generated/ui/daily_task_progress_level_guidance_badge.png` as a compact `做任务` route instead of leaving the disabled claim state as a dead end.
+- Pressing `RewardClaimedDailyTaskButton` runs the reward overlay exit animation, disables the route while transitioning, and opens the existing Image2 `DailyTaskOverlay` without a hard cut.
+- Added `/Users/zhaok/cat/tests/run_daily_reward_claimed_task_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_reward_claimed_task_guidance.gd`; the regression was verified red for the missing guidance, then red again for the visual overlap with the disabled claim button, and green after moving the Image2 badge into the reward panel's right-side space.
+- Captured `/Users/zhaok/cat/artifacts/daily_reward_claimed_task_guidance.png`; GUI capture confirms the Image2 badge leaves the `今日已领取` button readable and provides a clear next action.
+- Targeted verification passed: `run_daily_reward_claimed_task_guidance_tests.gd`, `run_reward_overlay_tests.gd`, `run_daily_reward_reset_tests.gd`, `run_daily_reward_shop_guidance_tests.gd`, `run_daily_task_overlay_tests.gd`, `run_reward_overlay_exit_animation_tests.gd`, and `run_reward_claim_action_exit_animation_tests.gd`.
+- Full regression passed after the claimed-reward task route update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 138 tests`.
