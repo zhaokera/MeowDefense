@@ -1607,6 +1607,21 @@
       "id": "daily_task_progress_shop_guidance_badge",
       "path": "res://assets/generated/ui/daily_task_progress_shop_guidance_badge.png",
       "prompt_summary": "Project-bound transparent Image2-derived badge shown after routing from unfinished yarn daily task progress to the shop."
+    },
+    {
+      "id": "daily_task_yarn_purchase_return_guidance_design_reference",
+      "path": "res://assets/generated/ui/daily_task_yarn_purchase_return_guidance_design_reference.png",
+      "prompt_summary": "Image2-first purchase-success concept for returning from a daily-task-sourced yarn purchase back to daily tasks."
+    },
+    {
+      "id": "daily_task_yarn_purchase_return_guidance_badge_source",
+      "path": "res://assets/generated/ui/daily_task_yarn_purchase_return_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived source badge assembled from daily task shop-return guidance art for the yarn purchase return-to-task route."
+    },
+    {
+      "id": "daily_task_yarn_purchase_return_guidance_badge",
+      "path": "res://assets/generated/ui/daily_task_yarn_purchase_return_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown after a daily-task-sourced yarn purchase so the player can return and claim the task reward."
     }
   ]
 }

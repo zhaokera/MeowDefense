@@ -1150,3 +1150,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_task_progress_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_task_progress_shop_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/daily_task_progress_shop_guidance.png`; GUI capture was used for visual evidence after moving the badge down from the shop title area so it no longer covers the close button or purchase action.
 - Passed daily task progress shop guidance, daily task progress guidance, daily task overlay, shop yarn trap, shop starter yarn guidance, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 130 tests`.
+
+**Image2 Daily Task Yarn Purchase Return**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/daily_task_yarn_purchase_return_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/daily_task_yarn_purchase_return_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/daily_task_yarn_purchase_return_guidance_badge.png`, assembled from existing Image2 daily-task shop-return guidance art after the fresh Image2 purchase-return concept was not exposed as a project-copyable file by the local Codex image tool.
+- Buying `毛线陷阱` from the daily-task shop route now shows `DailyTaskYarnPurchaseReturnGuidance`, a non-blocking Image2 badge with dynamic `回任务` / `领取奖励` copy on the purchase success overlay.
+- Normal shop yarn purchases still show `ShopYarnPurchaseBackpackGuidance`, so the new return route is contextual and does not remove the backpack discovery flow.
+- Pressing `DailyTaskYarnPurchaseReturnButton` preserves the shared Image2 purchase-overlay exit animation, disables the route button during transition, closes `ShopOverlay`, opens `DailyTaskOverlay`, and leaves the yarn task at `1/1` with `ClaimDailyTaskYarnButton` enabled.
+- Added `/Users/zhaok/cat/tests/run_daily_task_yarn_purchase_return_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_task_yarn_purchase_return.gd`.
+- Captured `/Users/zhaok/cat/artifacts/daily_task_yarn_purchase_return.png`; GUI capture was used for visual evidence after confirming the badge does not block the close or route hit areas.
+- Passed daily task yarn purchase return, daily task progress shop guidance, shop yarn purchase backpack guidance, daily task overlay, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 131 tests`.
