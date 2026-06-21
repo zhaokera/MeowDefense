@@ -23,6 +23,7 @@ func _run() -> void:
 	_assert_manifest_entry("result_achievement_claim_guidance_badge", GUIDANCE_BADGE_PATH)
 
 	await _assert_first_clear_result_routes_to_achievements()
+	await _assert_final_clear_prioritizes_campaign_achievement()
 	await _assert_defeat_result_has_no_achievement_guidance()
 	await _assert_claimed_achievement_result_has_no_guidance()
 	_finish()
@@ -63,6 +64,36 @@ func _assert_first_clear_result_routes_to_achievements() -> void:
 	if claim_button != null:
 		_assert_true(not claim_button.disabled, "first-clear achievement should be claimable after routing from result")
 	_assert_true(int(instance.get("_total_fish")) == 35, "routing to achievements should preserve victory fish reward")
+	_cleanup_instance(instance)
+
+
+func _assert_final_clear_prioritizes_campaign_achievement() -> void:
+	var instance: Node = await _new_instance()
+	if instance == null:
+		return
+	instance.set("_current_level_id", 5)
+	instance.set("_unlocked_level", 5)
+	instance.set("_best_stars_by_level", {1: 3, 2: 3, 3: 3, 4: 3})
+	instance.call("_recalculate_best_stars")
+	instance.call("_show_result", true, 3, 120)
+	await process_frame
+	await process_frame
+
+	var guidance: Control = _assert_control(instance, "ResultAchievementClaimGuidance", "final campaign clear should show completed-achievement guidance")
+	if guidance != null:
+		_assert_true(bool(guidance.get_meta("image2_result_achievement_claim_guidance", false)), "final campaign guidance should reuse the Image2 result achievement badge")
+	var sub_label: Label = _assert_label(instance, "ResultAchievementClaimGuidanceSubLabel", "final campaign guidance should name the claimable achievement")
+	if sub_label != null:
+		_assert_true(sub_label.text.contains("连续推进"), "final campaign clear should prioritize the campaign-clear achievement")
+	var route_button: Button = _assert_button(instance, "ResultAchievementClaimGuidanceButton", "final campaign guidance should expose an achievements route")
+	var screen: Control = _assert_control(instance, "ResultScreen", "final campaign result screen should stay visible before routing")
+	if screen != null and route_button != null:
+		route_button.emit_signal("pressed")
+		_assert_true(bool(screen.get_meta("image2_result_exit_animation", false)), "final campaign achievement route should animate the Image2 result screen out")
+		await _wait_until_exists(instance, "AchievementsOverlay")
+	var campaign_claim: Button = _assert_button(instance, "AchievementCampaignClaimButton", "routed achievements overlay should expose campaign-clear claim")
+	if campaign_claim != null:
+		_assert_true(not campaign_claim.disabled, "campaign-clear achievement should be claimable after final clear")
 	_cleanup_instance(instance)
 
 

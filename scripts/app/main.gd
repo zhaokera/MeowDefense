@@ -700,7 +700,8 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 	if won and newly_unlocked_level_id > _current_level_id:
 		_add_result_next_level_unlock_feedback(screen, newly_unlocked_level_id)
 	if won:
-		var claimable_achievement: Dictionary = _first_completed_unclaimed_achievement()
+		var priority_achievement_id := "campaign_clear" if _current_level_id >= LEVELS.size() else ""
+		var claimable_achievement: Dictionary = _first_completed_unclaimed_achievement(priority_achievement_id)
 		if not claimable_achievement.is_empty():
 			_add_result_achievement_claim_guidance(screen, claimable_achievement)
 		elif fish_reward > 0 and newly_unlocked_level_id <= _current_level_id:
@@ -1020,7 +1021,13 @@ func _add_result_defeat_guidance(parent: Control) -> void:
 	)
 
 
-func _first_completed_unclaimed_achievement() -> Dictionary:
+func _first_completed_unclaimed_achievement(priority_achievement_id: String = "") -> Dictionary:
+	if not priority_achievement_id.is_empty():
+		for achievement: Dictionary in ACHIEVEMENTS:
+			var priority_id: String = str(achievement.get("id", ""))
+			var priority_target: int = max(1, int(achievement.get("target", 1)))
+			if priority_id == priority_achievement_id and not _is_achievement_claimed(priority_id) and _achievement_progress(priority_id) >= priority_target:
+				return achievement
 	for achievement: Dictionary in ACHIEVEMENTS:
 		var achievement_id: String = str(achievement.get("id", ""))
 		var target: int = max(1, int(achievement.get("target", 1)))

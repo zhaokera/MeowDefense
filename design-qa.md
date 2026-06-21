@@ -1255,3 +1255,11 @@ final result: passed
 - Captured `/Users/zhaok/cat/artifacts/daily_reward_claimed_task_guidance.png`; GUI capture confirms the Image2 badge leaves the `今日已领取` button readable and provides a clear next action.
 - Targeted verification passed: `run_daily_reward_claimed_task_guidance_tests.gd`, `run_reward_overlay_tests.gd`, `run_daily_reward_reset_tests.gd`, `run_daily_reward_shop_guidance_tests.gd`, `run_daily_task_overlay_tests.gd`, `run_reward_overlay_exit_animation_tests.gd`, and `run_reward_claim_action_exit_animation_tests.gd`.
 - Full regression passed after the claimed-reward task route update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 138 tests`.
+
+**Final Campaign Achievement Priority**
+- Clearing level 5 now prioritizes the `campaign_clear` achievement in `ResultAchievementClaimGuidance`, so the final victory result points at `连续推进可领` instead of surfacing older unclaimed achievements such as first clear.
+- The result still uses the existing Image2 result screen and `result_achievement_claim_guidance_badge.png`; only the runtime achievement selection priority changed, keeping the Image2 badge and transparent route model intact.
+- Expanded `/Users/zhaok/cat/tests/run_result_achievement_claim_guidance_tests.gd` with a full-campaign state where levels 1-4 are already cleared and level 5 wins; the test was verified red against the old first-unclaimed ordering and green after adding final-campaign priority.
+- Added `/Users/zhaok/cat/tests/capture_result_campaign_clear_guidance.gd` and captured `/Users/zhaok/cat/artifacts/result_campaign_clear_guidance.png`; GUI capture shows the final victory screen with the Image2 achievement badge pointing to the 5-level campaign achievement.
+- Targeted verification passed: `run_result_achievement_claim_guidance_tests.gd`, `run_result_screen_tests.gd`, `run_result_next_level_unlock_feedback_tests.gd`, `run_achievement_claim_tests.gd`, `run_campaign_tests.gd`, `run_progression_persistence_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the final-campaign priority update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 138 tests`.
