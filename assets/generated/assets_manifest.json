@@ -339,6 +339,21 @@
       "prompt_summary": "Image2 full-screen level select design reference used directly as the high-fidelity level map background."
     },
     {
+      "id": "level_select_current_guidance_design_reference",
+      "path": "res://assets/generated/ui/level_select_current_guidance_design_reference.png",
+      "prompt_summary": "Image2-first level-map reference showing current levels-tab feedback and level-one start guidance."
+    },
+    {
+      "id": "level_select_current_guidance_badge_source",
+      "path": "res://assets/generated/ui/level_select_current_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived source badge assembled from existing level-select guidance art for current levels-tab feedback."
+    },
+    {
+      "id": "level_select_current_guidance_badge",
+      "path": "res://assets/generated/ui/level_select_current_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown when tapping the already-selected levels tab."
+    },
+    {
       "id": "level_lock_badge",
       "path": "res://assets/generated/ui/level_lock_badge.png",
       "prompt_summary": "Image2 transparent cat-paw lock badge used to show locked level cards on the level-select map."

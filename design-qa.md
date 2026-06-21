@@ -1186,3 +1186,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_main_home_current_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_main_home_current_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/main_home_current_guidance.png`; GUI capture was used for visual evidence after confirming the badge and glow do not cover the main start action.
 - Passed main home current guidance, menu, hotspot feedback, town feature overlay, town feature overlay exit animation, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 134 tests`.
+
+**Image2 Level Select Current Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/level_select_current_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/level_select_current_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/level_select_current_guidance_badge.png`, assembled from the existing Image2 level map, level-guidance badge, and tap-spark art after the fresh Image2 current-level-tab concept was not exposed as a project-copyable file by the local Codex image tool.
+- Tapping the already-selected `BottomLevelsButton` on `LevelSelectScreen` no longer rebuilds the same Image2 level map or starts a screen-exit transition.
+- The current-tab tap now shows `LevelSelectCurrentGuidance`, a non-blocking Image2 badge with dynamic `已在关卡` / `点这里开局` copy, plus a paw-spark glow near the first playable level.
+- `StartLevel1Button` is marked with `image2_level_select_current_target` and remains tappable, so the feedback points the player back into battle instead of acting like a dead current tab.
+- Added `/Users/zhaok/cat/tests/run_level_select_current_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_level_select_current_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/level_select_current_guidance.png`; GUI capture was used for visual evidence after switching to a cleaner Image2 badge so the first level start action remains readable.
+- Passed level-select current guidance, level-select energy-ready guidance, level-select new-unlock hint, menu, hotspot feedback, Image2 screen exit animation, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 135 tests`.

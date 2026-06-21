@@ -5,6 +5,7 @@ const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
 const MAIN_HOME_CURRENT_GUIDANCE_BADGE := preload("res://assets/generated/ui/main_home_current_guidance_badge.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
+const LEVEL_SELECT_CURRENT_GUIDANCE_BADGE := preload("res://assets/generated/ui/level_select_current_guidance_badge.png")
 const COMMON_OVERLAY_DIM_TEXTURE := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
 const UI_TAP_FEEDBACK_TEXTURE := preload("res://assets/generated/ui/ui_tap_feedback_paw_spark.png")
 const LEVEL_LOCK_BADGE := preload("res://assets/generated/ui/level_lock_badge.png")
@@ -411,7 +412,7 @@ func _show_level_select_now() -> void:
 	bottom_home.pressed.connect(_show_main_menu)
 	screen.add_child(bottom_home)
 	var bottom_levels: Button = _hotspot_button("BottomLevelsButton", Vector2(500, 576), Vector2(128, 126), "关卡")
-	bottom_levels.pressed.connect(_show_level_select)
+	bottom_levels.pressed.connect(func() -> void: _show_level_select_current_guidance(screen))
 	screen.add_child(bottom_levels)
 	var bottom_album: Button = _hotspot_button("BottomAlbumButton", Vector2(680, 584), Vector2(118, 118), "图鉴")
 	bottom_album.pressed.connect(func() -> void: _show_album_overlay(screen))
@@ -419,6 +420,86 @@ func _show_level_select_now() -> void:
 	var bottom_shop: Button = _hotspot_button("BottomShopButton", Vector2(840, 584), Vector2(122, 118), "商店")
 	bottom_shop.pressed.connect(func() -> void: _show_shop_overlay(screen))
 	screen.add_child(bottom_shop)
+
+
+func _show_level_select_current_guidance(parent: Control) -> void:
+	if parent == null or not is_instance_valid(parent):
+		return
+	_remove_named_child(parent, "LevelSelectCurrentGuidance")
+	var guidance: Control = Control.new()
+	guidance.name = "LevelSelectCurrentGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 9
+	guidance.set_meta("image2_level_select_current_guidance", true)
+	parent.add_child(guidance)
+
+	var level_rect: Rect2 = _level_select_hotspots()[0]["rect"] as Rect2
+	var glow: TextureRect = _ui_texture_rect("LevelSelectCurrentStartGlow", UI_TAP_FEEDBACK_TEXTURE, level_rect.position + Vector2(14, 136), Vector2(164, 164))
+	glow.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	glow.modulate = Color(1.0, 1.0, 1.0, 0.78)
+	glow.z_index = 1
+	glow.set_meta("image2_level_select_current_target", true)
+	guidance.add_child(glow)
+
+	var group: Control = Control.new()
+	group.name = "LevelSelectCurrentBadgeGroup"
+	group.position = level_rect.position + Vector2(182, 88)
+	group.size = Vector2(352, 146)
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.z_index = 2
+	guidance.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("LevelSelectCurrentBadge", LEVEL_SELECT_CURRENT_GUIDANCE_BADGE, Vector2.ZERO, group.size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.z_index = 1
+	group.add_child(badge)
+
+	var label: Label = _label("LevelSelectCurrentLabel", "已在关卡", Vector2(92, 52), Vector2(168, 36), 22, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(label)
+
+	var sub_label: Label = _label("LevelSelectCurrentSubLabel", "点这里开局", Vector2(94, 84), Vector2(164, 26), 13, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.z_index = 2
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(sub_label)
+
+	var start_button: Button = parent.find_child("StartLevel1Button", true, false) as Button
+	if start_button != null:
+		start_button.set_meta("image2_level_select_current_target", true)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate.a = 0.0
+	glow.pivot_offset = glow.size * 0.5
+	glow.scale = Vector2(0.70, 0.70)
+	var group_ref: WeakRef = weakref(group)
+	var glow_ref: WeakRef = weakref(glow)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(glow, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved_group: Object = group_ref.get_ref()
+		if resolved_group is Control:
+			var resolved_control: Control = resolved_group as Control
+			var base_y: float = resolved_control.position.y
+			var float_tween: Tween = resolved_control.create_tween()
+			float_tween.set_loops()
+			float_tween.tween_property(resolved_control, "position:y", base_y - 5.0, 0.74).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			float_tween.tween_property(resolved_control, "position:y", base_y, 0.74).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		var resolved_glow: Object = glow_ref.get_ref()
+		if resolved_glow is Control:
+			var resolved_glow_control: Control = resolved_glow as Control
+			var pulse_tween: Tween = resolved_glow_control.create_tween()
+			pulse_tween.set_loops()
+			pulse_tween.tween_property(resolved_glow_control, "scale", Vector2(1.08, 1.08), 0.52).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			pulse_tween.tween_property(resolved_glow_control, "scale", Vector2(0.96, 0.96), 0.52).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
 
 
 func _start_level_one() -> void:
