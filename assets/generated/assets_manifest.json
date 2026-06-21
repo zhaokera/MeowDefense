@@ -319,6 +319,21 @@
       "prompt_summary": "Image2 full-screen main menu design reference used directly as the high-fidelity menu background."
     },
     {
+      "id": "main_home_current_guidance_design_reference",
+      "path": "res://assets/generated/ui/main_home_current_guidance_design_reference.png",
+      "prompt_summary": "Image2-first main-menu reference showing current home-tab feedback and a start-level guidance badge."
+    },
+    {
+      "id": "main_home_current_guidance_badge_source",
+      "path": "res://assets/generated/ui/main_home_current_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived source badge assembled from existing ornate guidance art for current home-tab feedback."
+    },
+    {
+      "id": "main_home_current_guidance_badge",
+      "path": "res://assets/generated/ui/main_home_current_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown when tapping the already-selected home tab."
+    },
+    {
       "id": "level_select_design_reference",
       "path": "res://assets/generated/ui/level_select_design_reference.png",
       "prompt_summary": "Image2 full-screen level select design reference used directly as the high-fidelity level map background."

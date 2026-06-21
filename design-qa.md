@@ -1177,3 +1177,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_backpack_fish_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_backpack_fish_shop_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/backpack_fish_shop_guidance.png`; GUI capture was used for visual evidence after confirming the guidance badge leaves the yarn purchase action visible and tappable.
 - Passed backpack fish shop guidance, backpack item detail, backpack organize shop guidance, shop yarn trap, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 133 tests`.
+
+**Image2 Main Home Current Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/main_home_current_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/main_home_current_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/main_home_current_guidance_badge.png`, assembled from the existing Image2 home screen, guidance badge, and tap-spark art after the fresh Image2 home-tab concept was not exposed as a project-copyable file by the local Codex image tool.
+- Tapping the already-selected `BottomHomeButton` on `MainMenuScreen` no longer rebuilds the same Image2 screen or starts a screen-exit transition.
+- The current-tab tap now shows `MainHomeCurrentGuidance`, a non-blocking Image2 badge with dynamic `已在主城` / `去闯关` copy, plus a paw-spark glow over the `开始闯关` area.
+- `StartLevelSelectButton` is marked with `image2_main_home_start_target` and remains tappable, so the feedback points the player back into the playable level flow instead of acting like a dead current tab.
+- Added `/Users/zhaok/cat/tests/run_main_home_current_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_main_home_current_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/main_home_current_guidance.png`; GUI capture was used for visual evidence after confirming the badge and glow do not cover the main start action.
+- Passed main home current guidance, menu, hotspot feedback, town feature overlay, town feature overlay exit animation, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 134 tests`.

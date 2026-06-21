@@ -3,6 +3,7 @@ extends Control
 const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
 const LEVEL_BACKGROUND := preload("res://assets/generated/backgrounds/level_001_meadow.png")
 const MAIN_MENU_DESIGN := preload("res://assets/generated/ui/main_menu_design_reference.png")
+const MAIN_HOME_CURRENT_GUIDANCE_BADGE := preload("res://assets/generated/ui/main_home_current_guidance_badge.png")
 const LEVEL_SELECT_DESIGN := preload("res://assets/generated/ui/level_select_design_reference.png")
 const COMMON_OVERLAY_DIM_TEXTURE := preload("res://assets/generated/ui/common_overlay_dim_vignette.png")
 const UI_TAP_FEEDBACK_TEXTURE := preload("res://assets/generated/ui/ui_tap_feedback_paw_spark.png")
@@ -241,7 +242,7 @@ func _show_main_menu_now() -> void:
 	screen.add_child(daily_task_button)
 
 	var bottom_home: Button = _hotspot_button("BottomHomeButton", Vector2(326, 633), Vector2(150, 82), "主城")
-	bottom_home.pressed.connect(_show_main_menu)
+	bottom_home.pressed.connect(func() -> void: _show_main_home_current_guidance(screen))
 	screen.add_child(bottom_home)
 	var bottom_bag: Button = _hotspot_button("BottomBagButton", Vector2(508, 620), Vector2(140, 94), "背包")
 	bottom_bag.pressed.connect(func() -> void: _show_backpack_overlay(screen))
@@ -255,6 +256,85 @@ func _show_main_menu_now() -> void:
 	var settings_gear: Button = _hotspot_button("SettingsGearButton", Vector2(1205, 12), Vector2(66, 66), "设置")
 	settings_gear.pressed.connect(func() -> void: _show_settings_overlay(screen))
 	screen.add_child(settings_gear)
+
+
+func _show_main_home_current_guidance(parent: Control) -> void:
+	if parent == null or not is_instance_valid(parent):
+		return
+	_remove_named_child(parent, "MainHomeCurrentGuidance")
+	var guidance: Control = Control.new()
+	guidance.name = "MainHomeCurrentGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 9
+	guidance.set_meta("image2_main_home_current_guidance", true)
+	parent.add_child(guidance)
+
+	var glow: TextureRect = _ui_texture_rect("MainHomeStartGuidanceGlow", UI_TAP_FEEDBACK_TEXTURE, Vector2(126, 232), Vector2(154, 154))
+	glow.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	glow.modulate = Color(1.0, 1.0, 1.0, 0.78)
+	glow.z_index = 1
+	glow.set_meta("image2_main_home_start_target", true)
+	guidance.add_child(glow)
+
+	var group: Control = Control.new()
+	group.name = "MainHomeCurrentBadgeGroup"
+	group.position = Vector2(430, 238)
+	group.size = Vector2(352, 146)
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.z_index = 2
+	guidance.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("MainHomeCurrentBadge", MAIN_HOME_CURRENT_GUIDANCE_BADGE, Vector2.ZERO, group.size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.z_index = 1
+	group.add_child(badge)
+
+	var label: Label = _label("MainHomeCurrentLabel", "已在主城", Vector2(92, 52), Vector2(168, 36), 23, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(label)
+
+	var sub_label: Label = _label("MainHomeCurrentSubLabel", "去闯关", Vector2(114, 84), Vector2(124, 26), 14, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.z_index = 2
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(sub_label)
+
+	var start_button: Button = parent.find_child("StartLevelSelectButton", true, false) as Button
+	if start_button != null:
+		start_button.set_meta("image2_main_home_start_target", true)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate.a = 0.0
+	glow.pivot_offset = glow.size * 0.5
+	glow.scale = Vector2(0.70, 0.70)
+	var group_ref: WeakRef = weakref(group)
+	var glow_ref: WeakRef = weakref(glow)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(glow, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved_group: Object = group_ref.get_ref()
+		if resolved_group is Control:
+			var resolved_control: Control = resolved_group as Control
+			var base_y: float = resolved_control.position.y
+			var float_tween: Tween = resolved_control.create_tween()
+			float_tween.set_loops()
+			float_tween.tween_property(resolved_control, "position:y", base_y - 5.0, 0.74).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			float_tween.tween_property(resolved_control, "position:y", base_y, 0.74).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		var resolved_glow: Object = glow_ref.get_ref()
+		if resolved_glow is Control:
+			var resolved_glow_control: Control = resolved_glow as Control
+			var pulse_tween: Tween = resolved_glow_control.create_tween()
+			pulse_tween.set_loops()
+			pulse_tween.tween_property(resolved_glow_control, "scale", Vector2(1.08, 1.08), 0.52).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			pulse_tween.tween_property(resolved_glow_control, "scale", Vector2(0.96, 0.96), 0.52).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
 
 
 func _show_level_select() -> void:
