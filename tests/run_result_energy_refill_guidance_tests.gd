@@ -23,6 +23,7 @@ func _run() -> void:
 	_assert_manifest_entry("result_energy_refill_guidance_badge", GUIDANCE_BADGE_PATH)
 
 	await _assert_next_level_with_empty_energy_guides_to_shop_refill()
+	await _assert_retry_with_empty_energy_guides_to_shop_refill()
 	await _assert_next_level_with_energy_still_starts_battle()
 	_finish()
 
@@ -58,6 +59,7 @@ func _assert_next_level_with_empty_energy_guides_to_shop_refill() -> void:
 	var label: Label = _assert_label(instance, "ResultEnergyRefillLabel", "result refill guidance should include runtime copy")
 	if label != null:
 		_assert_true(label.text.contains("体力") or label.text.contains("补"), "result refill guidance should point to refilling energy")
+		_assert_true(label.text.contains("闯关") or label.text.contains("下一关"), "next-level refill guidance should explain it returns to level play")
 	var route_button: Button = _assert_button(instance, "ResultEnergyRefillButton", "result refill guidance should expose a shop route")
 	if screen != null and route_button != null:
 		route_button.emit_signal("pressed")
@@ -73,6 +75,31 @@ func _assert_next_level_with_empty_energy_guides_to_shop_refill() -> void:
 	if shop_button != null:
 		_assert_true(not shop_button.disabled, "energy refill purchase should be enabled with enough fish")
 	_assert_true(int(instance.get("_energy")) == 0, "result refill guidance should not grant energy before purchase")
+	_cleanup_instance(instance)
+
+
+func _assert_retry_with_empty_energy_guides_to_shop_refill() -> void:
+	var instance: Node = await _new_result_instance(0)
+	if instance == null:
+		return
+	var retry_button: Button = _assert_button(instance, "RetryButton", "victory result should expose retry action")
+	if retry_button != null:
+		_assert_true(not retry_button.disabled, "retry action should stay tappable before empty-energy guidance")
+		retry_button.emit_signal("pressed")
+		await process_frame
+		await process_frame
+
+	_assert_exists(instance, "ResultScreen", "empty-energy retry route should keep the result screen visible")
+	_assert_missing(instance, "BattleScene", "empty-energy retry route should not start battle")
+	_assert_missing(instance, "EnergyEmptyOverlay", "empty-energy retry route should not hard-cut to the generic energy overlay")
+	var guidance: Control = _assert_control(instance, "ResultEnergyRefillGuidance", "empty-energy retry route should show result-specific refill guidance")
+	if guidance != null:
+		_assert_true(bool(guidance.get_meta("image2_result_energy_refill_guidance", false)), "retry refill guidance should mark Image2 metadata")
+	var label: Label = _assert_label(instance, "ResultEnergyRefillLabel", "retry refill guidance should include runtime copy")
+	if label != null:
+		_assert_true(label.text.contains("体力") or label.text.contains("补"), "retry refill guidance should point to refilling energy")
+		_assert_true(label.text.contains("再试") or label.text.contains("重试"), "retry refill guidance should explain it returns to retry")
+	_assert_true(int(instance.get("_energy_ready_guidance_level_id")) == 1, "empty-energy retry route should remember the current level target")
 	_cleanup_instance(instance)
 
 

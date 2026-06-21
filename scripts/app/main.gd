@@ -715,11 +715,15 @@ func _start_level_from_result(screen: Control, trigger_button: Button, level_inf
 		return
 	if _energy <= 0:
 		_energy_ready_guidance_level_id = requested_level_id
-		_show_result_energy_refill_guidance(screen, trigger_button)
+		_show_result_energy_refill_guidance(screen, trigger_button, _result_energy_refill_copy(requested_level_id))
 		return
 	_animate_result_screen_exit(screen, trigger_button, func() -> void:
 		_start_level(level_info)
 	)
+
+
+func _result_energy_refill_copy(requested_level_id: int) -> String:
+	return "补体力再试" if requested_level_id == _current_level_id else "补体力闯关"
 
 
 func _show_settings_overlay(parent: Node) -> void:
@@ -1123,7 +1127,7 @@ func _add_result_reward_shop_guidance(parent: Control) -> void:
 	intro.tween_property(guidance, "scale", Vector2.ONE, 0.24).set_delay(0.24).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-func _show_result_energy_refill_guidance(parent: Control, feedback_target: Control = null) -> void:
+func _show_result_energy_refill_guidance(parent: Control, feedback_target: Control = null, action_copy: String = "补体力") -> void:
 	_remove_named_child(parent, "ResultEnergyRefillGuidance")
 	_remove_named_child(parent, "EnergyEmptyOverlay")
 	var guidance_size := Vector2(430, 160)
@@ -1143,14 +1147,14 @@ func _show_result_energy_refill_guidance(parent: Control, feedback_target: Contr
 	badge.z_index = 1
 	guidance.add_child(badge)
 
-	var label: Label = _label("ResultEnergyRefillLabel", "补体力", Vector2(286, 70), Vector2(112, 34), 21, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	var label: Label = _label("ResultEnergyRefillLabel", action_copy, Vector2(270, 70), Vector2(144, 34), 20, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.66, 0.88))
 	label.add_theme_constant_override("outline_size", 3)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.z_index = 2
 	guidance.add_child(label)
 
-	var route_button: Button = _hotspot_button("ResultEnergyRefillButton", Vector2(224, 44), Vector2(188, 82), "补体力")
+	var route_button: Button = _hotspot_button("ResultEnergyRefillButton", Vector2(224, 44), Vector2(188, 82), action_copy)
 	route_button.z_index = 5
 	route_button.pressed.connect(func() -> void:
 		_animate_result_screen_exit(parent, route_button, func() -> void:

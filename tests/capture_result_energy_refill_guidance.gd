@@ -53,7 +53,7 @@ func _capture() -> void:
 		quit(1)
 		return
 	var label: Label = instance.find_child("ResultEnergyRefillLabel", true, false) as Label
-	if label == null or not label.text.contains("体力"):
+	if label == null or not label.text.contains("体力") or not label.text.contains("闯关"):
 		push_error("ResultEnergyRefillLabel missing expected copy")
 		quit(1)
 		return

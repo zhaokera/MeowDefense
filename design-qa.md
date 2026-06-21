@@ -1231,3 +1231,11 @@ final result: passed
 - No new screenshot was needed because this is a behavioral guard for existing Image2 locked-level and energy-empty screens.
 - Targeted verification passed: `run_locked_level_feedback_tests.gd`, `run_energy_flow_tests.gd`, `run_energy_empty_refill_guidance_tests.gd`, and `run_level_select_energy_ready_guidance_tests.gd`.
 - Full regression passed after the guard update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.
+
+**Result Energy Refill Dynamic Copy**
+- Result-screen zero-energy guidance now uses context-specific dynamic copy over the existing Image2 badge: `补体力闯关` for the next-level route and `补体力再试` for retrying the current level.
+- The retry route now has explicit regression coverage proving it keeps `ResultScreen` visible, does not hard-cut into `BattleScene` or the generic `EnergyEmptyOverlay`, and preserves `_energy_ready_guidance_level_id` for the current level.
+- Updated `/Users/zhaok/cat/tests/capture_result_energy_refill_guidance.gd` and recaptured `/Users/zhaok/cat/artifacts/result_energy_refill_guidance.png`; the screenshot shows the Image2 badge with the `补体力闯关` runtime copy.
+- The new result refill guidance assertions were verified red against the old fixed `补体力` copy before the implementation and green after adding contextual copy selection.
+- Targeted verification passed: `run_result_energy_refill_guidance_tests.gd`, `run_result_energy_refill_target_level_tests.gd`, `run_result_screen_exit_animation_tests.gd`, `run_result_screen_tests.gd`, `run_energy_flow_tests.gd`, `run_result_defeat_guidance_tests.gd`, `run_result_defeat_screen_tests.gd`, and `run_shop_energy_refill_return_tests.gd`.
+- Full regression passed after the dynamic-copy update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.
