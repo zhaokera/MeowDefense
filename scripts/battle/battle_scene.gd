@@ -4,6 +4,7 @@ class_name CatDefenseBattleScene
 signal battle_finished(won: bool, stars: int, fish_reward: int)
 signal exit_to_levels_requested
 signal yarn_traps_changed(count: int)
+signal pause_settings_changed(music_enabled: bool, effects_enabled: bool, volume: float)
 
 const LevelDataScript := preload("res://scripts/core/level_data.gd")
 const TowerStatsScript := preload("res://scripts/core/tower_stats.gd")
@@ -138,6 +139,12 @@ var _battle_reward_fly_index: int = 0
 func _ready() -> void:
 	if level == null:
 		start_level(level_path)
+
+
+func configure_pause_settings(music_enabled: bool, effects_enabled: bool, volume: float) -> void:
+	_pause_music_enabled = music_enabled
+	_pause_effects_enabled = effects_enabled
+	_pause_volume = clampf(volume, 0.0, 100.0)
 
 
 func start_level(path: String) -> void:
@@ -3153,6 +3160,7 @@ func _show_pause_settings() -> void:
 		_pause_music_enabled = enabled
 		music_frame.texture = SettingsToggleOnTexture if enabled else SettingsToggleOffTexture
 		_animate_control_scale(music_frame, 1.06, 0.06)
+		pause_settings_changed.emit(_pause_music_enabled, _pause_effects_enabled, _pause_volume)
 	)
 	overlay.add_child(music)
 
@@ -3165,6 +3173,7 @@ func _show_pause_settings() -> void:
 		_pause_effects_enabled = enabled
 		effects_frame.texture = SettingsToggleOnTexture if enabled else SettingsToggleOffTexture
 		_animate_control_scale(effects_frame, 1.06, 0.06)
+		pause_settings_changed.emit(_pause_music_enabled, _pause_effects_enabled, _pause_volume)
 	)
 	overlay.add_child(effects)
 
@@ -3187,6 +3196,7 @@ func _show_pause_settings() -> void:
 	slider.value_changed.connect(func(value: float) -> void:
 		_pause_volume = value
 		_position_pause_settings_knob(slider_knob, slider)
+		pause_settings_changed.emit(_pause_music_enabled, _pause_effects_enabled, _pause_volume)
 	)
 	_attach_pause_settings_control_feedback(slider, slider_knob)
 	overlay.add_child(slider)

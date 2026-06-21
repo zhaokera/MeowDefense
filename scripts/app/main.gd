@@ -554,11 +554,15 @@ func _start_level(level_info: Dictionary) -> void:
 	var battle: Node2D = BattleSceneScript.new()
 	battle.name = "BattleScene"
 	battle.set("yarn_traps_available", _yarn_traps)
+	if battle.has_method("configure_pause_settings"):
+		battle.call("configure_pause_settings", _music_enabled, _effects_enabled, _volume)
 	battle.battle_finished.connect(_show_result)
 	if battle.has_signal("exit_to_levels_requested"):
 		battle.exit_to_levels_requested.connect(_show_level_select_from_pause_quit)
 	if battle.has_signal("yarn_traps_changed"):
 		battle.yarn_traps_changed.connect(_on_battle_yarn_traps_changed)
+	if battle.has_signal("pause_settings_changed"):
+		battle.pause_settings_changed.connect(_on_battle_pause_settings_changed)
 	_current = battle
 	add_child(battle)
 	battle.start_level(_current_level_path)
@@ -621,6 +625,13 @@ func _show_locked_level_feedback(parent: Node, level_info: Dictionary) -> void:
 
 func _on_battle_yarn_traps_changed(count: int) -> void:
 	_yarn_traps = max(0, count)
+	_save_progress()
+
+
+func _on_battle_pause_settings_changed(music_enabled: bool, effects_enabled: bool, volume: float) -> void:
+	_music_enabled = music_enabled
+	_effects_enabled = effects_enabled
+	_volume = max(0.0, min(100.0, volume))
 	_save_progress()
 
 

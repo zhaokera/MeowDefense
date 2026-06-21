@@ -1215,3 +1215,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_pause_settings_control_feedback_tests.gd` to verify the music toggle and volume slider spawn the project-bound `battle_tap_feedback_starburst.png` asset without blocking input; the test was verified red before the implementation and green after it.
 - Added `/Users/zhaok/cat/tests/capture_pause_settings_control_feedback.gd` and captured `/Users/zhaok/cat/artifacts/pause_settings_control_feedback.png` with GUI capture because headless viewport capture returns a null texture in this project.
 - Passed pause settings control feedback, pause menu, battle tap feedback, main settings control feedback, battle overlay exit animation, scene smoke, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 136 tests`.
+
+**Battle Pause Settings Persistence**
+- Battle pause settings now inherit the main app's saved music, effects, and volume values when a level starts, so the Image2 pause settings panel reflects the player's actual preferences instead of defaulting to a separate battle-only state.
+- Added `pause_settings_changed` and `configure_pause_settings()` in `/Users/zhaok/cat/scripts/battle/battle_scene.gd`; `/Users/zhaok/cat/scripts/app/main.gd` now injects saved settings into each battle and persists any battle pause changes through `_save_progress()`.
+- Added `/Users/zhaok/cat/tests/run_pause_settings_persistence_tests.gd` to verify main-to-battle initialization, battle-to-main updates, save-file persistence, and reload restoration using an isolated `user://` save path; the test was verified red before implementation and green after it.
+- No new screenshot was needed because this is a functional persistence fix for the existing Image2 pause settings panel; `/Users/zhaok/cat/artifacts/pause_settings_control_feedback.png` remains the visual evidence for the same panel and control feedback state.
+- Targeted verification passed: `run_pause_settings_persistence_tests.gd`, `run_pause_menu_tests.gd`, `run_pause_settings_control_feedback_tests.gd`, `run_settings_saved_feedback_tests.gd`, `run_settings_control_feedback_tests.gd`, and `run_energy_flow_tests.gd`.
+- Full regression passed after the persistence update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.
