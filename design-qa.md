@@ -1141,3 +1141,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_task_progress_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_task_progress_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/daily_task_progress_guidance.png` and `/Users/zhaok/cat/artifacts/daily_task_progress_level_guidance.png`; GUI capture was used because the current headless Godot run uses a dummy renderer and cannot read viewport textures.
 - Passed daily task progress guidance, daily task overlay, daily task reset, shop shortage daily-task guidance, achievement progress guidance, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 129 tests`.
+
+**Image2 Daily Task Progress Shop Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/daily_task_progress_shop_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/daily_task_progress_shop_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/daily_task_progress_shop_guidance_badge.png`, assembled from existing Image2 shop starter-yarn guidance art after the fresh Image2 shop-routing concept was not exposed as a project-copyable file by the local Codex image tool.
+- The unfinished `准备毛线` daily task now uses `GoShopFromDailyTaskProgressButton` and shop-focused copy instead of the generic `GoLevelsFromDailyTaskProgressButton` route.
+- Pressing the yarn task action preserves the Image2 progress overlay exit animation, closes `DailyTaskOverlay`, opens `ShopOverlay`, and adds `DailyTaskProgressShopGuidance`, a non-blocking Image2 badge with dynamic `买毛线` / `完成任务` copy.
+- The shop route marks and pulses `BuyShopYarnTrapKitButton` and the yarn trap buy plate or shortage state with `image2_daily_task_progress_shop_target`, while leaving the buy button tappable when the player has enough fish.
+- Added `/Users/zhaok/cat/tests/run_daily_task_progress_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_task_progress_shop_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/daily_task_progress_shop_guidance.png`; GUI capture was used for visual evidence after moving the badge down from the shop title area so it no longer covers the close button or purchase action.
+- Passed daily task progress shop guidance, daily task progress guidance, daily task overlay, shop yarn trap, shop starter yarn guidance, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 130 tests`.

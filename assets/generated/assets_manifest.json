@@ -1592,6 +1592,21 @@
       "id": "daily_task_progress_level_guidance_badge",
       "path": "res://assets/generated/ui/daily_task_progress_level_guidance_badge.png",
       "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after routing from unfinished daily task progress."
+    },
+    {
+      "id": "daily_task_progress_shop_guidance_design_reference",
+      "path": "res://assets/generated/ui/daily_task_progress_shop_guidance_design_reference.png",
+      "prompt_summary": "Project-bound Image2-derived shop reference showing a non-blocking daily-task progress badge near the yarn trap product."
+    },
+    {
+      "id": "daily_task_progress_shop_guidance_badge_source",
+      "path": "res://assets/generated/ui/daily_task_progress_shop_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 shop, yarn, fish, paw, and tap-spark art for daily task yarn shop guidance."
+    },
+    {
+      "id": "daily_task_progress_shop_guidance_badge",
+      "path": "res://assets/generated/ui/daily_task_progress_shop_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown after routing from unfinished yarn daily task progress to the shop."
     }
   ]
 }

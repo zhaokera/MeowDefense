@@ -73,6 +73,7 @@ const SHOP_ENERGY_REFILL_RETURN_BADGE := preload("res://assets/generated/ui/shop
 const SHOP_STARTER_YARN_GUIDANCE_BADGE := preload("res://assets/generated/ui/shop_starter_yarn_guidance_badge.png")
 const SHOP_YARN_PURCHASE_BACKPACK_GUIDANCE_BADGE := preload("res://assets/generated/ui/shop_yarn_purchase_backpack_guidance_badge.png")
 const SHOP_PAW_PURCHASE_ACHIEVEMENT_GUIDANCE_BADGE := preload("res://assets/generated/ui/shop_paw_purchase_achievement_guidance_badge.png")
+const DAILY_TASK_PROGRESS_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/daily_task_progress_shop_guidance_badge.png")
 const YARN_TRAP_ITEM_ICON := preload("res://assets/generated/ui/yarn_trap_item_icon.png")
 const RESULT_BUTTON_ORANGE := preload("res://assets/generated/ui/result_button_orange.png")
 const RESULT_BUTTON_BLUE := preload("res://assets/generated/ui/result_button_blue.png")
@@ -1494,7 +1495,9 @@ func _show_daily_task_progress_guidance(parent: Control, task: Dictionary, progr
 
 	var title: String = str(task.get("title", "今日任务"))
 	var detail: String = str(task.get("detail", "完成目标"))
+	var task_id: String = str(task.get("id", ""))
 	var reward_fish: int = max(0, int(task.get("reward_fish", 0)))
+	var routes_to_shop := task_id == "yarn_ready"
 	var title_label: Label = _label("DailyTaskProgressGuidanceTitle", "任务进度：%s" % title, Vector2(430, 78), Vector2(420, 54), 31, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	title_label.z_index = 2
 	guidance.add_child(title_label)
@@ -1506,17 +1509,27 @@ func _show_daily_task_progress_guidance(parent: Control, task: Dictionary, progr
 	reward_text.z_index = 2
 	reward_text.clip_text = true
 	guidance.add_child(reward_text)
-	var copy: Label = _label("DailyTaskProgressGuidanceCopy", "去关卡挑战，完成后回来领取今日任务奖励。", Vector2(320, 476), Vector2(640, 54), 22, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	var copy_text := "去商店准备毛线陷阱，完成后回来领取今日任务奖励。" if routes_to_shop else "去关卡挑战，完成后回来领取今日任务奖励。"
+	var copy: Label = _label("DailyTaskProgressGuidanceCopy", copy_text, Vector2(320, 476), Vector2(640, 54), 22, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	copy.z_index = 2
 	guidance.add_child(copy)
 
-	var go_button: Button = _transparent_text_button("GoLevelsFromDailyTaskProgressButton", "去关卡", Rect2(Vector2(488, 590), Vector2(304, 76)), 27)
+	var go_button_name := "GoShopFromDailyTaskProgressButton" if routes_to_shop else "GoLevelsFromDailyTaskProgressButton"
+	var go_button_text := "去商店" if routes_to_shop else "去关卡"
+	var go_button: Button = _transparent_text_button(go_button_name, go_button_text, Rect2(Vector2(488, 590), Vector2(304, 76)), 27)
 	go_button.z_index = 3
-	go_button.pressed.connect(func() -> void:
-		_show_daily_task_progress_level_guidance = true
-		_animate_overlay_exit(guidance, go_button, _show_level_select)
-	)
+	if routes_to_shop:
+		go_button.pressed.connect(func() -> void:
+			_animate_overlay_exit(guidance, go_button, func() -> void:
+				_route_daily_task_progress_to_shop(parent)
+			)
+		)
+	else:
+		go_button.pressed.connect(func() -> void:
+			_show_daily_task_progress_level_guidance = true
+			_animate_overlay_exit(guidance, go_button, _show_level_select)
+		)
 	_attach_button_feedback(go_button, burst)
 	guidance.add_child(go_button)
 	var close_button: Button = _hotspot_button("CloseDailyTaskProgressGuidanceButton", Vector2(1076, 90), Vector2(96, 96), "关闭")
@@ -1525,6 +1538,20 @@ func _show_daily_task_progress_guidance(parent: Control, task: Dictionary, progr
 	guidance.add_child(close_button)
 	_animate_overlay_entry(guidance)
 	_pulse_control(burst)
+
+
+func _route_daily_task_progress_to_shop(daily_task_content: Control) -> void:
+	var daily_task_overlay: Control = null
+	if daily_task_content != null and is_instance_valid(daily_task_content):
+		daily_task_overlay = daily_task_content.get_parent() as Control
+	if daily_task_overlay != null and is_instance_valid(daily_task_overlay):
+		daily_task_overlay.queue_free()
+	_show_shop_overlay(self)
+	var shop_content: Control = find_child("ShopOverlayContent", true, false) as Control
+	if shop_content == null:
+		return
+	_add_daily_task_progress_shop_guidance(shop_content)
+	_highlight_daily_task_progress_shop_target(shop_content)
 
 
 func _daily_task_progress(task_id: String) -> int:
@@ -2689,6 +2716,66 @@ func _highlight_shop_starter_yarn_target(parent: Control) -> void:
 		buy_button.set_meta("image2_shop_starter_yarn_target", true)
 		if frame == null:
 			_pulse_control(buy_button)
+
+
+func _add_daily_task_progress_shop_guidance(parent: Control) -> void:
+	_remove_named_child(parent, "DailyTaskProgressShopGuidance")
+	var guidance: Control = Control.new()
+	guidance.name = "DailyTaskProgressShopGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 8
+	guidance.set_meta("image2_daily_task_progress_shop_guidance", true)
+	parent.add_child(guidance)
+
+	var badge: TextureRect = _ui_texture_rect("DailyTaskProgressShopBadge", DAILY_TASK_PROGRESS_SHOP_GUIDANCE_BADGE, Vector2(668, 160), Vector2(344, 128))
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	guidance.add_child(badge)
+
+	var label: Label = _label("DailyTaskProgressShopLabel", "买毛线", Vector2(832, 214), Vector2(124, 34), 22, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(label)
+
+	var sub_label: Label = _label("DailyTaskProgressShopSubLabel", "完成任务", Vector2(832, 242), Vector2(124, 22), 12, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.z_index = 2
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.add_child(sub_label)
+
+	badge.pivot_offset = badge.size * 0.5
+	badge.scale = Vector2(0.76, 0.76)
+	badge.modulate.a = 0.0
+	var badge_ref: WeakRef = weakref(badge)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(badge, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(badge, "modulate:a", 0.96, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = badge_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_badge: Control = resolved as Control
+		var base_y: float = resolved_badge.position.y
+		var float_tween: Tween = resolved_badge.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_badge, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_badge, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
+
+
+func _highlight_daily_task_progress_shop_target(parent: Control) -> void:
+	var frame: Control = parent.find_child("ShopYarnTrapKitBuyButtonFrame", true, false) as Control
+	var buy_button: Button = parent.find_child("BuyShopYarnTrapKitButton", true, false) as Button
+	var stamp: Control = parent.find_child("ShopYarnTrapKitInsufficientStamp", true, false) as Control
+	var shortage: Control = parent.find_child("ShopYarnTrapKitShortageButton", true, false) as Control
+	for target: Control in [frame, buy_button, stamp, shortage]:
+		if target == null:
+			continue
+		target.set_meta("image2_daily_task_progress_shop_target", true)
+		_pulse_control(target)
 
 
 func _highlight_backpack_organize_shop_target(parent: Control) -> void:
