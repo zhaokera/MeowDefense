@@ -1223,3 +1223,11 @@ final result: passed
 - No new screenshot was needed because this is a functional persistence fix for the existing Image2 pause settings panel; `/Users/zhaok/cat/artifacts/pause_settings_control_feedback.png` remains the visual evidence for the same panel and control feedback state.
 - Targeted verification passed: `run_pause_settings_persistence_tests.gd`, `run_pause_menu_tests.gd`, `run_pause_settings_control_feedback_tests.gd`, `run_settings_saved_feedback_tests.gd`, `run_settings_control_feedback_tests.gd`, and `run_energy_flow_tests.gd`.
 - Full regression passed after the persistence update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.
+
+**Locked Level Energy Guard**
+- Expanded `/Users/zhaok/cat/tests/run_locked_level_feedback_tests.gd` so the Image2 locked-level guidance action is also exercised with zero energy on an isolated `user://` save path.
+- Pressing `PlayPreviousLevelButton` from the locked-level overlay now has a regression guard that verifies the overlay exit animation starts, the action disables while routing, no `BattleScene` starts, and the existing Image2 `EnergyEmptyOverlay` appears instead.
+- The same test verifies `_energy_ready_guidance_level_id` keeps the previous-level target, so a later refill can guide the player back to the intended playable level rather than dropping context.
+- No new screenshot was needed because this is a behavioral guard for existing Image2 locked-level and energy-empty screens.
+- Targeted verification passed: `run_locked_level_feedback_tests.gd`, `run_energy_flow_tests.gd`, `run_energy_empty_refill_guidance_tests.gd`, and `run_level_select_energy_ready_guidance_tests.gd`.
+- Full regression passed after the guard update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.

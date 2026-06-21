@@ -80,11 +80,45 @@ func _run() -> void:
 		_assert_exists(instance, "BattleScene", "locked level guidance should start the previous level")
 		_assert_true(_as_int(instance.get("_current_level_id")) == 1, "locked level guidance should target level one for level two")
 
+	instance.queue_free()
+	await process_frame
+	_clear_save_file()
+
+	var empty_energy: Node = scene.instantiate()
+	empty_energy.set("_save_path", TEST_SAVE_PATH)
+	empty_energy.set("_reward_date_override", "2026-06-20")
+	root.add_child(empty_energy)
+	await process_frame
+	empty_energy.set("_energy_refilled_on", "2026-06-20")
+	empty_energy.set("_energy", 0)
+	empty_energy.call("_show_level_select_now")
+	await process_frame
+
+	var empty_locked_info: Button = _assert_button(empty_energy, "LockedLevel2InfoButton", "zero-energy locked level card should expose a feedback hit area")
+	if empty_locked_info != null:
+		empty_locked_info.emit_signal("pressed")
+		await process_frame
+		await process_frame
+	var empty_action: Button = _assert_button(empty_energy, "PlayPreviousLevelButton", "zero-energy locked guidance should offer the previous level")
+	var empty_overlay: Control = _assert_control(empty_energy, "LockedLevelFeedbackOverlay", "zero-energy locked guidance should open its Image2 overlay")
+	if empty_action != null:
+		empty_action.emit_signal("pressed")
+		if empty_overlay != null:
+			_assert_true(bool(empty_overlay.get_meta("image2_overlay_exit_animation", false)), "zero-energy locked guidance should animate out before showing energy feedback")
+		_assert_true(empty_action.disabled, "zero-energy locked guidance action should disable while routing")
+		for _frame: int in range(45):
+			await process_frame
+
+	_assert_missing(empty_energy, "BattleScene", "zero-energy locked guidance should not start battle")
+	_assert_exists(empty_energy, "EnergyEmptyOverlay", "zero-energy locked guidance should show the Image2 energy-empty overlay")
+	_assert_true(_as_int(empty_energy.get("_energy")) == 0, "zero-energy locked guidance should not change stored energy")
+	_assert_true(_as_int(empty_energy.get("_energy_ready_guidance_level_id")) == 1, "zero-energy locked guidance should remember the previous-level target")
+
 	_assert_manifest_entry("locked_level_feedback_design_reference", LOCKED_LEVEL_FEEDBACK_DESIGN_PATH)
 	_assert_manifest_entry("locked_level_feedback_burst_source", LOCKED_LEVEL_FEEDBACK_BURST_SOURCE_PATH)
 	_assert_manifest_entry("locked_level_feedback_burst", LOCKED_LEVEL_FEEDBACK_BURST_PATH)
 
-	instance.queue_free()
+	empty_energy.queue_free()
 	_finish()
 
 
@@ -125,6 +159,16 @@ func _assert_label(root_node: Node, node_name: String, message: String) -> Label
 	if node is Label:
 		return node as Label
 	_failures.append("%s should be a Label" % node_name)
+	return null
+
+
+func _assert_control(root_node: Node, node_name: String, message: String) -> Control:
+	var node: Node = _assert_exists(root_node, node_name, message)
+	if node == null:
+		return null
+	if node is Control:
+		return node as Control
+	_failures.append("%s should be a Control" % node_name)
 	return null
 
 
