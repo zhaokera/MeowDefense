@@ -648,7 +648,8 @@ func _show_result(won: bool, stars: int, fish_reward: int) -> void:
 		if target_unlocked_level > previous_unlocked_level:
 			newly_unlocked_level_id = target_unlocked_level
 		_unlocked_level = max(_unlocked_level, target_unlocked_level)
-	_total_fish += fish_reward
+	if won:
+		_total_fish += max(0, fish_reward)
 	_recalculate_best_stars()
 	_save_progress()
 	_clear_current()

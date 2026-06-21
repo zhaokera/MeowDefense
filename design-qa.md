@@ -1263,3 +1263,11 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/capture_result_campaign_clear_guidance.gd` and captured `/Users/zhaok/cat/artifacts/result_campaign_clear_guidance.png`; GUI capture shows the final victory screen with the Image2 achievement badge pointing to the 5-level campaign achievement.
 - Targeted verification passed: `run_result_achievement_claim_guidance_tests.gd`, `run_result_screen_tests.gd`, `run_result_next_level_unlock_feedback_tests.gd`, `run_achievement_claim_tests.gd`, `run_campaign_tests.gd`, `run_progression_persistence_tests.gd`, and `run_playthrough_tests.gd`.
 - Full regression passed after the final-campaign priority update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 138 tests`.
+
+**Defeat Reward Guard**
+- Fixed the real battle defeat path so `BattleScene._finish(false)` emits zero stars and zero fish reward instead of granting one base reward through `max(1, stars)`.
+- Added a second App-level guard in `/Users/zhaok/cat/scripts/app/main.gd` so the Image2 defeat result screen ignores any accidental nonzero reward value and never credits fish on failure.
+- Expanded `/Users/zhaok/cat/tests/run_result_defeat_screen_tests.gd` to cover both the battle signal and the result-screen persistence guard; the test was verified red for nonzero defeat rewards and green after the fix.
+- Recaptured `/Users/zhaok/cat/artifacts/result_defeat_screen.png`; the screenshot confirms the existing Image2 defeat screen still shows the failed run as unrewarded and locked.
+- Targeted verification passed: `run_result_defeat_screen_tests.gd`, `run_result_defeat_guidance_tests.gd`, `run_result_screen_tests.gd`, `run_result_reward_shop_guidance_tests.gd`, `run_result_achievement_claim_guidance_tests.gd`, `run_progression_persistence_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the defeat reward guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 138 tests`.

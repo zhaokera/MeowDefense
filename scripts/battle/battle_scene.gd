@@ -2899,7 +2899,7 @@ func _check_victory() -> void:
 func _finish(won: bool) -> void:
 	finished = true
 	var stars: int = _calculate_stars() if won else 0
-	var fish_reward: int = int(level.reward_fish) * max(1, stars)
+	var fish_reward: int = int(level.reward_fish) * max(1, stars) if won else 0
 	battle_finished.emit(won, stars, fish_reward)
 
 

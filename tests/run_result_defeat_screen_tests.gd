@@ -1,5 +1,6 @@
 extends SceneTree
 
+const BattleSceneScript := preload("res://scripts/battle/battle_scene.gd")
 const TEST_SAVE_PATH := "user://meow_defense_defeat_result_test_save.json"
 
 var _failures: Array[String] = []
@@ -11,6 +12,7 @@ func _init() -> void:
 
 func _run() -> void:
 	_clear_save_file()
+	await _assert_battle_defeat_emits_no_reward()
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	if scene == null:
 		_failures.append("main scene should load")
@@ -22,7 +24,7 @@ func _run() -> void:
 	await process_frame
 
 	instance.set("_current_level_id", 1)
-	instance.call("_show_result", false, 0, 0)
+	instance.call("_show_result", false, 0, 35)
 	await process_frame
 
 	_assert_exists(instance, "ResultScreen", "defeat result screen should open")
@@ -41,11 +43,35 @@ func _run() -> void:
 	_assert_missing(instance, "ResultNextFrame", "defeat result should not overlay the victory next-level button frame")
 	_assert_missing(instance, "ResultRewardCelebrationLayer", "defeat result should not show victory reward celebration")
 	_assert_true(int(instance.get("_unlocked_level")) == 1, "defeat should not unlock the next level")
-	_assert_true(int(instance.get("_total_fish")) == 0, "defeat with zero reward should not grant fish")
+	_assert_true(int(instance.get("_total_fish")) == 0, "defeat should ignore any incoming fish reward")
 	_assert_true(int(instance.call("_level_stars", 1)) == 0, "defeat should not record stars")
 
 	instance.queue_free()
 	_finish()
+
+
+func _assert_battle_defeat_emits_no_reward() -> void:
+	var battle: Node2D = BattleSceneScript.new()
+	root.add_child(battle)
+	battle.start_level("res://data/levels/level_001.json")
+	await process_frame
+
+	var result: Dictionary = {}
+	battle.battle_finished.connect(func(won: bool, stars: int, fish_reward: int) -> void:
+		result["won"] = won
+		result["stars"] = stars
+		result["fish_reward"] = fish_reward
+	)
+	battle.call("_finish", false)
+	await process_frame
+
+	_assert_true(result.has("won"), "battle defeat should emit a result signal")
+	if result.has("won"):
+		_assert_true(not bool(result.get("won", true)), "battle defeat signal should mark the run as lost")
+		_assert_true(int(result.get("stars", -1)) == 0, "battle defeat should emit zero stars")
+		_assert_true(int(result.get("fish_reward", -1)) == 0, "battle defeat should emit zero fish reward")
+	battle.queue_free()
+	await process_frame
 
 
 func _assert_texture_node(root_node: Node, node_name: String, expected_path: String, message: String) -> TextureRect:
