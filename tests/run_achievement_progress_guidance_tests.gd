@@ -5,6 +5,9 @@ const MANIFEST_PATH := "res://assets/generated/assets_manifest.json"
 const ACHIEVEMENT_PROGRESS_DESIGN_PATH := "res://assets/generated/ui/achievement_progress_guidance_design_reference.png"
 const ACHIEVEMENT_PROGRESS_BURST_PATH := "res://assets/generated/ui/achievement_progress_guidance_burst.png"
 const ACHIEVEMENT_PROGRESS_BURST_SOURCE_PATH := "res://assets/generated/ui/achievement_progress_guidance_burst_source.png"
+const ACHIEVEMENT_PROGRESS_LEVEL_REFERENCE_PATH := "res://assets/generated/ui/achievement_progress_level_guidance_design_reference.png"
+const ACHIEVEMENT_PROGRESS_LEVEL_SOURCE_PATH := "res://assets/generated/ui/achievement_progress_level_guidance_badge_source.png"
+const ACHIEVEMENT_PROGRESS_LEVEL_BADGE_PATH := "res://assets/generated/ui/achievement_progress_level_guidance_badge.png"
 
 var _failures: Array[String] = []
 
@@ -85,10 +88,24 @@ func _run() -> void:
 			await process_frame
 		_assert_exists(instance, "LevelSelectScreen", "achievement progress guidance action should open level select")
 		_assert_missing(instance, "AchievementsOverlay", "achievement progress guidance action should leave the achievements overlay")
+		var level_guidance: Control = _assert_control(instance, "AchievementProgressLevelGuidance", "achievement progress route should show a level-select guidance badge")
+		if level_guidance != null:
+			_assert_true(bool(level_guidance.get_meta("image2_achievement_progress_level_guidance", false)), "achievement progress level guidance should mark Image2 metadata")
+			_assert_true(level_guidance.mouse_filter == Control.MOUSE_FILTER_IGNORE, "achievement progress level guidance should not block level input")
+		_assert_texture_node(instance, "AchievementProgressLevelBadge", ACHIEVEMENT_PROGRESS_LEVEL_BADGE_PATH, "achievement progress level guidance should render the Image2 badge")
+		var level_label: Label = _assert_label(instance, "AchievementProgressLevelLabel", "achievement progress level guidance should include runtime copy")
+		if level_label != null:
+			_assert_true(level_label.text.contains("成就") or level_label.text.contains("挑战"), "achievement progress level copy should point to achievement progress")
+		var start_level: Button = _assert_button(instance, "StartLevel1Button", "achievement progress level guidance should leave level one tappable")
+		if start_level != null:
+			_assert_true(not start_level.disabled, "achievement progress level guidance should not disable level one")
 
 	_assert_manifest_entry("achievement_progress_guidance_design_reference", ACHIEVEMENT_PROGRESS_DESIGN_PATH)
 	_assert_manifest_entry("achievement_progress_guidance_burst_source", ACHIEVEMENT_PROGRESS_BURST_SOURCE_PATH)
 	_assert_manifest_entry("achievement_progress_guidance_burst", ACHIEVEMENT_PROGRESS_BURST_PATH)
+	_assert_manifest_entry("achievement_progress_level_guidance_design_reference", ACHIEVEMENT_PROGRESS_LEVEL_REFERENCE_PATH)
+	_assert_manifest_entry("achievement_progress_level_guidance_badge_source", ACHIEVEMENT_PROGRESS_LEVEL_SOURCE_PATH)
+	_assert_manifest_entry("achievement_progress_level_guidance_badge", ACHIEVEMENT_PROGRESS_LEVEL_BADGE_PATH)
 
 	instance.queue_free()
 	_finish()
@@ -129,6 +146,30 @@ func _assert_button(root_node: Node, node_name: String, message: String) -> Butt
 		return node as Button
 	_failures.append("%s should be a Button" % node_name)
 	return null
+
+
+func _assert_control(root_node: Node, node_name: String, message: String) -> Control:
+	var node: Node = _assert_exists(root_node, node_name, message)
+	if node == null:
+		return null
+	if node is Control:
+		return node as Control
+	_failures.append("%s should be a Control" % node_name)
+	return null
+
+
+func _assert_texture_node(root_node: Node, node_name: String, expected_path: String, message: String) -> TextureRect:
+	var node: Node = _assert_exists(root_node, node_name, message)
+	if node == null:
+		return null
+	if not node is TextureRect:
+		_failures.append("%s should be a TextureRect" % node_name)
+		return null
+	var texture_node: TextureRect = node as TextureRect
+	_assert_true(texture_node.texture != null, "%s should have a texture" % node_name)
+	if texture_node.texture != null:
+		_assert_true(texture_node.texture.resource_path == expected_path, "%s should use %s" % [node_name, expected_path])
+	return texture_node
 
 
 func _assert_label(root_node: Node, node_name: String, message: String) -> Label:

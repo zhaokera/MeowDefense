@@ -1123,3 +1123,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_settings_saved_feedback_tests.gd` and `/Users/zhaok/cat/tests/capture_settings_saved_feedback.gd`.
 - Captured `/Users/zhaok/cat/artifacts/settings_saved_feedback.png`; GUI capture was used for visual evidence after moving the badge away from the toggle row.
 - Passed settings saved feedback, settings control feedback, settings overlay exit animation, menu, pause menu, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 128 tests`.
+
+**Image2 Achievement Progress Level Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/achievement_progress_level_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/achievement_progress_level_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/achievement_progress_level_guidance_badge.png`, assembled from existing Image2 level-select, achievement, star, tap-spark, and button art after the fresh Image2 output was not exposed as a project-copyable file by the local Codex image tool.
+- Pressing `GoLevelsFromAchievementProgressButton` from unfinished achievement progress now marks a one-time level-select guidance state before the Image2 overlay exit animation.
+- The level-select screen now shows `AchievementProgressLevelGuidance`, a non-blocking Image2 badge with dynamic `成就挑战` and `通关推进` copy, while leaving `StartLevel1Button` tappable.
+- The guidance uses the same pop-in, tilt, and subtle floating motion pattern as the other level-select return hints.
+- Expanded `/Users/zhaok/cat/tests/run_achievement_progress_guidance_tests.gd` and added `/Users/zhaok/cat/tests/capture_achievement_progress_level_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/achievement_progress_level_guidance.png`; GUI capture was used for visual evidence.
+- Passed achievement progress guidance, achievement continue level guidance, album detail level guidance, backpack yarn level guidance, menu, playthrough, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 128 tests`.

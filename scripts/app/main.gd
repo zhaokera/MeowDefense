@@ -56,6 +56,7 @@ const ACHIEVEMENT_CLAIM_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/u
 const ACHIEVEMENT_PROGRESS_DESIGN := preload("res://assets/generated/ui/achievement_progress_guidance_design_reference.png")
 const ACHIEVEMENT_PROGRESS_BURST := preload("res://assets/generated/ui/achievement_progress_guidance_burst.png")
 const ACHIEVEMENT_CONTINUE_LEVEL_BADGE := preload("res://assets/generated/ui/achievement_continue_level_guidance_badge.png")
+const ACHIEVEMENT_PROGRESS_LEVEL_GUIDANCE_BADGE := preload("res://assets/generated/ui/achievement_progress_level_guidance_badge.png")
 const SHOP_PAW_BUNDLE_ICON := preload("res://assets/generated/ui/album_paw_badge.png")
 const SHOP_OVERLAY_DESIGN := preload("res://assets/generated/ui/shop_overlay_buyable_design_reference.png")
 const SHOP_PURCHASE_FEEDBACK_DESIGN := preload("res://assets/generated/ui/shop_purchase_feedback_design_reference.png")
@@ -146,6 +147,7 @@ var _show_energy_ready_level_guidance: bool = false
 var _energy_ready_guidance_level_id: int = 1
 var _show_pause_quit_level_guidance: bool = false
 var _show_achievement_continue_level_guidance: bool = false
+var _show_achievement_progress_level_guidance: bool = false
 var _show_backpack_yarn_level_guidance: bool = false
 var _show_shop_shortage_daily_task_guidance: bool = false
 var _shop_shortage_return_target: String = ""
@@ -300,6 +302,10 @@ func _show_level_select_now() -> void:
 		_show_achievement_continue_level_guidance = false
 		if _is_level_unlocked(1):
 			_add_achievement_continue_level_guidance(screen, level_hotspots[0]["rect"] as Rect2)
+	if _show_achievement_progress_level_guidance:
+		_show_achievement_progress_level_guidance = false
+		if _is_level_unlocked(1):
+			_add_achievement_progress_level_guidance(screen, level_hotspots[0]["rect"] as Rect2)
 	if _show_backpack_yarn_level_guidance:
 		_show_backpack_yarn_level_guidance = false
 		if _is_level_unlocked(1):
@@ -2264,6 +2270,7 @@ func _show_achievement_progress_guidance(parent: Control, achievement: Dictionar
 	var go_button: Button = _transparent_text_button("GoLevelsFromAchievementProgressButton", "去关卡", Rect2(Vector2(488, 590), Vector2(304, 76)), 27)
 	go_button.z_index = 3
 	go_button.pressed.connect(func() -> void:
+		_show_achievement_progress_level_guidance = true
 		_animate_overlay_exit(guidance, go_button, _show_level_select)
 	)
 	_attach_button_feedback(go_button, burst)
@@ -2918,6 +2925,63 @@ func _add_achievement_continue_level_guidance(parent: Control, rect: Rect2) -> v
 	group.add_child(label)
 
 	var sub_label: Label = _label("AchievementContinueLevelSubLabel", "选择关卡", Vector2(140.0, 86.0), Vector2(154.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sub_label.z_index = 2
+	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))
+	sub_label.add_theme_constant_override("outline_size", 2)
+	group.add_child(sub_label)
+
+	group.pivot_offset = group.size * 0.5
+	group.scale = Vector2(0.76, 0.76)
+	group.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	var group_ref: WeakRef = weakref(group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", -2.5, 0.10).set_delay(0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(group, "rotation_degrees", 1.8, 0.14).set_delay(0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		resolved_group.rotation_degrees = 0.0
+		var base_y: float = guidance_position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
+
+
+func _add_achievement_progress_level_guidance(parent: Control, rect: Rect2) -> void:
+	_remove_named_child(parent, "AchievementProgressLevelGuidance")
+	var guidance_size := Vector2(376, 154)
+	var guidance_position: Vector2 = rect.position + Vector2(-154.0, 176.0)
+	var group: Control = Control.new()
+	group.name = "AchievementProgressLevelGuidance"
+	group.position = guidance_position
+	group.size = guidance_size
+	group.z_index = 9
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.set_meta("image2_achievement_progress_level_guidance", true)
+	parent.add_child(group)
+
+	var badge: TextureRect = _ui_texture_rect("AchievementProgressLevelBadge", ACHIEVEMENT_PROGRESS_LEVEL_GUIDANCE_BADGE, Vector2.ZERO, guidance_size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.z_index = 1
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(badge)
+
+	var label: Label = _label("AchievementProgressLevelLabel", "成就挑战", Vector2(124.0, 48.0), Vector2(198.0, 36.0), 27, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_index = 2
+	label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.96))
+	label.add_theme_constant_override("outline_size", 4)
+	group.add_child(label)
+
+	var sub_label: Label = _label("AchievementProgressLevelSubLabel", "通关推进", Vector2(144.0, 88.0), Vector2(164.0, 26.0), 17, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
 	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sub_label.z_index = 2
 	sub_label.add_theme_color_override("font_outline_color", Color(1.0, 0.92, 0.64, 0.88))

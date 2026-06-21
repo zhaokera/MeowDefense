@@ -1547,6 +1547,21 @@
       "id": "settings_saved_feedback_badge",
       "path": "res://assets/generated/ui/settings_saved_feedback_badge.png",
       "prompt_summary": "Project-bound transparent Image2-derived badge shown when settings changes are saved."
+    },
+    {
+      "id": "achievement_progress_level_guidance_design_reference",
+      "path": "res://assets/generated/ui/achievement_progress_level_guidance_design_reference.png",
+      "prompt_summary": "Project-bound Image2-derived level-select reference showing a non-blocking achievement-progress badge near the first playable level."
+    },
+    {
+      "id": "achievement_progress_level_guidance_badge_source",
+      "path": "res://assets/generated/ui/achievement_progress_level_guidance_badge_source.png",
+      "prompt_summary": "Chroma-key source assembled from existing Image2 achievement, star, tap-spark, and level-select art for achievement progress level guidance."
+    },
+    {
+      "id": "achievement_progress_level_guidance_badge",
+      "path": "res://assets/generated/ui/achievement_progress_level_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown on level select after routing from unfinished achievement progress."
     }
   ]
 }
