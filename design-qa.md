@@ -1271,3 +1271,10 @@ final result: passed
 - Recaptured `/Users/zhaok/cat/artifacts/result_defeat_screen.png`; the screenshot confirms the existing Image2 defeat screen still shows the failed run as unrewarded and locked.
 - Targeted verification passed: `run_result_defeat_screen_tests.gd`, `run_result_defeat_guidance_tests.gd`, `run_result_screen_tests.gd`, `run_result_reward_shop_guidance_tests.gd`, `run_result_achievement_claim_guidance_tests.gd`, `run_progression_persistence_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
 - Full regression passed after the defeat reward guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 138 tests`.
+
+**Battle Finish Idempotency Guard**
+- Added a battle-end guard so `BattleScene._finish()` returns immediately after the first result, preventing duplicate `battle_finished` signals from repeated same-frame or late win/loss triggers.
+- Added `/Users/zhaok/cat/tests/run_battle_finish_once_tests.gd` to prove the first result is preserved and repeat victory/defeat finish calls cannot emit a second result; the test was verified red before adding the guard and green after.
+- No new screenshot was needed because this protects the battle-to-result state machine behind the existing Image2 result screens rather than changing a rendered screen.
+- Targeted verification passed: `run_battle_finish_once_tests.gd`, `run_result_defeat_screen_tests.gd`, `run_result_screen_tests.gd`, `run_result_achievement_claim_guidance_tests.gd`, `run_progression_persistence_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the finish idempotency guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 139 tests`.
