@@ -87,6 +87,7 @@ func _assert_pause_menu_resume_exit_animation() -> void:
 		_assert_true(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "pause menu overlay should stop catching input while exiting")
 		_assert_true(overlay.modulate.a < 1.0, "pause menu overlay should start fading out immediately during exit animation")
 	_assert_true(resume_button.disabled, "resume button should disable during exit animation")
+	_assert_buttons_disabled_under(overlay, "pause menu overlay should disable every button during exit animation")
 	for _frame: int in range(45):
 		await process_frame
 	_assert_true(_find_by_name(battle, "PauseMenuOverlay") == null, "pause menu overlay should be removed after exit animation")
@@ -110,9 +111,17 @@ func _assert_overlay_exit_animation(battle: Node, overlay_name: String, close_bu
 		_assert_true(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "%s overlay should stop catching input while exiting" % label)
 		_assert_true(overlay.modulate.a < 1.0, "%s overlay should start fading out immediately during exit animation" % label)
 	_assert_true(close_button.disabled, "%s close button should disable during exit animation" % label)
+	_assert_buttons_disabled_under(overlay, "%s overlay should disable every button during exit animation" % label)
 	for _frame: int in range(45):
 		await process_frame
 	_assert_true(_find_by_name(battle, overlay_name) == null, "%s overlay should be removed after exit animation" % label)
+
+
+func _assert_buttons_disabled_under(node: Node, message: String) -> void:
+	for child: Node in node.get_children():
+		if child is BaseButton:
+			_assert_true((child as BaseButton).disabled, message)
+		_assert_buttons_disabled_under(child, message)
 
 
 func _new_battle() -> Node2D:

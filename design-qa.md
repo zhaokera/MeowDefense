@@ -1294,3 +1294,11 @@ final result: passed
 - No new screenshot was needed because the change only locks input during the existing Image2 exit animation and does not alter the rendered overlay art.
 - Targeted verification passed: `run_overlay_action_exit_animation_tests.gd`, `run_detail_overlay_exit_animation_tests.gd`, `run_reward_claim_action_exit_animation_tests.gd`, `run_reward_overlay_exit_animation_tests.gd`, `run_reward_overlay_tests.gd`, `run_shop_purchase_feedback_tests.gd`, `run_shop_purchase_overlay_guard_tests.gd`, `run_daily_task_overlay_tests.gd`, `run_achievement_claim_tests.gd`, and `run_battle_overlay_exit_animation_tests.gd`.
 - Full regression passed after the shared overlay input lock: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.
+
+**Battle HUD Overlay Exit Input Lock**
+- The battle HUD Image2 overlay exit helper now locks every `BaseButton` under the exiting overlay and makes child controls ignore pointer input during the fade/slide transition.
+- This brings tower management, pause menu, pause settings, and wave preview detail overlays in line with the main-menu Image2 overlay behavior, preventing rapid taps from firing a second HUD action while the current overlay is already exiting.
+- Expanded `/Users/zhaok/cat/tests/run_battle_overlay_exit_animation_tests.gd` to assert all buttons under tower action, pause settings, and pause menu overlays are disabled during exit; the test was verified red before the shared HUD lock and green after it.
+- No new screenshot was needed because the change protects the existing Image2 HUD overlay transition without changing visible art.
+- Targeted verification passed: `run_battle_overlay_exit_animation_tests.gd`, `run_pause_menu_action_exit_animation_tests.gd`, `run_pause_menu_tests.gd`, `run_pause_resume_feedback_tests.gd`, `run_pause_restart_feedback_tests.gd`, `run_pause_settings_control_feedback_tests.gd`, `run_pause_settings_persistence_tests.gd`, `run_battle_wave_preview_close_feedback_tests.gd`, `run_battle_wave_preview_detail_tests.gd`, `run_tower_action_tests.gd`, `run_tower_action_cancel_feedback_tests.gd`, and `run_tower_sell_action_exit_animation_tests.gd`.
+- Full regression passed after the battle HUD overlay input lock: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.

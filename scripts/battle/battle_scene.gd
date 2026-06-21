@@ -3237,6 +3237,7 @@ func _animate_hud_overlay_exit(target: Control, trigger_button: Button = null, f
 	target.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	target.pivot_offset = Vector2(640, 360)
 	target.modulate.a = min(target.modulate.a, 0.96)
+	_lock_hud_overlay_inputs_under(target)
 	if trigger_button != null and is_instance_valid(trigger_button):
 		trigger_button.disabled = true
 	var tween: Tween = target.create_tween()
@@ -3250,6 +3251,15 @@ func _animate_hud_overlay_exit(target: Control, trigger_button: Button = null, f
 		if finish_callback.is_valid():
 			finish_callback.call()
 	)
+
+
+func _lock_hud_overlay_inputs_under(node: Node) -> void:
+	for child: Node in node.get_children():
+		if child is BaseButton:
+			(child as BaseButton).disabled = true
+		if child is Control:
+			(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_lock_hud_overlay_inputs_under(child)
 
 
 func _pause_transparent_text_button(button_name: String, text: String, rect: Rect2, font_size: int) -> Button:
