@@ -154,6 +154,7 @@ var _energy: int = DEFAULT_MAX_ENERGY
 var _energy_refilled_on: String = ""
 var _show_energy_ready_level_guidance: bool = false
 var _energy_ready_guidance_level_id: int = 1
+var _energy_ready_return_context: String = ""
 var _show_pause_quit_level_guidance: bool = false
 var _show_achievement_continue_level_guidance: bool = false
 var _show_achievement_progress_level_guidance: bool = false
@@ -715,6 +716,7 @@ func _start_level_from_result(screen: Control, trigger_button: Button, level_inf
 		return
 	if _energy <= 0:
 		_energy_ready_guidance_level_id = requested_level_id
+		_energy_ready_return_context = _result_energy_refill_context(requested_level_id)
 		_show_result_energy_refill_guidance(screen, trigger_button, _result_energy_refill_copy(requested_level_id))
 		return
 	_animate_result_screen_exit(screen, trigger_button, func() -> void:
@@ -724,6 +726,10 @@ func _start_level_from_result(screen: Control, trigger_button: Button, level_inf
 
 func _result_energy_refill_copy(requested_level_id: int) -> String:
 	return "补体力再试" if requested_level_id == _current_level_id else "补体力闯关"
+
+
+func _result_energy_refill_context(requested_level_id: int) -> String:
+	return "retry" if requested_level_id == _current_level_id else "next"
 
 
 func _show_settings_overlay(parent: Node) -> void:
@@ -2762,11 +2768,13 @@ func _add_shop_energy_refill_return_guidance(reward: Control, feedback_target: C
 	badge.z_index = 1
 	guidance.add_child(badge)
 
-	var label: Label = _label("ShopEnergyRefillReturnLabel", "去闯关", Vector2(724, 606), Vector2(176, 44), 25, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	var return_copy: String = _shop_energy_refill_return_copy()
+	_energy_ready_return_context = ""
+	var label: Label = _label("ShopEnergyRefillReturnLabel", return_copy, Vector2(704, 606), Vector2(216, 44), 24, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	label.z_index = 2
 	guidance.add_child(label)
 
-	var return_button: Button = _hotspot_button("ShopEnergyRefillReturnButton", Vector2(645, 582), Vector2(284, 94), "去闯关")
+	var return_button: Button = _hotspot_button("ShopEnergyRefillReturnButton", Vector2(645, 582), Vector2(284, 94), return_copy)
 	return_button.z_index = 5
 	return_button.pressed.connect(func() -> void:
 		_show_energy_ready_level_guidance = true
@@ -2779,6 +2787,14 @@ func _add_shop_energy_refill_return_guidance(reward: Control, feedback_target: C
 	_pulse_control(badge)
 	if feedback_target != null:
 		_pulse_control(feedback_target)
+
+
+func _shop_energy_refill_return_copy() -> String:
+	if _energy_ready_return_context == "retry":
+		return "回去再试"
+	if _energy_ready_return_context == "next":
+		return "去下一关"
+	return "去闯关"
 
 
 func _return_to_level_select_after_energy_refill() -> void:

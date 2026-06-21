@@ -1239,3 +1239,11 @@ final result: passed
 - The new result refill guidance assertions were verified red against the old fixed `补体力` copy before the implementation and green after adding contextual copy selection.
 - Targeted verification passed: `run_result_energy_refill_guidance_tests.gd`, `run_result_energy_refill_target_level_tests.gd`, `run_result_screen_exit_animation_tests.gd`, `run_result_screen_tests.gd`, `run_energy_flow_tests.gd`, `run_result_defeat_guidance_tests.gd`, `run_result_defeat_screen_tests.gd`, and `run_shop_energy_refill_return_tests.gd`.
 - Full regression passed after the dynamic-copy update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.
+
+**Shop Energy Refill Return Context**
+- Energy-refill purchase success now carries the result-route context into the Image2 shop reward overlay: `去下一关` after a next-level refill route, `回去再试` after a retry refill route, and the existing `去闯关` copy for ordinary shop refills.
+- Added retry-route coverage to `/Users/zhaok/cat/tests/run_result_energy_refill_target_level_tests.gd`, proving that purchasing energy after result retry returns to `Level1EnergyReadyGuidance`, not the newly unlocked level two hint.
+- Added a short-lived `_energy_ready_return_context` so the contextual copy is consumed when `ShopEnergyRefillReturnGuidance` is built and does not leak into later ordinary shop purchases.
+- Updated `/Users/zhaok/cat/tests/capture_result_energy_refill_target_level.gd` to assert the `去下一关` copy before returning to the level map, then recaptured `/Users/zhaok/cat/artifacts/result_energy_refill_target_level.png` and `/Users/zhaok/cat/artifacts/shop_energy_refill_return.png`.
+- Targeted verification passed: `run_result_energy_refill_target_level_tests.gd`, `run_result_energy_refill_guidance_tests.gd`, `run_shop_energy_refill_return_tests.gd`, and `run_level_select_energy_ready_guidance_tests.gd`.
+- Full regression passed after the shop return-context update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 137 tests`.

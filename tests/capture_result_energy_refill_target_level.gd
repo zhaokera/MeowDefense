@@ -55,6 +55,11 @@ func _capture() -> void:
 	buy_button.emit_signal("pressed")
 	await _wait_until_exists(instance, "ShopEnergyRefillReturnButton")
 
+	var return_label: Label = instance.find_child("ShopEnergyRefillReturnLabel", true, false) as Label
+	if return_label == null or not return_label.text.contains("下一关"):
+		push_error("ShopEnergyRefillReturnLabel missing next-level copy")
+		quit(1)
+		return
 	var return_button: Button = instance.find_child("ShopEnergyRefillReturnButton", true, false) as Button
 	if return_button == null:
 		push_error("ShopEnergyRefillReturnButton missing")

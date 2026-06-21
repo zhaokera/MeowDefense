@@ -10,11 +10,16 @@ func _init() -> void:
 
 
 func _run() -> void:
+	await _assert_next_level_refill_return_guides_next_level()
+	await _assert_retry_refill_return_guides_current_level()
+	_finish()
+
+
+func _assert_next_level_refill_return_guides_next_level() -> void:
 	_clear_save_file()
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	if scene == null:
 		_failures.append("main scene should load")
-		_finish()
 		return
 
 	var instance: Node = scene.instantiate()
@@ -51,6 +56,9 @@ func _run() -> void:
 		await _wait_until_exists(instance, "ShopPurchaseRewardOverlay")
 
 	var return_button: Button = _assert_button(instance, "ShopEnergyRefillReturnButton", "energy refill reward should expose return-to-level action")
+	var return_label: Label = _assert_label(instance, "ShopEnergyRefillReturnLabel", "energy refill reward should label the next-level return action")
+	if return_label != null:
+		_assert_true(return_label.text.contains("下一关") or return_label.text.contains("闯关"), "next-level refill return should point back to level play")
 	if return_button != null:
 		return_button.emit_signal("pressed")
 		await _wait_until_exists(instance, "LevelSelectScreen")
@@ -79,7 +87,72 @@ func _run() -> void:
 	_assert_true(_int_property(instance, "_energy") == 4, "starting the guided level should consume one purchased energy")
 
 	instance.queue_free()
-	_finish()
+
+
+func _assert_retry_refill_return_guides_current_level() -> void:
+	_clear_save_file()
+	var scene: PackedScene = load("res://scenes/main.tscn")
+	if scene == null:
+		_failures.append("main scene should load for retry return")
+		return
+
+	var instance: Node = scene.instantiate()
+	instance.set("_save_path", TEST_SAVE_PATH)
+	instance.set("_reward_date_override", "2026-06-20")
+	instance.set("_energy_refilled_on", "2026-06-20")
+	instance.set("_max_energy", 15)
+	instance.set("_energy", 0)
+	instance.set("_total_fish", 25)
+	instance.set("_current_level_id", 1)
+	instance.set("_unlocked_level", 2)
+	instance.set("_claimed_achievements", {"first_clear": true})
+	root.add_child(instance)
+	await process_frame
+	instance.set("_energy_refilled_on", "2026-06-20")
+	instance.set("_energy", 0)
+	instance.call("_show_result", true, 3, 0)
+	await process_frame
+
+	var retry_button: Button = _assert_button(instance, "RetryButton", "victory result should expose retry action")
+	if retry_button != null:
+		retry_button.emit_signal("pressed")
+		await _wait_until_exists(instance, "ResultEnergyRefillGuidance")
+
+	var result_refill: Button = _assert_button(instance, "ResultEnergyRefillButton", "retry refill guidance should expose a shop route")
+	if result_refill != null:
+		result_refill.emit_signal("pressed")
+		await _wait_until_exists(instance, "ShopOverlay")
+
+	var buy_button: Button = _assert_button(instance, "BuyShopEnergyRefillButton", "retry route shop should expose energy refill purchase")
+	if buy_button != null:
+		_assert_true(not buy_button.disabled, "retry route energy refill should be affordable")
+		buy_button.emit_signal("pressed")
+		await _wait_until_exists(instance, "ShopPurchaseRewardOverlay")
+
+	var return_label: Label = _assert_label(instance, "ShopEnergyRefillReturnLabel", "retry refill reward should label the retry return action")
+	if return_label != null:
+		_assert_true(return_label.text.contains("再试") or return_label.text.contains("重试"), "retry refill return should point back to retrying the current level")
+	var return_button: Button = _assert_button(instance, "ShopEnergyRefillReturnButton", "retry refill reward should expose return-to-level action")
+	if return_button != null:
+		return_button.emit_signal("pressed")
+		await _wait_until_exists(instance, "LevelSelectScreen")
+
+	_assert_exists(instance, "LevelSelectScreen", "retry refill return should open level select")
+	_assert_missing(instance, "Level2EnergyReadyGuidance", "retry refill return should not guide the next level")
+	var guidance: Control = _assert_control(instance, "Level1EnergyReadyGuidance", "retry refill return should guide the current level")
+	if guidance != null:
+		_assert_true(bool(guidance.get_meta("image2_energy_ready_guidance", false)), "retry target guidance should remain Image2-sourced")
+	var start_level: Button = _assert_button(instance, "StartLevel1Button", "guided retry level should remain tappable")
+	if start_level != null:
+		_assert_true(not start_level.disabled, "guided retry level should be enabled")
+		start_level.emit_signal("pressed")
+		await _wait_until_exists(instance, "BattleScene")
+
+	_assert_exists(instance, "BattleScene", "pressing guided retry level should enter battle")
+	_assert_true(_int_property(instance, "_current_level_id") == 1, "guided retry battle should restart level one")
+	_assert_true(_int_property(instance, "_energy") == 4, "starting the guided retry level should consume one purchased energy")
+
+	instance.queue_free()
 
 
 func _assert_texture_node(root_node: Node, node_name: String, expected_path: String, message: String) -> TextureRect:
@@ -103,6 +176,16 @@ func _assert_button(root_node: Node, node_name: String, message: String) -> Butt
 	if node is Button:
 		return node as Button
 	_failures.append("%s should be a Button" % node_name)
+	return null
+
+
+func _assert_label(root_node: Node, node_name: String, message: String) -> Label:
+	var node: Node = _assert_exists(root_node, node_name, message)
+	if node == null:
+		return null
+	if node is Label:
+		return node as Label
+	_failures.append("%s should be a Label" % node_name)
 	return null
 
 
