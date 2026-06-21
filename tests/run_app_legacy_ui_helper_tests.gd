@@ -21,6 +21,8 @@ func _run() -> void:
 	_assert_true(not source.contains("func _toggle("), "main app should not retain legacy visible CheckButton helper")
 	_assert_true(not source.contains("func _style("), "main app should not retain legacy StyleBoxFlat helper for visible UI")
 	_assert_true(not source.contains("Panel.new()"), "main app should not create visible code-drawn Panel nodes")
+	_assert_true(not source.contains("func _shop_locked_product("), "main app should not retain the old locked shop product helper")
+	_assert_true(not source.contains("\"未开放\""), "main app should not keep old unopened product copy after Image2 buyable shop restoration")
 
 	_finish()
 

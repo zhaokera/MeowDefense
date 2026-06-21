@@ -1195,3 +1195,9 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_level_select_current_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_level_select_current_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/level_select_current_guidance.png`; GUI capture was used for visual evidence after switching to a cleaner Image2 badge so the first level start action remains readable.
 - Passed level-select current guidance, level-select energy-ready guidance, level-select new-unlock hint, menu, hotspot feedback, Image2 screen exit animation, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 135 tests`.
+
+**Image2 Buyable Shop Legacy Cleanup**
+- Removed the unused `_shop_locked_product()` helper from `/Users/zhaok/cat/scripts/app/main.gd`, eliminating the old code path that could recreate visible `未开放` placeholder product UI after the shop had already been restored to the Image2 buyable-product design.
+- Expanded `/Users/zhaok/cat/tests/run_app_legacy_ui_helper_tests.gd` to reject the old locked shop helper and unopened-product copy, keeping the player-facing shop aligned with the Image2-first rule.
+- No new screenshot was needed because this change removes dead code and does not alter the currently rendered shop screen.
+- Verification after the Godot AI 2.7.6 update and cleanup: targeted app legacy, shop buyable design, shop yarn trap, and shop paw bundle checks passed, then the full `/Users/zhaok/cat/tests/run_*.gd` regression suite passed with `FULL_REGRESSION_PASS_CLEAN 135 tests`.

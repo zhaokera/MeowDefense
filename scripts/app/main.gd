@@ -2938,14 +2938,6 @@ func _add_shop_paw_purchase_achievement_guidance(reward: Control, feedback_targe
 		_pulse_control(feedback_target)
 
 
-func _shop_locked_product(parent: Control, node_prefix: String, title: String, detail: String, position: Vector2, size: Vector2) -> void:
-	parent.add_child(_label("%sTitle" % node_prefix, title, position, Vector2(size.x, 36), 20, INK, HORIZONTAL_ALIGNMENT_CENTER))
-	parent.add_child(_label("%sDetail" % node_prefix, detail, position + Vector2(58, 188), Vector2(size.x - 70, 40), 15, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER))
-	var button: Button = _transparent_text_button("%sButton" % node_prefix, "未开放", Rect2(position + Vector2(8, 254), Vector2(size.x - 16, 62)), 22)
-	button.disabled = true
-	parent.add_child(button)
-
-
 func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Vector2, size: Vector2) -> void:
 	var price := 45
 	var token_count := 2
