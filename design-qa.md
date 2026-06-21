@@ -1201,3 +1201,10 @@ final result: passed
 - Expanded `/Users/zhaok/cat/tests/run_app_legacy_ui_helper_tests.gd` to reject the old locked shop helper and unopened-product copy, keeping the player-facing shop aligned with the Image2-first rule.
 - No new screenshot was needed because this change removes dead code and does not alter the currently rendered shop screen.
 - Verification after the Godot AI 2.7.6 update and cleanup: targeted app legacy, shop buyable design, shop yarn trap, and shop paw bundle checks passed, then the full `/Users/zhaok/cat/tests/run_*.gd` regression suite passed with `FULL_REGRESSION_PASS_CLEAN 135 tests`.
+
+**Main Scene Image2 Entry Guard**
+- Expanded `/Users/zhaok/cat/tests/run_scene_smoke.gd` so the smoke test now verifies the tracked main scene still has the `Control` root and `res://scripts/app/main.gd`, and rejects unrelated platformer prototype content such as `res://scenes/player.tscn`, `StaticBody2D`, `Camera2D`, and `ColorRect` nodes.
+- The same smoke test now rejects unrelated platformer input actions (`move_left`, `move_right`, `jump`, `attack`, `dodge`) in `/Users/zhaok/cat/project.godot`, preventing editor or plugin write-back from silently replacing the Image2-first MeowDefense entry with a different prototype.
+- No new screenshot was needed because this is an automated guard for the existing Image2 home entry, not a rendered UI change.
+- Targeted verification passed: `run_scene_smoke.gd`, `run_menu_tests.gd`, `run_app_legacy_ui_helper_tests.gd`, and manifest JSON parsing.
+- Full regression passed after the guard update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 135 tests`.
