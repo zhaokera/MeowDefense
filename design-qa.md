@@ -1168,3 +1168,12 @@ final result: passed
 - Added `/Users/zhaok/cat/tests/run_daily_task_claim_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_daily_task_claim_shop_guidance.gd`.
 - Captured `/Users/zhaok/cat/artifacts/daily_task_claim_shop_guidance.png`; GUI capture was used for visual evidence after confirming the badge leaves the fish reward and `留在任务` action readable.
 - Passed daily task claim shop guidance, daily task overlay, daily task shop return guidance, daily task progress shop guidance, daily task yarn purchase return, daily reward shop guidance, shop yarn trap, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 132 tests`.
+
+**Image2 Backpack Fish Shop Guidance**
+- Added project-bound Image2-derived assets `/Users/zhaok/cat/assets/generated/ui/backpack_fish_shop_guidance_design_reference.png`, `/Users/zhaok/cat/assets/generated/ui/backpack_fish_shop_guidance_badge_source.png`, and `/Users/zhaok/cat/assets/generated/ui/backpack_fish_shop_guidance_badge.png`, assembled from existing Image2 backpack-organize shop guidance art after the fresh Image2 fish-detail shop concept was not exposed as a project-copyable file by the local Codex image tool.
+- Pressing the fish item detail `去商店` action now preserves the Image2 detail-overlay exit animation, disables the action during transition, and opens `ShopOverlay`.
+- If the player has fewer than 25 fish, the route opens the shop normally without extra guidance, and the yarn-trap buy button remains disabled.
+- If the player has at least 25 fish, the shop shows `BackpackFishShopGuidance`, a non-blocking Image2 badge with dynamic `买毛线` / `小鱼干够啦` copy, while marking `BuyShopYarnTrapKitButton` and `ShopYarnTrapKitBuyButtonFrame` with `image2_backpack_fish_shop_target`.
+- Added `/Users/zhaok/cat/tests/run_backpack_fish_shop_guidance_tests.gd` and `/Users/zhaok/cat/tests/capture_backpack_fish_shop_guidance.gd`.
+- Captured `/Users/zhaok/cat/artifacts/backpack_fish_shop_guidance.png`; GUI capture was used for visual evidence after confirming the guidance badge leaves the yarn purchase action visible and tappable.
+- Passed backpack fish shop guidance, backpack item detail, backpack organize shop guidance, shop yarn trap, manifest JSON validation, and the full `/Users/zhaok/cat/tests/run_*.gd` regression suite with `FULL_REGRESSION_PASS_CLEAN 133 tests`.

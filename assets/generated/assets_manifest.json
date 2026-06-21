@@ -1009,6 +1009,21 @@
       "prompt_summary": "Transparent Image2-derived badge that routes backpack organize rewards to the now-affordable yarn trap purchase."
     },
     {
+      "id": "backpack_fish_shop_guidance_design_reference",
+      "path": "res://assets/generated/ui/backpack_fish_shop_guidance_design_reference.png",
+      "prompt_summary": "Image2-first shop reference showing yarn-purchase guidance after entering the shop from backpack fish details."
+    },
+    {
+      "id": "backpack_fish_shop_guidance_badge_source",
+      "path": "res://assets/generated/ui/backpack_fish_shop_guidance_badge_source.png",
+      "prompt_summary": "Image2-derived source badge assembled from backpack organize shop guidance art for fish-detail shop routing."
+    },
+    {
+      "id": "backpack_fish_shop_guidance_badge",
+      "path": "res://assets/generated/ui/backpack_fish_shop_guidance_badge.png",
+      "prompt_summary": "Project-bound transparent Image2-derived badge shown after routing from backpack fish details to an affordable yarn purchase."
+    },
+    {
       "id": "backpack_yarn_level_guidance_design_reference",
       "path": "res://assets/generated/ui/backpack_yarn_level_guidance_design_reference.png",
       "prompt_summary": "Image2-first full-screen level-select reference showing the backpack yarn-trap battle guidance."

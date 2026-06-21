@@ -51,6 +51,7 @@ const BACKPACK_OVERLAY_DESIGN := preload("res://assets/generated/ui/backpack_ove
 const BACKPACK_ITEM_DETAIL_DESIGN := preload("res://assets/generated/ui/backpack_item_detail_design_reference.png")
 const BACKPACK_ORGANIZE_REWARD_DESIGN := preload("res://assets/generated/ui/backpack_organize_reward_design_reference.png")
 const BACKPACK_ORGANIZE_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/backpack_organize_shop_guidance_badge.png")
+const BACKPACK_FISH_SHOP_GUIDANCE_BADGE := preload("res://assets/generated/ui/backpack_fish_shop_guidance_badge.png")
 const BACKPACK_YARN_LEVEL_GUIDANCE_BADGE := preload("res://assets/generated/ui/backpack_yarn_level_guidance_badge.png")
 const ACHIEVEMENTS_OVERLAY_DESIGN := preload("res://assets/generated/ui/achievements_overlay_design_reference.png")
 const ACHIEVEMENT_CLAIMED_STAMP := preload("res://assets/generated/ui/achievement_claimed_stamp.png")
@@ -2117,9 +2118,15 @@ func _run_backpack_item_action(backpack_content: Control, host: Node, action_nam
 	var backpack_overlay: Node = backpack_content.get_parent()
 	match action_name:
 		"shop":
+			var show_fish_shop_guidance: bool = _total_fish >= YARN_TRAP_PRICE
 			if backpack_overlay != null:
 				backpack_overlay.queue_free()
 			_show_shop_overlay(host)
+			if show_fish_shop_guidance:
+				var shop_content: Control = host.find_child("ShopOverlayContent", true, false) as Control
+				if shop_content != null:
+					_add_backpack_fish_shop_guidance(shop_content)
+					_highlight_backpack_fish_shop_target(shop_content)
 		"achievements":
 			if backpack_overlay != null:
 				backpack_overlay.queue_free()
@@ -2227,6 +2234,62 @@ func _add_backpack_organize_shop_guidance(reward: Control, feedback_target: Cont
 	_pulse_control(badge)
 	if feedback_target != null:
 		_pulse_control(feedback_target)
+
+
+func _add_backpack_fish_shop_guidance(parent: Control) -> void:
+	_remove_named_child(parent, "BackpackFishShopGuidance")
+	var guidance: Control = Control.new()
+	guidance.name = "BackpackFishShopGuidance"
+	guidance.size = VIEW_SIZE
+	guidance.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guidance.z_index = 8
+	guidance.set_meta("image2_backpack_fish_shop_guidance", true)
+	parent.add_child(guidance)
+
+	var badge_group: Control = Control.new()
+	badge_group.name = "BackpackFishShopBadgeGroup"
+	badge_group.position = Vector2(668, 160)
+	badge_group.size = Vector2(344, 128)
+	badge_group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_group.z_index = 1
+	guidance.add_child(badge_group)
+
+	var badge: TextureRect = _ui_texture_rect("BackpackFishShopBadge", BACKPACK_FISH_SHOP_GUIDANCE_BADGE, Vector2.ZERO, badge_group.size)
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.modulate = Color(1.0, 1.0, 1.0, 0.96)
+	badge.z_index = 1
+	badge_group.add_child(badge)
+
+	var label: Label = _label("BackpackFishShopLabel", "买毛线", Vector2(164, 54), Vector2(124, 34), 22, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label.z_index = 2
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_group.add_child(label)
+
+	var sub_label: Label = _label("BackpackFishShopSubLabel", "小鱼干够啦", Vector2(150, 82), Vector2(154, 22), 12, Color(0.42, 0.20, 0.08), HORIZONTAL_ALIGNMENT_CENTER)
+	sub_label.z_index = 2
+	sub_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_group.add_child(sub_label)
+
+	badge_group.pivot_offset = badge_group.size * 0.5
+	badge_group.scale = Vector2(0.76, 0.76)
+	badge_group.modulate.a = 0.0
+	var badge_group_ref: WeakRef = weakref(badge_group)
+	var entry_tween: Tween = create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.tween_property(badge_group, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(badge_group, "modulate:a", 0.96, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	entry_tween.chain().tween_callback(func() -> void:
+		var resolved: Object = badge_group_ref.get_ref()
+		if not resolved is Control:
+			return
+		var resolved_group: Control = resolved as Control
+		var base_y: float = resolved_group.position.y
+		var float_tween: Tween = resolved_group.create_tween()
+		float_tween.set_loops()
+		float_tween.tween_property(resolved_group, "position:y", base_y - 5.0, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(resolved_group, "position:y", base_y, 0.76).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	)
 
 
 func _achievement_row(parent: Control, achievement: Dictionary) -> void:
@@ -2891,6 +2954,18 @@ func _highlight_backpack_organize_shop_target(parent: Control) -> void:
 		_pulse_control(frame)
 	if buy_button != null:
 		buy_button.set_meta("image2_backpack_organize_shop_target", true)
+		if frame == null:
+			_pulse_control(buy_button)
+
+
+func _highlight_backpack_fish_shop_target(parent: Control) -> void:
+	var frame: Control = parent.find_child("ShopYarnTrapKitBuyButtonFrame", true, false) as Control
+	var buy_button: Button = parent.find_child("BuyShopYarnTrapKitButton", true, false) as Button
+	if frame != null:
+		frame.set_meta("image2_backpack_fish_shop_target", true)
+		_pulse_control(frame)
+	if buy_button != null:
+		buy_button.set_meta("image2_backpack_fish_shop_target", true)
 		if frame == null:
 			_pulse_control(buy_button)
 
