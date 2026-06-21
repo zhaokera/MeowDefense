@@ -1286,3 +1286,11 @@ final result: passed
 - No new screenshot was needed because the change protects the existing Image2 shop purchase feedback overlay without changing its rendered art.
 - Targeted verification passed: `run_shop_purchase_overlay_guard_tests.gd`, `run_shop_energy_refill_tests.gd`, `run_shop_yarn_trap_tests.gd`, `run_shop_paw_bundle_tests.gd`, `run_shop_purchase_feedback_tests.gd`, `run_shop_energy_refill_return_tests.gd`, `run_daily_task_yarn_purchase_return_tests.gd`, `run_shop_yarn_purchase_backpack_guidance_tests.gd`, and `run_shop_paw_purchase_achievement_guidance_tests.gd`.
 - Full regression passed after the shop purchase guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.
+
+**Image2 Overlay Exit Input Lock**
+- Shared Image2 overlay exit animation now disables every button inside the exiting overlay, not only the button that started the transition.
+- This prevents fast repeated taps from firing alternate close/route/claim buttons while the full-screen Image2 art is already fading and sliding out.
+- Expanded `/Users/zhaok/cat/tests/run_overlay_action_exit_animation_tests.gd` to assert all buttons under locked-level, album detail, backpack detail, achievement guidance, and shop-shortage action overlays are disabled during exit; the test was verified red before the shared guard and green after it.
+- No new screenshot was needed because the change only locks input during the existing Image2 exit animation and does not alter the rendered overlay art.
+- Targeted verification passed: `run_overlay_action_exit_animation_tests.gd`, `run_detail_overlay_exit_animation_tests.gd`, `run_reward_claim_action_exit_animation_tests.gd`, `run_reward_overlay_exit_animation_tests.gd`, `run_reward_overlay_tests.gd`, `run_shop_purchase_feedback_tests.gd`, `run_shop_purchase_overlay_guard_tests.gd`, `run_daily_task_overlay_tests.gd`, `run_achievement_claim_tests.gd`, and `run_battle_overlay_exit_animation_tests.gd`.
+- Full regression passed after the shared overlay input lock: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.

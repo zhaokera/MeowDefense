@@ -174,7 +174,15 @@ func _assert_action_exit_started(root_node: Node, overlay: Control, trigger_butt
 	_assert_true(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "%s overlay should ignore input while exiting" % label)
 	_assert_true(overlay.modulate.a < 1.0, "%s overlay should start fading immediately" % label)
 	_assert_true(trigger_button.disabled, "%s pressed action should disable during exit animation" % label)
+	_assert_buttons_disabled_under(overlay, "%s should disable every overlay button during exit animation" % label)
 	_assert_true(_find_by_name(root_node, overlay.name) != null, "%s overlay should still be present immediately after action press" % label)
+
+
+func _assert_buttons_disabled_under(node: Node, message: String) -> void:
+	for child: Node in node.get_children():
+		if child is Button:
+			_assert_true((child as Button).disabled, message)
+		_assert_buttons_disabled_under(child, message)
 
 
 func _wait_frames(count: int) -> void:

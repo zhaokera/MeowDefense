@@ -4192,6 +4192,7 @@ func _animate_overlay_exit(target: Control, trigger_button: Button = null, finis
 	target.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	target.pivot_offset = VIEW_SIZE * 0.5
 	target.modulate.a = min(target.modulate.a, 0.96)
+	_disable_buttons_under(target)
 	if trigger_button != null and is_instance_valid(trigger_button):
 		trigger_button.disabled = true
 	var target_ref: WeakRef = weakref(target)
