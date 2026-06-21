@@ -1278,3 +1278,11 @@ final result: passed
 - No new screenshot was needed because this protects the battle-to-result state machine behind the existing Image2 result screens rather than changing a rendered screen.
 - Targeted verification passed: `run_battle_finish_once_tests.gd`, `run_result_defeat_screen_tests.gd`, `run_result_screen_tests.gd`, `run_result_achievement_claim_guidance_tests.gd`, `run_progression_persistence_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
 - Full regression passed after the finish idempotency guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 139 tests`.
+
+**Shop Purchase Overlay Guard**
+- Added a shared shop purchase guard so energy refill, paw bundle, and yarn trap buttons ignore repeat presses while the Image2 `ShopPurchaseRewardOverlay` is visible.
+- This prevents accidental double taps from charging fish or granting duplicate items during the purchase-success moment, while still allowing another purchase after the reward overlay is dismissed.
+- Added `/Users/zhaok/cat/tests/run_shop_purchase_overlay_guard_tests.gd` to cover high-fish repeat purchase attempts for energy, paw bundles, and yarn traps; the test was verified red for duplicate charges/grants and green after the guard.
+- No new screenshot was needed because the change protects the existing Image2 shop purchase feedback overlay without changing its rendered art.
+- Targeted verification passed: `run_shop_purchase_overlay_guard_tests.gd`, `run_shop_energy_refill_tests.gd`, `run_shop_yarn_trap_tests.gd`, `run_shop_paw_bundle_tests.gd`, `run_shop_purchase_feedback_tests.gd`, `run_shop_energy_refill_return_tests.gd`, `run_daily_task_yarn_purchase_return_tests.gd`, `run_shop_yarn_purchase_backpack_guidance_tests.gd`, and `run_shop_paw_purchase_achievement_guidance_tests.gd`.
+- Full regression passed after the shop purchase guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.

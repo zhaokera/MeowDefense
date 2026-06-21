@@ -2156,6 +2156,8 @@ func _add_shop_energy_refill(parent: Control, fish_counter: Label, energy_counte
 	var buy_button: Button = _hotspot_button("BuyShopEnergyRefillButton", Vector2(1042, 20), Vector2(72, 62), "补充体力")
 	buy_button.disabled = not _can_buy_energy_refill()
 	buy_button.pressed.connect(func() -> void:
+		if _shop_purchase_reward_overlay_open(parent):
+			return
 		if not _can_buy_energy_refill():
 			return
 		var restored_energy: int = min(ENERGY_REFILL_AMOUNT, _max_energy - _energy)
@@ -2189,6 +2191,10 @@ func _energy_refill_status_text() -> String:
 	if _total_fish < ENERGY_REFILL_COST:
 		return "体力%s  需%d鱼干" % [_energy_text(), ENERGY_REFILL_COST]
 	return "体力%s  +%d/%d鱼干" % [_energy_text(), min(ENERGY_REFILL_AMOUNT, _max_energy - _energy), ENERGY_REFILL_COST]
+
+
+func _shop_purchase_reward_overlay_open(parent: Control) -> bool:
+	return parent != null and parent.find_child("ShopPurchaseRewardOverlay", true, false) != null
 
 
 func _album_entry_card(parent: Control, entry_name: String, texture: Texture2D, title: String, stat_one: String, stat_two: String, copy: String, position: Vector2, size: Vector2) -> void:
@@ -3028,6 +3034,8 @@ func _shop_paw_bundle_product(parent: Control, fish_counter: Label, position: Ve
 	var buy_button: Button = _transparent_text_button("BuyShopPawBundleButton", buy_text, Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), 22)
 	buy_button.disabled = _total_fish < price
 	buy_button.pressed.connect(func() -> void:
+		if _shop_purchase_reward_overlay_open(parent):
+			return
 		if _total_fish < price:
 			return
 		_total_fish -= price
@@ -3057,6 +3065,8 @@ func _shop_yarn_trap_product(parent: Control, fish_counter: Label, position: Vec
 	var buy_button: Button = _transparent_text_button("BuyShopYarnTrapKitButton", buy_text, Rect2(position + Vector2(8, 210), Vector2(size.x - 16, 62)), 22)
 	buy_button.disabled = _total_fish < price
 	buy_button.pressed.connect(func() -> void:
+		if _shop_purchase_reward_overlay_open(parent):
+			return
 		if _total_fish < price:
 			return
 		_total_fish -= price
