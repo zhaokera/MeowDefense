@@ -106,6 +106,7 @@ var _base_sprite: Sprite2D
 var _base_hit_timer: float = 0.0
 var _base_visual_time: float = 0.0
 var _selected_tower_id: String = "orange_cat"
+var _selected_tower_pending_affordability_guidance: bool = false
 var _tower_by_slot: Dictionary = {}
 var _pause_music_enabled: bool = true
 var _pause_effects_enabled: bool = true
@@ -163,6 +164,7 @@ func start_level(path: String) -> void:
 	_cleared_wave_indices.clear()
 	_incoming_wave_indices.clear()
 	_selected_tower_id = level.allowed_towers[0] if not level.allowed_towers.is_empty() else "orange_cat"
+	_selected_tower_pending_affordability_guidance = false
 	_battle_speed_multiplier = 1.0
 	_yarn_trap_effect_index = 0
 	_yarn_trap_armed = false
@@ -640,6 +642,7 @@ func _on_slot_clicked(slot: Node2D) -> void:
 	_tower_layer.add_child(tower)
 	_hide_build_guidance_hint()
 	_hide_tower_selection_guidance()
+	_selected_tower_pending_affordability_guidance = false
 	if towers.size() == 1:
 		_show_post_build_guidance()
 	else:
@@ -2106,10 +2109,12 @@ func _select_tower(tower_id: String) -> void:
 	var stats: Dictionary = TowerStatsScript.get_tower(tower_id)
 	var cost: int = int(stats.get("cost", 0))
 	if coins < cost:
+		_selected_tower_pending_affordability_guidance = true
 		_tip_label.text = "已选择：%s，还差 %d 小鱼干。" % [str(stats.get("name", tower_id)), max(1, cost - coins)]
 		_hide_post_build_guidance()
 		_hide_tower_selection_guidance()
 	else:
+		_selected_tower_pending_affordability_guidance = false
 		_tip_label.text = "已选择：%s，点击猫爪位建造。" % str(stats.get("name", tower_id))
 		_show_tower_selection_guidance(tower_id)
 	_update_tower_selector_state()
@@ -3333,6 +3338,35 @@ func _update_hud() -> void:
 	_update_yarn_trap_hud()
 	_update_tower_selector_state()
 	_update_build_slot_affordability_states()
+	_maybe_show_tower_affordability_recovery_guidance()
+
+
+func _maybe_show_tower_affordability_recovery_guidance() -> void:
+	if not _selected_tower_pending_affordability_guidance:
+		return
+	if level == null or not level.allowed_towers.has(_selected_tower_id):
+		_selected_tower_pending_affordability_guidance = false
+		return
+	if not _selected_tower_affordable():
+		return
+	if not _has_empty_build_slot():
+		_selected_tower_pending_affordability_guidance = false
+		return
+	_selected_tower_pending_affordability_guidance = false
+	var stats: Dictionary = TowerStatsScript.get_tower(_selected_tower_id)
+	if _tip_label != null:
+		_tip_label.text = "已凑够：%s，点击猫爪位建造。" % str(stats.get("name", _selected_tower_id))
+	_show_tower_selection_guidance(_selected_tower_id)
+
+
+func _has_empty_build_slot() -> bool:
+	if _slot_layer == null:
+		return false
+	for child: Node in _slot_layer.get_children():
+		var slot: Node2D = child as Node2D
+		if slot != null and not bool(slot.get("occupied")):
+			return true
+	return false
 
 
 func _wave_preview_text() -> String:

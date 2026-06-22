@@ -1317,3 +1317,11 @@ final result: passed
 - No new screenshot was needed because this protects the existing Image2 enemy reward, fish fly, and base damage feedback without changing rendered art.
 - Targeted verification passed: `run_enemy_outcome_once_tests.gd`, `run_enemy_reward_feedback_tests.gd`, `run_battle_reward_fly_feedback_tests.gd`, `run_base_damage_feedback_tests.gd`, `run_enemy_defeat_feedback_tests.gd`, `run_battle_wave_clear_feedback_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
 - Full regression passed after the enemy outcome guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 141 tests`.
+
+**Tower Affordability Recovery Guidance**
+- When the player selects an unaffordable tower card and later earns enough fish, the battle HUD now restores the existing Image2 `BattleTowerSelectionGuidance` near an empty cat-paw build slot.
+- The selected tower remains selected through the shortage state, the Image2 shortage stamp clears when affordability recovers, and the next build uses the recovered selected tower rather than silently falling back.
+- Added `/Users/zhaok/cat/tests/run_battle_tower_affordability_recovery_guidance_tests.gd`; the test was verified red for missing recovered placement guidance, then green after adding the pending-affordability guidance state.
+- No new screenshot was needed because this reuses the existing Image2 tower-selection guidance badge and transparent build-slot hit areas.
+- Targeted verification passed: `run_battle_tower_affordability_recovery_guidance_tests.gd`, `run_battle_tower_selection_guidance_tests.gd`, `run_battle_tower_affordability_tests.gd`, `run_build_input_tests.gd`, `run_battle_resource_feedback_tests.gd`, `run_battle_post_build_guidance_tests.gd`, `run_build_success_feedback_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the affordability recovery guidance update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 142 tests`.
