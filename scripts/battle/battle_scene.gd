@@ -1310,6 +1310,10 @@ func _upgrade_tower_from_overlay(tower: Node2D, feedback_target: Control) -> voi
 func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control, trigger_button: Button = null) -> void:
 	if tower == null or not is_instance_valid(tower):
 		return
+	if slot == null or not is_instance_valid(slot):
+		return
+	if _tower_by_slot.get(slot, null) != tower:
+		return
 	var refund: int = _tower_sell_refund(tower)
 	var feedback_anchor: Vector2 = tower.global_position
 	coins += refund

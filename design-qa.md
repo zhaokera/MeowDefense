@@ -1325,3 +1325,10 @@ final result: passed
 - No new screenshot was needed because this reuses the existing Image2 tower-selection guidance badge and transparent build-slot hit areas.
 - Targeted verification passed: `run_battle_tower_affordability_recovery_guidance_tests.gd`, `run_battle_tower_selection_guidance_tests.gd`, `run_battle_tower_affordability_tests.gd`, `run_build_input_tests.gd`, `run_battle_resource_feedback_tests.gd`, `run_battle_post_build_guidance_tests.gd`, `run_build_success_feedback_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
 - Full regression passed after the affordability recovery guidance update: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 142 tests`.
+
+**Tower Sell Idempotency Guard**
+- Tower sell callbacks now resolve only if the target tower is still bound to the tapped build slot, preventing repeat callbacks from refunding fish twice after the first sell clears that slot.
+- Added `/Users/zhaok/cat/tests/run_tower_sell_once_tests.gd`; the test was verified red for duplicate fish refunds, duplicate Image2 sell bursts, and duplicate refund fly chips, then green after adding the slot-binding guard.
+- No new screenshot was needed because this protects the existing Image2 tower sell burst and refund fly-chip feedback without changing rendered art.
+- Targeted verification passed: `run_tower_sell_once_tests.gd`, `run_tower_sell_feedback_tests.gd`, `run_tower_sell_refund_fly_feedback_tests.gd`, `run_tower_sell_action_exit_animation_tests.gd`, `run_tower_action_tests.gd`, `run_build_slot_manage_badge_tests.gd`, `run_tower_action_cancel_feedback_tests.gd`, `run_tower_upgrade_feedback_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the tower sell guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 143 tests`.
