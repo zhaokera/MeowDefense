@@ -1310,3 +1310,10 @@ final result: passed
 - No new screenshot was needed because the change only protects existing Image2 exit transitions without changing rendered art.
 - Targeted verification passed: `run_settings_overlay_exit_animation_tests.gd`, `run_settings_control_feedback_tests.gd`, `run_settings_saved_feedback_tests.gd`, `run_overlay_action_exit_animation_tests.gd`, `run_detail_overlay_exit_animation_tests.gd`, `run_reward_overlay_exit_animation_tests.gd`, `run_reward_claim_action_exit_animation_tests.gd`, `run_image2_screen_exit_animation_tests.gd`, `run_result_screen_exit_animation_tests.gd`, `run_result_screen_entry_animation_tests.gd`, `run_result_screen_tests.gd`, and `run_battle_overlay_exit_animation_tests.gd`.
 - Full regression passed after the settings overlay control lock: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 140 tests`.
+
+**Enemy Outcome Idempotency Guard**
+- Enemy defeat and base-reach callbacks now resolve only while the enemy is still in the active `enemies` list, so duplicate callbacks cannot pay extra fish, spawn duplicate Image2 reward fly chips, or apply duplicate base damage.
+- Added `/Users/zhaok/cat/tests/run_enemy_outcome_once_tests.gd`; the test was verified red for duplicate reward and damage resolution, then green after adding the active-enemy guard.
+- No new screenshot was needed because this protects the existing Image2 enemy reward, fish fly, and base damage feedback without changing rendered art.
+- Targeted verification passed: `run_enemy_outcome_once_tests.gd`, `run_enemy_reward_feedback_tests.gd`, `run_battle_reward_fly_feedback_tests.gd`, `run_base_damage_feedback_tests.gd`, `run_enemy_defeat_feedback_tests.gd`, `run_battle_wave_clear_feedback_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the enemy outcome guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 141 tests`.

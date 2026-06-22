@@ -2854,9 +2854,12 @@ func _on_tower_fired(tower: Node2D, target: Node2D) -> void:
 
 
 func _on_enemy_defeated(enemy: Node2D) -> void:
+	if enemy == null or not is_instance_valid(enemy):
+		return
+	if not enemies.has(enemy):
+		return
 	var wave_index: int = int(enemy.get_meta("battle_wave_index", -1))
-	if enemies.has(enemy):
-		enemies.erase(enemy)
+	enemies.erase(enemy)
 	var reward: int = int(enemy.reward)
 	var reward_anchor: Vector2 = enemy.global_position
 	coins += reward
@@ -2869,9 +2872,12 @@ func _on_enemy_defeated(enemy: Node2D) -> void:
 
 
 func _on_enemy_reached_goal(enemy: Node2D) -> void:
+	if enemy == null or not is_instance_valid(enemy):
+		return
+	if not enemies.has(enemy):
+		return
 	var wave_index: int = int(enemy.get_meta("battle_wave_index", -1))
-	if enemies.has(enemy):
-		enemies.erase(enemy)
+	enemies.erase(enemy)
 	var damage: int = int(enemy.base_damage)
 	base_hp = max(0, base_hp - damage)
 	_base_hit_timer = 0.22
