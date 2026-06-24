@@ -136,6 +136,7 @@ var _wave_incoming_feedback_index: int = 0
 var _battle_speed_feedback_index: int = 0
 var _battle_reward_fly_index: int = 0
 var _last_wave_rush_elapsed: float = -INF
+var _last_tower_upgrade_elapsed_by_instance: Dictionary = {}
 
 
 func _ready() -> void:
@@ -187,6 +188,7 @@ func start_level(path: String) -> void:
 	_battle_speed_feedback_index = 0
 	_battle_reward_fly_index = 0
 	_last_wave_rush_elapsed = -INF
+	_last_tower_upgrade_elapsed_by_instance.clear()
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -1284,6 +1286,12 @@ func _show_tower_action_overlay(slot: Node2D) -> void:
 func _upgrade_tower_from_overlay(tower: Node2D, feedback_target: Control) -> void:
 	if tower == null or not is_instance_valid(tower):
 		return
+	var tower_instance_id: int = tower.get_instance_id()
+	if _last_tower_upgrade_elapsed_by_instance.has(tower_instance_id):
+		var last_elapsed: float = float(_last_tower_upgrade_elapsed_by_instance[tower_instance_id])
+		if is_equal_approx(last_elapsed, elapsed):
+			return
+	_last_tower_upgrade_elapsed_by_instance[tower_instance_id] = elapsed
 	var upgrade_cost: int = int(tower.get("upgrade_cost"))
 	if _tower_is_max_level(tower):
 		if _tip_label != null:
@@ -1322,6 +1330,7 @@ func _sell_tower_from_overlay(tower: Node2D, slot: Node2D, overlay: Control, tri
 	_update_hud()
 	towers.erase(tower)
 	_tower_by_slot.erase(slot)
+	_last_tower_upgrade_elapsed_by_instance.erase(tower.get_instance_id())
 	slot.set_occupied(false)
 	_mark_slot_button_empty(slot)
 	_show_tower_sell_feedback(feedback_anchor)

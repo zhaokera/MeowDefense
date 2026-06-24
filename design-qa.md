@@ -1346,3 +1346,10 @@ final result: passed
 - No new screenshot was needed because this protects the existing Image2 pause settings panel and transparent controls without changing rendered art.
 - Targeted verification passed: `run_pause_settings_open_once_tests.gd`, `run_pause_menu_tests.gd`, `run_pause_settings_control_feedback_tests.gd`, `run_pause_settings_persistence_tests.gd`, `run_battle_overlay_exit_animation_tests.gd`, `run_pause_menu_action_exit_animation_tests.gd`, `run_pause_resume_feedback_tests.gd`, `run_pause_restart_feedback_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
 - Full regression passed after the pause settings open guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 145 tests`.
+
+**Tower Upgrade Idempotency Guard**
+- Repeated tower-upgrade callbacks in the same battle moment now resolve once, preventing accidental double-level, double fish spend, and duplicate Image2 upgrade/spend feedback from a single jittery tap.
+- Added `/Users/zhaok/cat/tests/run_tower_upgrade_once_tests.gd`; the test was verified red for two level-ups, two fish deductions, and duplicate Image2 feedback, then green after adding the same-elapsed tower upgrade guard.
+- No new screenshot was needed because this protects the existing Image2 tower action panel, upgrade burst, and fish-spend fly chip without changing rendered art.
+- Targeted verification passed: `run_tower_upgrade_once_tests.gd`, `run_tower_action_tests.gd`, `run_tower_upgrade_feedback_tests.gd`, `run_tower_upgrade_spend_feedback_tests.gd`, `run_tower_max_level_tests.gd`, `run_tower_sell_once_tests.gd`, `run_tower_sell_feedback_tests.gd`, `run_tower_sell_refund_fly_feedback_tests.gd`, `run_tower_sell_action_exit_animation_tests.gd`, `run_tower_action_cancel_feedback_tests.gd`, `run_battle_resource_feedback_tests.gd`, `run_build_input_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the tower upgrade guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 146 tests`.
