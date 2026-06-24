@@ -135,6 +135,7 @@ var _wave_clear_feedback_index: int = 0
 var _wave_incoming_feedback_index: int = 0
 var _battle_speed_feedback_index: int = 0
 var _battle_reward_fly_index: int = 0
+var _last_wave_rush_elapsed: float = -INF
 
 
 func _ready() -> void:
@@ -185,6 +186,7 @@ func start_level(path: String) -> void:
 	_wave_incoming_feedback_index = 0
 	_battle_speed_feedback_index = 0
 	_battle_reward_fly_index = 0
+	_last_wave_rush_elapsed = -INF
 
 	_build_world_nodes()
 	_build_level_visuals()
@@ -2224,6 +2226,8 @@ func _show_battle_speed_feedback() -> void:
 func _rush_next_wave() -> void:
 	if finished or level == null:
 		return
+	if is_equal_approx(_last_wave_rush_elapsed, elapsed):
+		return
 	var state: Dictionary = _next_rushable_wave_state()
 	if state.is_empty():
 		if _tip_label != null:
@@ -2233,6 +2237,7 @@ func _rush_next_wave() -> void:
 		return
 
 	var wave_index: int = int(state.get("index", 1))
+	_last_wave_rush_elapsed = elapsed
 	state["start_time"] = min(float(state.get("start_time", elapsed)), elapsed)
 	state["next_time"] = elapsed
 	_spawn_due_enemies()
