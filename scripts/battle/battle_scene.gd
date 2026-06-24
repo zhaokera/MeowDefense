@@ -3153,8 +3153,8 @@ func _show_pause_settings() -> void:
 	if _pause_overlay == null or not is_instance_valid(_pause_overlay):
 		return
 	var existing: Node = _pause_overlay.find_child("PauseSettingsOverlay", true, false)
-	if existing != null:
-		existing.queue_free()
+	if existing != null and is_instance_valid(existing):
+		return
 	_set_pause_menu_content_visible(false)
 
 	var overlay: Control = Control.new()

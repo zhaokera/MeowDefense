@@ -1339,3 +1339,10 @@ final result: passed
 - No new screenshot was needed because this protects the existing Image2 wave-preview chip and rush feedback burst without changing rendered art.
 - Targeted verification passed: `run_battle_wave_rush_once_tests.gd`, `run_battle_wave_rush_tests.gd`, `run_battle_wave_preview_detail_tests.gd`, `run_battle_wave_preview_close_feedback_tests.gd`, `run_battle_wave_incoming_feedback_tests.gd`, `run_battle_speed_wave_tests.gd`, `run_battle_speed_feedback_tests.gd`, `run_pause_menu_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
 - Full regression passed after the wave rush guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 144 tests`.
+
+**Pause Settings Open Idempotency Guard**
+- Repeated pause-settings open callbacks now keep the current Image2 settings overlay instead of queueing it for deletion and creating a second copy in the same frame.
+- Added `/Users/zhaok/cat/tests/run_pause_settings_open_once_tests.gd`; the test was verified red for duplicated Image2 design panels and transparent hit areas, then green after guarding the open path.
+- No new screenshot was needed because this protects the existing Image2 pause settings panel and transparent controls without changing rendered art.
+- Targeted verification passed: `run_pause_settings_open_once_tests.gd`, `run_pause_menu_tests.gd`, `run_pause_settings_control_feedback_tests.gd`, `run_pause_settings_persistence_tests.gd`, `run_battle_overlay_exit_animation_tests.gd`, `run_pause_menu_action_exit_animation_tests.gd`, `run_pause_resume_feedback_tests.gd`, `run_pause_restart_feedback_tests.gd`, `run_campaign_tests.gd`, and `run_playthrough_tests.gd`.
+- Full regression passed after the pause settings open guard: `/Users/zhaok/cat/tests/run_*.gd` reported `FULL_REGRESSION_PASS_CLEAN 145 tests`.
